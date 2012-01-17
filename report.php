@@ -7,7 +7,7 @@
     $format     = optional_param('format', CHOICEGROUP_PUBLISH_NAMES, PARAM_INT);
     $download   = optional_param('download', '', PARAM_ALPHA);
     $action     = optional_param('action', '', PARAM_ALPHA);
-    $attemptids = optional_param('attemptid', array(), PARAM_INT); //get array of responses to delete.
+    $attemptids = optional_param_array('attemptid', array(), PARAM_INT); //get array of responses to delete.
 
     $url = new moodle_url('/mod/choicegroup/report.php', array('id'=>$id));
     if ($format !== CHOICEGROUP_PUBLISH_NAMES) {

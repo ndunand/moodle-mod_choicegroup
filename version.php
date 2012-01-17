@@ -5,8 +5,13 @@
 //  This fragment is called by /admin/index.php
 ////////////////////////////////////////////////////////////////////////////////
 
-$module->version  = 2010101300;
-$module->requires = 2010080300;  // Requires this Moodle version
-$module->cron     = 0;
+defined('MOODLE_INTERNAL') || die();
 
+$module->version  = 2012010100;
+$module->requires  = 2011120100;       // Requires this Moodle version
+$module->maturity  = MATURITY_STABLE;
+$module->release = '1.1 (Build: 2012010100)';
+
+$module->component = 'mod_choicegroup';     // Full name of the plugin (used for diagnostics)
+$module->cron     = 0;
 

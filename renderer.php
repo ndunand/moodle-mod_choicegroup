@@ -137,6 +137,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      */
     public function display_publish_name_vertical($choicegroups) {
         global $PAGE;
+        global $DB;
         $html ='';
         $html .= html_writer::tag('h2',format_string(get_string("responses", "choicegroup")), array('class'=>'main'));
 
@@ -167,7 +168,8 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             if ($choicegroups->showunanswered && $optionid == 0) {
                 $coldata .= html_writer::tag('div', format_string(get_string('notanswered', 'choicegroup')), array('class'=>'option'));
             } else if ($optionid > 0) {
-                $coldata .= html_writer::tag('div', format_string($choicegroups->options[$optionid]->text), array('class'=>'option'));
+                $group = $DB->get_record('groups', array('id' => $choicegroups->options[$optionid]->text));
+                $coldata .= html_writer::tag('div', format_string($group->name), array('class'=>'option'));
             }
             $numberofuser = 0;
             if (!empty($options->user) && count($options->user) > 0) {
@@ -222,15 +224,15 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         if ($choicegroups->viewresponsecapability && $choicegroups->deleterepsonsecapability) {
             $selecturl = new moodle_url('#');
 
-            $selectallactions = new component_action('click',"select_all_in", array('div',null,'tablecontainer'));
-            $selectall = new action_link($selecturl, get_string('selectall', 'quiz'), $selectallactions);
+            $selectallactions = new component_action('click',"checkall");
+            $selectall = new action_link($selecturl, get_string('selectall'), $selectallactions);
             $actiondata .= $this->output->render($selectall) . ' / ';
 
-            $deselectallactions = new component_action('click',"deselect_all_in", array('div',null,'tablecontainer'));
-            $deselectall = new action_link($selecturl, get_string('selectnone', 'quiz'), $deselectallactions);
+            $deselectallactions = new component_action('click',"checknone");
+            $deselectall = new action_link($selecturl, get_string('deselectall'), $deselectallactions);
             $actiondata .= $this->output->render($deselectall);
 
-            $actiondata .= html_writer::tag('label', ' ' . get_string('withselected', 'quiz') . ' ', array('for'=>'menuaction'));
+            $actiondata .= html_writer::tag('label', ' ' . get_string('withselected', 'choice') . ' ', array('for'=>'menuaction'));
 
             $actionurl = new moodle_url($PAGE->url, array('sesskey'=>sesskey(), 'action'=>'delete_confirmation()'));
             $select = new single_select($actionurl, 'action', array('delete'=>get_string('delete')), null, array(''=>get_string('chooseaction', 'choicegroup')), 'attemptsform');

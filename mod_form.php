@@ -69,10 +69,10 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $repeateloptions = array();
         $repeateloptions['limit']['default'] = 0;
         $repeateloptions['limit']['disabledif'] = array('limitanswers', 'eq', 0);
-        $mform->setType('limit', PARAM_INT);
+        $repeateloptions['limit']['rule'] = 'numeric';
 
         $repeateloptions['option']['helpbutton'] = array('choicegroupoptions', 'choicegroup');
-        $mform->setType('option', PARAM_CLEAN);
+        $mform->setType('option', PARAM_CLEANHTML);
 
         $mform->setType('optionid', PARAM_INT);
 
@@ -91,9 +91,11 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 
         $mform->addElement('date_time_selector', 'timeclose', get_string("choicegroupclose", "choicegroup"));
         $mform->disabledIf('timeclose', 'timerestrict');
-
+        
 //-------------------------------------------------------------------------------
         $this->standard_coursemodule_elements();
+        $mform->removeElement('groupmode');
+        $mform->removeElement('groupingid');
 //-------------------------------------------------------------------------------
         $this->add_action_buttons();
     }

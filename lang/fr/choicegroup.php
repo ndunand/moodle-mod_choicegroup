@@ -95,4 +95,5 @@ $string['numberofuser'] = 'The number of user';
 
 $string['members/max'] = 'Fill / Capacity';
 $string['groupmembers'] = 'Group members';
-$string['page-mod-choice-x'] = 'Toute page du module Choix du groupe';
+$string['page-mod-choice-x'] = 'Any choicegroup module page';
+
