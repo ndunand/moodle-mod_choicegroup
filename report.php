@@ -215,6 +215,11 @@
         }
         exit;
     }
+    // Show those who haven't answered the question.
+    if (!empty($choicegroup->showunanswered)) {
+        $choicegroup->option[0] = get_string('notanswered', 'choicegroup');
+        $choicegroup->maxanswers[0] = 0;
+    }
 
     $results = prepare_choicegroup_show_results($choicegroup, $course, $cm, $users);
     $renderer = $PAGE->get_renderer('mod_choicegroup');

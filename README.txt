@@ -11,9 +11,9 @@ This module is heavily based on the "choice" activity module, and behaves roughl
 Installation
 =============
 
-1. unzip, and copy into Moodle's /mod folder 
-2. visit administration page to install module 
-3. use in any course as wished 
+1. unzip, and copy into Moodle's /mod folder
+2. visit administration page to install module
+3. use in any course as wished
 
 Operation
 ==========
@@ -31,3 +31,9 @@ Moodlefairy's review :                  http://www.youtube.com/watch?v=JQFaDLtHZ
 Another review by Gavin Henrick :       http://www.somerandomthoughts.com/blog/2011/10/13/review-activity-module-choice-group-for-moodle-2/
 
 
+Thanks to
+==========
+
+André Lausch : German translation
+
+Luiggi Sansonetti : French translation

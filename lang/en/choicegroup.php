@@ -38,14 +38,14 @@ $string['choice'] = 'Choice';
 $string['choicegroupclose'] = 'Until';
 $string['choicegroup:deleteresponses'] = 'Delete responses';
 $string['choicegroup:downloadresponses'] = 'Download responses';
-$string['choicefull'] = 'This choice is full and there are no available places.';
+$string['choicegroupfull'] = 'This group choice is full and there are no available places.';
 $string['choicegroup:choose'] = 'Record a choice';
 $string['choicegroupname'] = 'Group choice name';
 $string['choicegroupopen'] = 'Open';
 $string['choicegroupoptions'] = 'Choice options';
 $string['choicegroupoptions_help'] = 'Here is where you specify the options that participants have to choose from.
 
-You can fill in any number of these. If you leave some of the options blank, they will not be displayed. If you need more than 8 options, click the "Add 3 fields to form" button.';
+You can fill in any number of these. If you leave some of the options blank, they will not be displayed. If you need more options, click the "Add 3 fields to form" button.';
 $string['limitanswers_help'] = 'This option allows you to limit the number of participants that can select each choice option. When the limit is reached then no-one else can select that option.
 
 If limits are disabled then any number of participants can select each of the options.';
@@ -62,6 +62,9 @@ $string['modulenameplural'] = 'Group choices';
 $string['mustchooseone'] = 'You must choose an answer before saving.  Nothing was saved.';
 $string['noguestchoose'] = 'Sorry, guests are not allowed to make choices.';
 $string['noresultsviewable'] = 'The results are not currently viewable.';
+$string['neverresultsviewable'] = 'The results are not viewable.';
+$string['afterresultsviewable'] = 'The results will be visible after you made your choice.';
+$string['notyetresultsviewable'] = 'The results will be visible after this activity is closed.';
 $string['notanswered'] = 'Not answered yet';
 $string['notenrolledchoose'] = 'Sorry, only enrolled users are allowed to make choices.';
 $string['notopenyet'] = 'Sorry, this activity is not available until {$a}';
@@ -94,6 +97,6 @@ $string['moveselectedusersto'] = 'Move selected users to...';
 $string['numberofuser'] = 'The number of user';
 
 $string['members/max'] = 'Fill / Capacity';
+$string['members/'] = 'Fill';
 $string['groupmembers'] = 'Group members';
-$string['page-mod-choice-x'] = 'Any choicegroup module page';
-
+$string['page-mod-choice-x'] = 'Any Group choice module page';

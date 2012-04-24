@@ -18,8 +18,8 @@
 /**
  * Moodle renderer used to display special elements of the lesson module
  *
- * @package   Choice
- * @copyright 2010 Rossiani Wijaya
+ * @package   Choicegroup
+ * @copyright 2012 Nicolas Dunand
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 define ('DISPLAY_HORIZONTAL_LAYOUT', 0);
@@ -34,21 +34,35 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * @param bool $vertical
      * @return string
      */
-    public function display_options($options, $coursemoduleid, $vertical = true) {
-        global $DB;
+    public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false, $showresults = false, $current = false, $choicegroupopen = false, $disabled = false) {
+        global $DB, $PAGE;
+
+        $PAGE->requires->js('/mod/choicegroup/javascript.js');
+
         $layoutclass = 'vertical';
         $target = new moodle_url('/mod/choicegroup/view.php');
-        $attributes = array('method'=>'POST', 'target'=>$target, 'class'=> $layoutclass);
+        $attributes = array('method'=>'POST', 'action'=>$target, 'class'=> $layoutclass);
 
         $html = html_writer::start_tag('form', $attributes);
         $html .= html_writer::start_tag('table', array('class'=>'choicegroups' ));
-        
+
         $html .= html_writer::start_tag('tr');
         $html .= html_writer::tag('th', get_string('choice', 'choicegroup'));
         $html .= html_writer::tag('th', get_string('group'));
-        $html .= html_writer::tag('th', get_string('members/max', 'choicegroup'));
-        $membersdisplay_html = '<div style="width:12px; height:12px; line-height:12px; cursor:pointer; text-align:center; display:block; border:1px #999 solid; margin:0px auto;" onclick="var choicegroups = YAHOO.util.Dom.getElementsByClassName(\'choicegroups_membersnames\'); if (this.innerHTML == \'+\') { this.innerHTML = \'-\'; for (var i=0; i < choicegroups.length; i++) { choicegroups[i].style.display=\'block\'; } } else { this.innerHTML = \'+\'; for (var i=0; i < choicegroups.length; i++) { choicegroups[i].style.display=\'none\'; } } return false;">+</div>';
-        $html .= html_writer::tag('th', get_string('groupmembers', 'choicegroup') . $membersdisplay_html);
+        if ( $showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or
+        ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER and $current) or
+        ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {
+            if ($limitanswers) {
+                $html .= html_writer::tag('th', get_string('members/max', 'choicegroup'));
+            }
+            else {
+                $html .= html_writer::tag('th', get_string('members/', 'choicegroup'));
+            }
+            if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
+                $membersdisplay_html = html_writer::tag('div', '+', array('class' => 'choicegroup-memberdisplay'));
+                $html .= html_writer::tag('th', get_string('groupmembers', 'choicegroup') . $membersdisplay_html);
+            }
+        }
         $html .= html_writer::end_tag('tr');
 
         $availableoption = count($options['options']);
@@ -71,13 +85,25 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $labeltext .= ' ' . get_string('full', 'choicegroup');
                 $availableoption--;
             }
-
+            if ($disabled) {
+                $option->attributes->disabled=true;
+            }
             $html .= html_writer::empty_tag('input', (array)$option->attributes);
+            $html .= html_writer::end_tag('td'); // SURE ?? mod_ND
             $html .= html_writer::tag('td', $labeltext, array('for'=>$option->attributes->name));
-            $html .= html_writer::tag('td', sizeof($group_members_names).' / '.$option->maxanswers, array('class' => 'center'));
-            $group_members_html = '<!--<div style="width:12px; height:12px; line-height:12px; cursor:pointer; text-align:center; display:block; border:1px #999 solid; margin:0px auto;" onclick="if (this.innerHTML == \'+\') { this.innerHTML = \'-\'; document.getElementById(\'choicegroup_'.$option->attributes->value.'\').style.display=\'block\'; } else { this.innerHTML = \'+\'; document.getElementById(\'choicegroup_'.$option->attributes->value.'\').style.display=\'none\'; } return false;">+</div>--><div class="choicegroups_membersnames" id="choicegroup_'.$option->attributes->value.'" style="display:none;">'.implode('<br />', $group_members_names).'</div>';
-            $html .= html_writer::tag('td', $group_members_html, array('class' => 'center'));
-            $html .= html_writer::end_tag('td');
+
+
+            if ( $showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or
+            ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER and $current) or
+            ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {
+
+                $maxanswers = ($limitanswers) ? (' / '.$option->maxanswers) : ('');
+                $html .= html_writer::tag('td', sizeof($group_members_names).$maxanswers, array('class' => 'center'));
+                if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
+                    $group_members_html = html_writer::tag('div', implode('<br />', $group_members_names), array('class' => 'choicegroups-membersnames hidden', 'id' => 'choicegroup_'.$option->attributes->value));
+                    $html .= html_writer::tag('td', $group_members_html, array('class' => 'center'));
+                }
+            }
             $html .= html_writer::end_tag('tr');
         }
         $html .= html_writer::end_tag('table');
@@ -89,7 +115,9 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             if ($availableoption < 1) {
                $html .= html_writer::tag('td', get_string('choicegroupfull', 'choicegroup'));
             } else {
-                $html .= html_writer::empty_tag('input', array('type'=>'submit', 'value'=>get_string('savemychoicegroup','choicegroup'), 'class'=>'button'));
+                if (!$disabled) {
+                    $html .= html_writer::empty_tag('input', array('type'=>'submit', 'value'=>get_string('savemychoicegroup','choicegroup'), 'class'=>'button'));
+                }
             }
 
             if (!empty($options['allowupdate']) && ($options['allowupdate'])) {
@@ -138,6 +166,11 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
     public function display_publish_name_vertical($choicegroups) {
         global $PAGE;
         global $DB;
+        global $context;
+
+        if (!has_capability('mod/choicegroup:downloadresponses', $context)) {
+            return; // only the (editing)teacher can see the diagram
+        }
         $html ='';
         $html .= html_writer::tag('h2',format_string(get_string("responses", "choicegroup")), array('class'=>'main'));
 
@@ -168,8 +201,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             if ($choicegroups->showunanswered && $optionid == 0) {
                 $coldata .= html_writer::tag('div', format_string(get_string('notanswered', 'choicegroup')), array('class'=>'option'));
             } else if ($optionid > 0) {
-                $group = $DB->get_record('groups', array('id' => $choicegroups->options[$optionid]->text));
-                $coldata .= html_writer::tag('div', format_string($group->name), array('class'=>'option'));
+                $coldata .= html_writer::tag('div', format_string(choicegroup_get_option_text($choicegroups, $choicegroups->options[$optionid]->text)), array('class'=>'option'));
             }
             $numberofuser = 0;
             if (!empty($options->user) && count($options->user) > 0) {
@@ -254,87 +286,76 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * @param object $choicegroups
      * @return string
      */
-    public function display_publish_anonymous_vertical($choicegroups) {
-        global $CHOICEGROUP_COLUMN_HEIGHT;
+    public function display_publish_anonymous_horizontal($choicegroups) {
+        global $context, $DB, $CHOICEGROUP_COLUMN_WIDTH;
 
-        $html = '';
+        if (!has_capability('mod/choicegroup:downloadresponses', $context)) {
+            return; // only the (editing)teacher can see the diagram
+        }
+
         $table = new html_table();
         $table->cellpadding = 5;
         $table->cellspacing = 0;
         $table->attributes['class'] = 'results anonymous ';
         $table->data = array();
+
         $count = 0;
         ksort($choicegroups->options);
-        $columns = array();
-        $rows = array();
 
+        $rows = array();
         foreach ($choicegroups->options as $optionid => $options) {
             $numberofuser = 0;
+            $graphcell = new html_table_cell();
             if (!empty($options->user)) {
                $numberofuser = count($options->user);
             }
-            $height = 0;
+
+            $width = 0;
             $percentageamount = 0;
+            $columndata = '';
             if($choicegroups->numberofuser > 0) {
-               $height = ($CHOICEGROUP_COLUMN_HEIGHT * ((float)$numberofuser / (float)$choicegroups->numberofuser));
+               $width = ($CHOICEGROUP_COLUMN_WIDTH * ((float)$numberofuser / (float)$choicegroups->numberofuser));
                $percentageamount = ((float)$numberofuser/(float)$choicegroups->numberofuser)*100.0;
             }
+            $displaydiagram = html_writer::tag('img','', array('style'=>'height:50px; width:'.$width.'px', 'alt'=>'', 'src'=>$this->output->pix_url('row', 'choicegroup')));
 
-            $displaydiagram = html_writer::tag('img','', array('style'=>'height:'.$height.'px;width:49px;', 'alt'=>'', 'src'=>$this->output->pix_url('column', 'choicegroup')));
+            $skiplink = html_writer::tag('a', get_string('skipresultgraph', 'choicegroup'), array('href'=>'#skipresultgraph'. $optionid, 'class'=>'skip-block'));
+            $skiphandler = html_writer::tag('span', '', array('class'=>'skip-block-to', 'id'=>'skipresultgraph'.$optionid));
 
-            $cell = new html_table_cell();
-            $cell->text = $displaydiagram;
-            $cell->attributes = array('class'=>'graph vertical data');
-            $columns[] = $cell;
-        }
-        $rowgraph = new html_table_row();
-        $rowgraph->cells = $columns;
-        $rows[] = $rowgraph;
+            $graphcell->text = $skiplink . $displaydiagram . $skiphandler;
+            $graphcell->attributes = array('class'=>'graph horizontal');
 
-        $columns = array();
-        $printskiplink = true;
-        foreach ($choicegroups->options as $optionid => $options) {
-            $columndata = '';
-            $numberofuser = 0;
-            if (!empty($options->user)) {
-               $numberofuser = count($options->user);
-            }
-
-            if ($printskiplink) {
-                $columndata .= html_writer::tag('div', '', array('class'=>'skip-block-to', 'id'=>'skipresultgraph'));
-                $printskiplink = false;
-            }
-
+            $datacell = new html_table_cell();
             if ($choicegroups->showunanswered && $optionid == 0) {
                 $columndata .= html_writer::tag('div', format_string(get_string('notanswered', 'choicegroup')), array('class'=>'option'));
             } else if ($optionid > 0) {
-                $columndata .= html_writer::tag('div', format_string($choicegroups->options[$optionid]->text), array('class'=>'option'));
+                $columndata .= html_writer::tag('div', format_string(choicegroup_get_option_text($choicegroups, $choicegroups->options[$optionid]->text)), array('class'=>'option'));
             }
-            $columndata .= html_writer::tag('div', ' ('.$numberofuser.')', array('class'=>'numberofuser', 'title'=> get_string('numberofuser', 'choicegroup')));
+            $columndata .= html_writer::tag('div', ' ('.$numberofuser.')', array('title'=> get_string('numberofuser', 'choicegroup'), 'class'=>'numberofuser'));
 
             if($choicegroups->numberofuser > 0) {
                $percentageamount = ((float)$numberofuser/(float)$choicegroups->numberofuser)*100.0;
             }
             $columndata .= html_writer::tag('div', format_float($percentageamount,1). '%', array('class'=>'percentage'));
 
-            $cell = new html_table_cell();
-            $cell->text = $columndata;
-            $cell->attributes = array('class'=>'data header');
-            $columns[] = $cell;
+            $datacell->text = $columndata;
+            $datacell->attributes = array('class'=>'header');
+
+            $row = new html_table_row();
+            $row->cells = array($datacell, $graphcell);
+            $rows[] = $row;
         }
-        $rowdata = new html_table_row();
-        $rowdata->cells = $columns;
-        $rows[] = $rowdata;
 
         $table->data = $rows;
 
+        $html = '';
         $header = html_writer::tag('h2',format_string(get_string("responses", "choicegroup")));
         $html .= html_writer::tag('div', $header, array('class'=>'responseheader'));
-        $html .= html_writer::tag('a', get_string('skipresultgraph', 'choicegroup'), array('href'=>'#skipresultgraph', 'class'=>'skip-block'));
-        $html .= html_writer::tag('div', html_writer::table($table), array('class'=>'response'));
+        $html .= html_writer::table($table);
 
         return $html;
     }
+
 
 }
 

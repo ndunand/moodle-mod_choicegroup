@@ -31,11 +31,13 @@ $CHOICEGROUP_COLUMN_WIDTH = 300;
 
 define('CHOICEGROUP_PUBLISH_ANONYMOUS', '0');
 define('CHOICEGROUP_PUBLISH_NAMES',     '1');
+define('CHOICEGROUP_PUBLISH_DEFAULT',   '1');
 
 define('CHOICEGROUP_SHOWRESULTS_NOT',          '0');
 define('CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER', '1');
 define('CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE',  '2');
 define('CHOICEGROUP_SHOWRESULTS_ALWAYS',       '3');
+define('CHOICEGROUP_SHOWRESULTS_DEFAULT',      '3');
 
 define('CHOICEGROUP_DISPLAY_HORIZONTAL',  '0');
 define('CHOICEGROUP_DISPLAY_VERTICAL',    '1');
@@ -294,13 +296,13 @@ WHERE
             $newanswer = $current;
             $newanswer->optionid = $formanswer;
             $newanswer->timemodified = time();
-            // TODO : begin
+            // mod_ND : begin
             $old_answer = $DB->get_record("choicegroup_answers", array('choicegroupid' => $choicegroup->id, 'userid' => $userid));
             $old_option = $DB->get_record("choicegroup_options", array('id' => $old_answer->optionid));
             groups_remove_member($old_option->text, $userid);
             $new_option = $DB->get_record("choicegroup_options", array('id' => $formanswer));
             groups_add_member($new_option->text, $userid);
-            // TODO : end
+            // mod_ND : end
             $DB->update_record("choicegroup_answers", $newanswer);
             add_to_log($course->id, "choicegroup", "choose again", "view.php?id=$cm->id", $choicegroup->id, $cm->id);
         } else {
@@ -310,10 +312,10 @@ WHERE
             $newanswer->optionid = $formanswer;
             $newanswer->timemodified = time();
             $DB->insert_record("choicegroup_answers", $newanswer);
-            // TODO : begin
+            // mod_ND : begin
             $new_option = $DB->get_record("choicegroup_options", array('id' => $formanswer));
             groups_add_member($new_option->text, $userid);
-            // TODO : end
+            // mod_ND : end
 
             // Update completion state
             $completion = new completion_info($course);
@@ -556,11 +558,11 @@ function choicegroup_delete_responses($attemptids, $choicegroup, $cm, $course) {
     $completion = new completion_info($course);
     foreach($attemptids as $attemptid) {
         if ($todelete = $DB->get_record('choicegroup_answers', array('choicegroupid' => $choicegroup->id, 'userid' => $attemptid))) {
-            // TODO : begin
+            // mod_ND : begin
             $old_answer = $DB->get_record("choicegroup_answers", array('choicegroupid' => $choicegroup->id, 'userid' => $attemptid));
             $old_option = $DB->get_record("choicegroup_options", array('id' => $old_answer->optionid));
             groups_remove_member($old_option->text, $attemptid);
-            // TODO : end
+            // mod_ND : end
             $DB->delete_records('choicegroup_answers', array('choicegroupid' => $choicegroup->id, 'userid' => $attemptid));
             // Update completion state
             if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
@@ -637,8 +639,8 @@ function choicegroup_get_participants($choicegroupid) {
 function choicegroup_get_option_text($choicegroup, $id) {
     global $DB;
 
-    if ($result = $DB->get_record("choicegroup_options", array("id" => $id))) {
-        return $result->text;
+    if ($result = $DB->get_record('groups', array('id' => $id))) {
+        return $result->name;
     } else {
         return get_string("notanswered", "choicegroup");
     }
@@ -721,7 +723,7 @@ function choicegroup_reset_userdata($data) {
                        FROM {choicegroup} ch
                        WHERE ch.course=?";
 
-        $DB->delete_records_select('choicegroup_answers', "choicegroupid IN ($choicegroupssql)", array($data->courseid)); // TODO (à voir...)
+        $DB->delete_records_select('choicegroup_answers', "choicegroupid IN ($choicegroupssql)", array($data->courseid)); // TODO (à voir...) mod_ND ??
         $status[] = array('component'=>$componentstr, 'item'=>get_string('removeresponses', 'choicegroup'), 'error'=>false);
     }
 

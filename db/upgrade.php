@@ -25,6 +25,8 @@ function xmldb_choicegroup_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
+
+/*
 //===== 1.9.0 upgrade line ======//
 
     if ($oldversion < 2009042000) {
@@ -67,6 +69,8 @@ function xmldb_choicegroup_upgrade($oldversion) {
         // choicegroup savepoint reached
         upgrade_mod_savepoint(true, 2010101300, 'choicegroup');
     }
+
+*/
 
     return true;
 }

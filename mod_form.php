@@ -8,7 +8,7 @@ require_once ($CFG->dirroot.'/course/moodleform_mod.php');
 class mod_choicegroup_mod_form extends moodleform_mod {
 
     function definition() {
-        global $CFG, $CHOICEGROUP_SHOWRESULTS, $CHOICEGROUP_PUBLISH, $CHOICEGROUP_DISPLAY, $DB, $COURSE;
+        global $CFG, $CHOICEGROUP_SHOWRESULTS, $CHOICEGROUP_PUBLISH, $CHOICEGROUP_DISPLAY, $DB, $COURSE; // mod_ND
 
         $mform    =& $this->_form;
 
@@ -26,31 +26,33 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $this->add_intro_editor(true, get_string('chatintro', 'chat'));
 
 //-------------------------------------------------------------------------------
+        // mod_ND : begin
         $groups = array('' => get_string('choosegroup', 'choicegroup'));
         $db_groups = $DB->get_records('groups', array('courseid' => $COURSE->id));
         foreach ($db_groups as $group) {
             $groups[$group->id] = $group->name;
         }
-        
+        // mod_ND : end
+
         $repeatarray = array();
         $repeatarray[] = &MoodleQuickForm::createElement('header', '', get_string('option','choicegroup').' {no}');
-        $repeatarray[] = &MoodleQuickForm::createElement('select', 'option', get_string('option','choicegroup'), $groups);
+        $repeatarray[] = &MoodleQuickForm::createElement('select', 'option', get_string('option','choicegroup'), $groups); // mod_ND
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'limit', get_string('limit','choicegroup'));
         $repeatarray[] = &MoodleQuickForm::createElement('hidden', 'optionid', 0);
 
 //-------------------------------------------------------------------------------
         $mform->addElement('header', 'miscellaneoussettingshdr', get_string('miscellaneoussettings', 'form'));
 
-//         $mform->addElement('select', 'display', get_string("displaymode","choicegroup"), $CHOICEGROUP_DISPLAY);
+        $mform->addElement('select', 'showresults', get_string("publish", "choicegroup"), $CHOICEGROUP_SHOWRESULTS);
+        $mform->setDefault('showresults', CHOICEGROUP_SHOWRESULTS_DEFAULT);
 
-//         $mform->addElement('select', 'showresults', get_string("publish", "choicegroup"), $CHOICEGROUP_SHOWRESULTS);
-
-//         $mform->addElement('select', 'publish', get_string("privacy", "choicegroup"), $CHOICEGROUP_PUBLISH);
-//         $mform->disabledIf('publish', 'showresults', 'eq', 0);
+        $mform->addElement('select', 'publish', get_string("privacy", "choicegroup"), $CHOICEGROUP_PUBLISH, CHOICEGROUP_PUBLISH_DEFAULT);
+        $mform->setDefault('publish', CHOICEGROUP_PUBLISH_DEFAULT);
+        $mform->disabledIf('publish', 'showresults', 'eq', 0);
 
         $mform->addElement('selectyesno', 'allowupdate', get_string("allowupdate", "choicegroup"));
 
-//         $mform->addElement('selectyesno', 'showunanswered', get_string("showunanswered", "choicegroup"));
+        $mform->addElement('selectyesno', 'showunanswered', get_string("showunanswered", "choicegroup"));
 
         $menuoptions = array();
         $menuoptions[1] = get_string('enable');
@@ -91,7 +93,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 
         $mform->addElement('date_time_selector', 'timeclose', get_string("choicegroupclose", "choicegroup"));
         $mform->disabledIf('timeclose', 'timerestrict');
-        
+
 //-------------------------------------------------------------------------------
         $this->standard_coursemodule_elements();
         $mform->removeElement('groupmode');
@@ -140,7 +142,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         if ($choicegroups < 2) {
            $errors['option[1]'] = get_string('fillinatleastoneoption', 'choicegroup');
         }
-        
+
         $groups_selected = array();
         $opt_id = 0;
         foreach ($data['option'] as $option){

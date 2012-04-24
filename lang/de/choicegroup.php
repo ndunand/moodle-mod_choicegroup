@@ -63,6 +63,14 @@ $string['modulenameplural'] = 'Gruppenabstimmungen';
 $string['mustchooseone'] = 'Sie m&uuml;ssen zuerst eine Auswahl treffen, bevor Sie speichern k&ouml;nnen. Es wurde noch nichts gespeichert.';
 $string['noguestchoose'] = 'G&auml;ste d&uuml;rfen nicht an Abstimmungen teilnehmen.';
 $string['noresultsviewable'] = 'Ergebnisse sind aktuell nicht sichtbar.';
+/***************************************************************************************************/
+/***************************************************************************************************/
+$string['noresultsviewable'] = 'The results are not currently viewable.';
+$string['neverresultsviewable'] = 'The results are not viewable.';
+$string['afterresultsviewable'] = 'The results will be visible after you made your choice.';
+$string['notyetresultsviewable'] = 'The results will be visible after this activity is closed.';
+/***************************************************************************************************/
+/***************************************************************************************************/
 $string['notanswered'] = 'Noch nicht abgestimmt';
 $string['notenrolledchoose'] = 'Nur eingeschriebene Teilnehmer/innen d&uuml;rfen an der Abstimmung teilnehmen.';
 $string['notopenyet'] = 'Aktivit&auml;t ist erst ab {$a} verf&uuml;gbar';

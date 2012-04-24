@@ -67,3 +67,29 @@
 .path-mod-choicegroup td { border-top: 1px #666 solid; }
 .path-mod-choicegroup th, .path-mod-choicegroup td { padding:10px 15px; }
 .path-mod-choicegroup td.center { text-align:center; }
+
+
+
+
+
+
+
+.path-mod-choicegroup div.choicegroup-memberdisplay {
+    width:12px;
+    height:12px;
+    line-height:12px;
+    cursor:pointer;
+    text-align:center;
+    display:block;
+    border:1px #999 solid;
+    margin:0px auto;
+}
+
+
+.path-mod-choicegroup div.choicegroups-membersnames.hidden {
+    display:none;
+}
+
+.path-mod-choicegroup table.results .header {
+    color:#000
+}
