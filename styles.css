@@ -91,5 +91,14 @@
 }
 
 .path-mod-choicegroup table.results .header {
-    color:#000
+    color:#000;
 }
+
+.path-mod-choicegroup table.choicegroups {
+    margin: 20px 0;
+}
+
+.path-mod-choicegroup form input[type=submit] {
+    margin-bottom: 20px;
+}
+

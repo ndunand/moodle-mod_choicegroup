@@ -325,7 +325,7 @@ WHERE
             add_to_log($course->id, "choicegroup", "choose", "view.php?id=$cm->id", $choicegroup->id, $cm->id);
         }
     } else {
-        if (!($current->optionid==$formanswer)) { //check to see if current choicegroup already selected - if not display error
+        if (!$current || !($current->optionid==$formanswer)) { //check to see if current choicegroup already selected - if not display error
             print_error('choicegroupfull', 'choicegroup');
         }
     }

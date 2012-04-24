@@ -19,10 +19,12 @@ Operation
 ==========
 
 1. create groups within your course
-2. create a choicegroup activity and select groups from which users can chose from
+2. create a choicegroup activity and select groups which users can chose from
 
 See also
 =========
+
+Moodle plugins entry page :             http://moodle.org/plugins/view.php?plugin=mod_choicegroup
 
 Moodle.org forum discussion thread :    http://moodle.org/mod/forum/discuss.php?d=174424
 
