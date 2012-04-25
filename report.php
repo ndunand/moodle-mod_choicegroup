@@ -7,7 +7,7 @@
     $format     = optional_param('format', CHOICEGROUP_PUBLISH_NAMES, PARAM_INT);
     $download   = optional_param('download', '', PARAM_ALPHA);
     $action     = optional_param('action', '', PARAM_ALPHA);
-    $attemptids = optional_param_array('attemptid', array(), PARAM_INT); //get array of responses to delete.
+    $userids = optional_param_array('userid', array(), PARAM_INT); //get array of responses to delete.
 
     $url = new moodle_url('/mod/choicegroup/report.php', array('id'=>$id));
     if ($format !== CHOICEGROUP_PUBLISH_NAMES) {
@@ -46,7 +46,7 @@
     add_to_log($course->id, "choicegroup", "report", "report.php?id=$cm->id", "$choicegroup->id",$cm->id);
 
     if (data_submitted() && $action == 'delete' && has_capability('mod/choicegroup:deleteresponses',$context) && confirm_sesskey()) {
-        choicegroup_delete_responses($attemptids, $choicegroup, $cm, $course); //delete responses.
+        choicegroup_delete_responses($userids, $choicegroup, $cm, $course); //delete responses.
         redirect("report.php?id=$cm->id");
     }
 
@@ -184,7 +184,7 @@
 
         echo get_string("firstname")."\t".get_string("lastname") . "\t". get_string("idnumber") . "\t";
         echo get_string("group"). "\t";
-        echo get_string("choicegroup","choicegroup"). "\n";
+        echo get_string("choice","choicegroup"). "\n";
 
         /// generate the data for the body of the spreadsheet
         $i=0;
@@ -224,7 +224,7 @@
     $results = prepare_choicegroup_show_results($choicegroup, $course, $cm, $users);
     $renderer = $PAGE->get_renderer('mod_choicegroup');
     echo $renderer->display_result($results, has_capability('mod/choicegroup:readresponses', $context));
-    
+
    //now give links for downloading spreadsheets.
     if (!empty($users) && has_capability('mod/choicegroup:downloadresponses',$context)) {
         $downloadoptions = array();

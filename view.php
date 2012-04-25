@@ -7,7 +7,7 @@
 
     $id         = required_param('id', PARAM_INT);                 // Course Module ID
     $action     = optional_param('action', '', PARAM_ALPHA);
-    $attemptids = optional_param_array('attemptid', array(), PARAM_INT); // array of attempt ids for delete action
+    $userids = optional_param_array('userid', array(), PARAM_INT); // array of attempt ids for delete action
 
     $url = new moodle_url('/mod/choicegroup/view.php', array('id'=>$id));
     if ($action !== '') {
@@ -36,12 +36,13 @@
         print_error('badcontext');
     }
 
+    $current = choicegroup_get_user_answer($choicegroup, $USER);
+
     if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, NULL, 'mod/choicegroup:choose') and $choicegroup->allowupdate) {
         // user wants to delete his own choice:
-        if ($answer = $DB->get_record('choicegroup_answers', array('choicegroupid' => $choicegroup->id, 'userid' => $USER->id))) {
-            $old_option = $DB->get_record('choicegroup_options', array('id' => $answer->optionid));
-            groups_remove_member($old_option->text, $USER->id);
-            $DB->delete_records('choicegroup_answers', array('id' => $answer->id));
+        if ($current !== false) {
+            groups_remove_member($current->id, $USER->id);
+            $current = choicegroup_get_user_answer($choicegroup, $USER);
 
             // Update completion state
             $completion = new completion_info($course);
@@ -63,7 +64,7 @@
         $timenow = time();
         if (has_capability('mod/choicegroup:deleteresponses', $context)) {
             if ($action == 'delete') { //some responses need to be deleted
-                choicegroup_delete_responses($attemptids, $choicegroup, $cm, $course); //delete responses.
+                choicegroup_delete_responses($userids, $choicegroup, $cm, $course); //delete responses.
                 redirect("view.php?id=$cm->id");
             }
         }
@@ -103,10 +104,9 @@
         echo $OUTPUT->box(format_module_intro('choicegroup', $choicegroup, $cm->id), 'generalbox', 'intro');
     }
 
-    $current = false;  // Initialise for later
     //if user has already made a selection, and they are not allowed to update it, show their selected answer.
-    if (isloggedin() && ($current = $DB->get_record('choicegroup_answers', array('choicegroupid' => $choicegroup->id, 'userid' => $USER->id))) ) {
-        echo $OUTPUT->box(get_string("yourselection", "choicegroup", userdate($choicegroup->timeopen)).": ".format_string(choicegroup_get_option_text($choicegroup, $current->optionid)), 'generalbox', 'yourselection');
+    if (isloggedin() && ($current !== false) ) {
+        echo $OUTPUT->box(get_string("yourselection", "choicegroup", userdate($choicegroup->timeopen)).": ".format_string($current->name), 'generalbox', 'yourselection');
     }
 
 /// Print the form
@@ -162,15 +162,6 @@
     if ( $choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or
         ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER and $current) or
         ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {
-/*
-        if (!empty($choicegroup->showunanswered)) {
-            $choicegroup->option[0] = get_string('notanswered', 'choicegroup');
-            $choicegroup->maxanswers[0] = 0;
-        }
-        $results = prepare_choicegroup_show_results($choicegroup, $course, $cm, $allresponses);
-        $renderer = $PAGE->get_renderer('mod_choicegroup');
-        echo $renderer->display_result($results);
-*/
     }
     else if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_NOT) {
         echo $OUTPUT->box(get_string('neverresultsviewable', 'choicegroup'));
@@ -184,6 +175,9 @@
     else if (!$choicegroupformshown) {
         echo $OUTPUT->box(get_string('noresultsviewable', 'choicegroup'));
     }
+
+//    debugging('<pre>' . print_r(choicegroup_get_groups($choicegroup), true) . '</pre>', DEBUG_DEVELOPER);
+//    debugging('<pre>' . print_r(choicegroup_get_user_answer($choicegroup, $USER), true) . '</pre>', DEBUG_DEVELOPER);
 
     echo $OUTPUT->footer();
 

@@ -26,52 +26,25 @@ function xmldb_choicegroup_upgrade($oldversion) {
     $dbman = $DB->get_manager();
 
 
-/*
-//===== 1.9.0 upgrade line ======//
+    if ($oldversion < 2012042500) {
 
-    if ($oldversion < 2009042000) {
+    /// remove the no longer needed choicegroup_answers DB table
+        $choicegroup_answers = new xmldb_table('choicegroup_answers');
+        $dbman->drop_table($choicegroup_answers);
 
-    /// Rename field text on table choicegroup to text
-        $table = new xmldb_table('choicegroup');
-        $field = new xmldb_field('text', XMLDB_TYPE_TEXT, 'small', null, XMLDB_NOTNULL, null, null, 'name');
+    /// change the choicegroup_options.text (text) field as choicegroup_options.groupid (int)
+        $choicegroup_options =  new xmldb_table('choicegroup_options');
+        $field_text =           new xmldb_field('text', XMLDB_TYPE_TEXT, 'small', null, null, null, null, 'choicegroupid');
+        $field_groupid =        new xmldb_field('groupid', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'choicegroupid');
 
-    /// Launch rename field text
-        $dbman->rename_field($table, $field, 'intro');
-
-    /// choicegroup savepoint reached
-        upgrade_mod_savepoint(true, 2009042000, 'choicegroup');
-    }
-
-    if ($oldversion < 2009042001) {
-
-    /// Rename field format on table choicegroup to format
-        $table = new xmldb_table('choicegroup');
-        $field = new xmldb_field('format', XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'intro');
-
-    /// Launch rename field format
-        $dbman->rename_field($table, $field, 'introformat');
+        $dbman->rename_field($choicegroup_options, $field_text, 'groupid');
+        $dbman->change_field_type($choicegroup_options, $field_groupid);
 
     /// choicegroup savepoint reached
-        upgrade_mod_savepoint(true, 2009042001, 'choicegroup');
+        upgrade_mod_savepoint(true, 2012042500, 'choicegroup');
     }
 
-    if ($oldversion < 2010101300) {
-
-        // Define field completionsubmit to be added to choicegroup
-        $table = new xmldb_table('choicegroup');
-        $field = new xmldb_field('completionsubmit', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'timemodified');
-
-        // Conditionally launch add field completionsubmit
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
-        // choicegroup savepoint reached
-        upgrade_mod_savepoint(true, 2010101300, 'choicegroup');
-    }
-
-*/
-
+    
     return true;
 }
 

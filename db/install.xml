@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/choicegroup/db" VERSION="20101013" COMMENT="XMLDB file for Moodle mod/choicegroup"
+<XMLDB PATH="mod/choicegroup/db" VERSION="20120425" COMMENT="XMLDB file for Moodle mod/choicegroup"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -11,7 +11,6 @@
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="course" NEXT="intro"/>
         <FIELD NAME="intro" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="name" NEXT="introformat"/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="intro" NEXT="publish"/>
-
         <FIELD NAME="publish" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="introformat" NEXT="showresults"/>
         <FIELD NAME="showresults" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="publish" NEXT="display"/>
         <FIELD NAME="display" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="showresults" NEXT="allowupdate"/>
@@ -21,7 +20,6 @@
         <FIELD NAME="timeopen" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="limitanswers" NEXT="timeclose"/>
         <FIELD NAME="timeclose" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timeopen" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timeclose" NEXT="completionsubmit"/>
-
         <FIELD NAME="completionsubmit" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" COMMENT="If this field is set to 1, then the activity will be automatically marked as 'complete' once the user submits their choicegroup." PREVIOUS="timemodified"/>
       </FIELDS>
       <KEYS>
@@ -31,39 +29,18 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-
-    <TABLE NAME="choicegroup_options" COMMENT="available options to choicegroup" PREVIOUS="choicegroup" NEXT="choicegroup_answers">
+    <TABLE NAME="choicegroup_options" COMMENT="available options to choicegroup" PREVIOUS="choicegroup">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="choicegroupid"/>
-        <FIELD NAME="choicegroupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="text"/>
-        <FIELD NAME="text" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="choicegroupid" NEXT="maxanswers"/>
-        <FIELD NAME="maxanswers" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="text" NEXT="timemodified"/>
+        <FIELD NAME="choicegroupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="choicegroupid" NEXT="maxanswers"/>
+        <FIELD NAME="maxanswers" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="groupid" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="maxanswers"/>
       </FIELDS>
       <KEYS>
-
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="choicegroupid"/>
         <KEY NAME="choicegroupid" TYPE="foreign" FIELDS="choicegroupid" REFTABLE="choicegroup" REFFIELDS="id" PREVIOUS="primary"/>
       </KEYS>
-    </TABLE>
-    <TABLE NAME="choicegroup_answers" COMMENT="choicegroups performed by users" PREVIOUS="choicegroup_options">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="choicegroupid"/>
-        <FIELD NAME="choicegroupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="userid"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="choicegroupid" NEXT="optionid"/>
-
-        <FIELD NAME="optionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="timemodified"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="optionid"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="choicegroupid"/>
-        <KEY NAME="choicegroupid" TYPE="foreign" FIELDS="choicegroupid" REFTABLE="choicegroup" REFFIELDS="id" PREVIOUS="primary" NEXT="optionid"/>
-        <KEY NAME="optionid" TYPE="foreign" FIELDS="optionid" REFTABLE="choicegroup_options" REFFIELDS="id" PREVIOUS="choicegroupid"/>
-      </KEYS>
-      <INDEXES>
-
-        <INDEX NAME="userid" UNIQUE="false" FIELDS="userid"/>
-      </INDEXES>
     </TABLE>
   </TABLES>
 </XMLDB>

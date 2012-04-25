@@ -68,7 +68,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
         $availableoption = count($options['options']);
         foreach ($options['options'] as $option) {
-            $group = $DB->get_record('groups', array('id' => $option->text, 'courseid' => $course->id));
+            $group = $DB->get_record('groups', array('id' => $option->groupid, 'courseid' => $course->id));
             if (!$group) {
                 $colspan = 2;
                 if ( $showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER and $current) or ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {
@@ -94,15 +94,16 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $group_members_names[] = $group_user->lastname . ', ' . $group_user->firstname;
             }
             sort($group_members_names);
-            if (!empty($option->attributes->disabled)) {
-                $labeltext .= ' ' . get_string('full', 'choicegroup');
+            if (!empty($option->attributes->disabled) || sizeof($group_members) >= $option->maxanswers) {
+                $labeltext .= ' ' . html_writer::tag('em', get_string('full', 'choicegroup'));
+                $option->attributes->disabled=true;
                 $availableoption--;
             }
             if ($disabled) {
                 $option->attributes->disabled=true;
             }
             $html .= html_writer::empty_tag('input', (array)$option->attributes);
-            $html .= html_writer::end_tag('td'); // SURE ?? mod_ND
+            $html .= html_writer::end_tag('td');
             $html .= html_writer::tag('td', $labeltext, array('for'=>$option->attributes->name));
 
 
@@ -158,7 +159,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $forcepublish = $choicegroups->publish;
         }
 
-        $displaylayout = $choicegroups->display;
+        $displaylayout = ($choicegroups) ? ($choicegroups->display) : (CHOICEGROUP_DISPLAY_HORIZONTAL);
 
         if ($forcepublish) {  //CHOICEGROUP_PUBLISH_NAMES
             return $this->display_publish_name_vertical($choicegroups);
@@ -184,6 +185,10 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         if (!has_capability('mod/choicegroup:downloadresponses', $context)) {
             return; // only the (editing)teacher can see the diagram
         }
+        if (!$choicegroups) {
+            return; // no answers yet, so don't bother
+        }
+
         $html ='';
         $html .= html_writer::tag('h2',format_string(get_string("responses", "choicegroup")), array('class'=>'main'));
 
@@ -214,7 +219,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             if ($choicegroups->showunanswered && $optionid == 0) {
                 $coldata .= html_writer::tag('div', format_string(get_string('notanswered', 'choicegroup')), array('class'=>'option'));
             } else if ($optionid > 0) {
-                $coldata .= html_writer::tag('div', format_string(choicegroup_get_option_text($choicegroups, $choicegroups->options[$optionid]->text)), array('class'=>'option'));
+                $coldata .= html_writer::tag('div', format_string(choicegroup_get_option_text($choicegroups, $choicegroups->options[$optionid]->groupid)), array('class'=>'option'));
             }
             $numberofuser = 0;
             if (!empty($options->user) && count($options->user) > 0) {
@@ -342,7 +347,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             if ($choicegroups->showunanswered && $optionid == 0) {
                 $columndata .= html_writer::tag('div', format_string(get_string('notanswered', 'choicegroup')), array('class'=>'option'));
             } else if ($optionid > 0) {
-                $columndata .= html_writer::tag('div', format_string(choicegroup_get_option_text($choicegroups, $choicegroups->options[$optionid]->text)), array('class'=>'option'));
+                $columndata .= html_writer::tag('div', format_string(choicegroup_get_option_text($choicegroups, $choicegroups->options[$optionid]->groupid)), array('class'=>'option'));
             }
             $columndata .= html_writer::tag('div', ' ('.$numberofuser.')', array('title'=> get_string('numberofuser', 'choicegroup'), 'class'=>'numberofuser'));
 

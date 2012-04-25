@@ -34,13 +34,9 @@ class restore_choicegroup_activity_structure_step extends restore_activity_struc
     protected function define_structure() {
 
         $paths = array();
-//        $userinfo = $this->get_setting_value('userinfo');
 
         $paths[] = new restore_path_element('choicegroup', '/activity/choicegroup');
         $paths[] = new restore_path_element('choicegroup_option', '/activity/choicegroup/options/option');
-//        if ($userinfo) {
-//            $paths[] = new restore_path_element('choicegroup_answer', '/activity/choicegroup/answers/answer');
-//        }
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
@@ -75,22 +71,6 @@ class restore_choicegroup_activity_structure_step extends restore_activity_struc
         $newitemid = $DB->insert_record('choicegroup_options', $data);
         $this->set_mapping('choicegroup_option', $oldid, $newitemid);
     }
-
-//    protected function process_choicegroup_answer($data) {
-//        global $DB;
-//
-//        $data = (object)$data;
-//        $oldid = $data->id;
-//
-//        $data->choicegroupid = $this->get_new_parentid('choicegroup');
-//        $data->optionid = $this->get_mappingid('choicegroup_option', $oldid);
-//        $data->userid = $this->get_mappingid('user', $data->userid);
-//        $data->timemodified = $this->apply_date_offset($data->timemodified);
-//
-//        $newitemid = $DB->insert_record('choicegroup_answers', $data);
-//        // No need to save this mapping as far as nothing depend on it
-//        // (child paths, file areas nor links decoder)
-//    }
 
     protected function after_execute() {
         // Add choicegroup related files, no need to match by itemname (just internally handled context)
