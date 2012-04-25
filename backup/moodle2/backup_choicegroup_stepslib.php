@@ -34,7 +34,7 @@ class backup_choicegroup_activity_structure_step extends backup_activity_structu
     protected function define_structure() {
 
         // To know if we are including userinfo
-        $userinfo = $this->get_setting_value('userinfo');
+//        $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated
         $choicegroup = new backup_nested_element('choicegroup', array('id'), array(
@@ -48,17 +48,17 @@ class backup_choicegroup_activity_structure_step extends backup_activity_structu
         $option = new backup_nested_element('option', array('id'), array(
             'text', 'maxanswers', 'timemodified'));
 
-        $answers = new backup_nested_element('answers');
+//        $answers = new backup_nested_element('answers');
 
-        $answer = new backup_nested_element('answer', array('id'), array(
-            'userid', 'optionid', 'timemodified'));
+//        $answer = new backup_nested_element('answer', array('id'), array(
+//            'userid', 'optionid', 'timemodified'));
 
         // Build the tree
         $choicegroup->add_child($options);
         $options->add_child($option);
 
-        $choicegroup->add_child($answers);
-        $answers->add_child($answer);
+//        $choicegroup->add_child($answers);
+//        $answers->add_child($answer);
 
         // Define sources
         $choicegroup->set_source_table('choicegroup', array('id' => backup::VAR_ACTIVITYID));
@@ -70,12 +70,12 @@ class backup_choicegroup_activity_structure_step extends backup_activity_structu
             array(backup::VAR_PARENTID));
 
         // All the rest of elements only happen if we are including user info
-        if ($userinfo) {
-            $answer->set_source_table('choicegroup_answers', array('choicegroupid' => '../../id'));
-        }
+//        if ($userinfo) {
+//            $answer->set_source_table('choicegroup_answers', array('choicegroupid' => '../../id'));
+//        }
 
         // Define id annotations
-        $answer->annotate_ids('user', 'userid');
+//        $answer->annotate_ids('user', 'userid');
 
         // Define file annotations
         $choicegroup->annotate_files('mod_choicegroup', 'intro', null); // This file area hasn't itemid
