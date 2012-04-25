@@ -83,7 +83,7 @@ $string['removemychoicegroup'] = 'Supprimer mon choix';
 $string['removeresponses'] = 'Supprimer toutes les r&eacute;ponses ';
 $string['responses'] = 'R&eacute;ponses';
 $string['responsesto'] = 'R&eacute;ponses &agrave; {$a}';
-$string['savemychoicegroup'] = 'Enregistrer mes choix';
+$string['savemychoicegroup'] = 'Enregistrer mon choix';
 $string['showunanswered'] = 'Afficher une colonne pour sans r&eacute;ponse';
 $string['spaceleft'] = 'espace disponible';
 $string['spacesleft'] = 'espaces disponibles';
@@ -95,6 +95,8 @@ $string['yourselection'] = 'Votre s&eacute;lection';
 $string['skipresultgraph'] = 'Sauter le graphique de r&eacute;sultat';
 $string['moveselectedusersto'] = 'D&eacute;placer les utilisateurs s&eacute;lectionn&eacute;s pour ...';
 $string['numberofuser'] = 'Nombre d\'utilisateur';
+$string['groupdoesntexist'] = 'Certains groups spécifiés n\'existent pas dans ce cours. L\'enseignant devrait créer les groupes nécessaires et/ou modifier cette activité.';
+$string['samegroupused'] = 'Un même groupe ne peut pas être utilisé plus d\'une fois.';
 
 $string['members/max'] = 'Membres / Capacit&eacute;';
 $string['members/'] = 'Membres';

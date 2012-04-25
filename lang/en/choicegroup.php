@@ -95,6 +95,8 @@ $string['yourselection'] = 'Your selection';
 $string['skipresultgraph'] = 'Skip result graph';
 $string['moveselectedusersto'] = 'Move selected users to...';
 $string['numberofuser'] = 'The number of user';
+$string['groupdoesntexist'] = 'Some of the specified groups don\'t exist within this course. The teacher should create the necessary groups and/or modify this activity.';
+$string['samegroupused'] = 'The same group can not be used several times.';
 
 $string['members/max'] = 'Fill / Capacity';
 $string['members/'] = 'Fill';

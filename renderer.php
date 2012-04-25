@@ -35,7 +35,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * @return string
      */
     public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false, $showresults = false, $current = false, $choicegroupopen = false, $disabled = false) {
-        global $DB, $PAGE;
+        global $DB, $PAGE, $course;
 
         $PAGE->requires->js('/mod/choicegroup/javascript.js');
 
@@ -59,7 +59,8 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $html .= html_writer::tag('th', get_string('members/', 'choicegroup'));
             }
             if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
-                $membersdisplay_html = html_writer::tag('div', '+', array('class' => 'choicegroup-memberdisplay'));
+                $membersdisplay_html = html_writer::tag('a', get_string('show'), array('class' => 'choicegroup-memberdisplay choicegroup-membershow', 'href' => '#'));
+                $membersdisplay_html .= html_writer::tag('a', get_string('hide'), array('class' => 'choicegroup-memberdisplay choicegroup-memberhide hidden', 'href' => '#'));
                 $html .= html_writer::tag('th', get_string('groupmembers', 'choicegroup') . $membersdisplay_html);
             }
         }
@@ -67,12 +68,24 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
         $availableoption = count($options['options']);
         foreach ($options['options'] as $option) {
+            $group = $DB->get_record('groups', array('id' => $option->text, 'courseid' => $course->id));
+            if (!$group) {
+                $colspan = 2;
+                if ( $showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER and $current) or ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {
+                    $colspan++;
+                    if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
+                        $colspan++;
+                    }
+                }
+                $cell = html_writer::tag('td', get_string('groupdoesntexist', 'choicegroup'), array('colspan' => $colspan));
+                $html .= html_writer::tag('tr', $cell);
+                break;
+            }
             $html .= html_writer::start_tag('tr', array('class'=>'option'));
             $html .= html_writer::start_tag('td', array());
             $option->attributes->name = 'answer';
             $option->attributes->type = 'radio';
 
-            $group = $DB->get_record('groups', array('id' => $option->text));
             $labeltext = $group->name;
             $group_members = $DB->get_records('groups_members', array('groupid' => $group->id));
             $group_members_names = array();

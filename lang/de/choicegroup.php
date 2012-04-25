@@ -63,14 +63,6 @@ $string['modulenameplural'] = 'Gruppenabstimmungen';
 $string['mustchooseone'] = 'Sie m&uuml;ssen zuerst eine Auswahl treffen, bevor Sie speichern k&ouml;nnen. Es wurde noch nichts gespeichert.';
 $string['noguestchoose'] = 'G&auml;ste d&uuml;rfen nicht an Abstimmungen teilnehmen.';
 $string['noresultsviewable'] = 'Ergebnisse sind aktuell nicht sichtbar.';
-/***************************************************************************************************/
-/***************************************************************************************************/
-$string['noresultsviewable'] = 'The results are not currently viewable.';
-$string['neverresultsviewable'] = 'The results are not viewable.';
-$string['afterresultsviewable'] = 'The results will be visible after you made your choice.';
-$string['notyetresultsviewable'] = 'The results will be visible after this activity is closed.';
-/***************************************************************************************************/
-/***************************************************************************************************/
 $string['notanswered'] = 'Noch nicht abgestimmt';
 $string['notenrolledchoose'] = 'Nur eingeschriebene Teilnehmer/innen d&uuml;rfen an der Abstimmung teilnehmen.';
 $string['notopenyet'] = 'Aktivit&auml;t ist erst ab {$a} verf&uuml;gbar';
@@ -89,7 +81,7 @@ $string['removemychoicegroup'] = 'Meine Auswahl entfernen';
 $string['removeresponses'] = 'Alle Stimmabgaben entfernen';
 $string['responses'] = 'Stimmabgaben';
 $string['responsesto'] = 'Antworten zu  {$a}';
-$string['savemychoicegroup'] = 'Meine Auswahl speichern';
+$string['savemychoicegroup'] = 'Mein Auswahl speichern';
 $string['showunanswered'] = 'Spalte f&uuml;r Teilnehmer/innen ohne Stimmabgabe';
 $string['spaceleft'] = 'Platz verf&uuml;gbar';
 $string['spacesleft'] = 'Pl&auml;tze verf&uuml;gbar';
@@ -106,3 +98,13 @@ $string['members/max'] = 'Eingetragen / Maximal';
 $string['groupmembers'] = 'Gruppen Mitglieder';
 $string['page-mod-choice-x'] = 'Any choicegroup module page';
 
+/***************************************************************************************************/
+/***************************************************************************************************/
+$string['noresultsviewable'] = 'The results are not currently viewable.';
+$string['neverresultsviewable'] = 'The results are not viewable.';
+$string['afterresultsviewable'] = 'The results will be visible after you made your choice.';
+$string['notyetresultsviewable'] = 'The results will be visible after this activity is closed.';
+$string['groupdoesntexist'] = 'Some of the specified groups don\'t exist within this course. The teacher should create the necessary groups and/or modify this activity.';
+$string['samegroupused'] = 'The same group can not be used several times.';
+/***************************************************************************************************/
+/***************************************************************************************************/

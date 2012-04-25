@@ -74,8 +74,7 @@
         } else {
             choicegroup_user_submit_response($answer, $choicegroup, $USER->id, $course, $cm);
         }
-        echo $OUTPUT->header();
-        echo $OUTPUT->notification(get_string('choicegroupsaved', 'choicegroup'),'notifysuccess');
+        redirect("view.php?id=$cm->id", get_string('choicegroupsaved', 'choicegroup'));
     } else {
         echo $OUTPUT->header();
     }

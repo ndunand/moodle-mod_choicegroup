@@ -86,9 +86,6 @@
 }
 
 
-.path-mod-choicegroup div.choicegroups-membersnames.hidden {
-    display:none;
-}
 
 .path-mod-choicegroup table.results .header {
     color:#000;
@@ -102,3 +99,14 @@
     margin-bottom: 20px;
 }
 
+.path-mod-choicegroup a.choicegroup-memberdisplay {
+    display: block;
+}
+
+.path-mod-choicegroup div.choicegroups-membersnames.hidden, .path-mod-choicegroup a.choicegroup-memberdisplay.hidden {
+    display:none;
+}
+
+.path-mod-choicegroup .results td {
+    min-width: 120px;
+}
