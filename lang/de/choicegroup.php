@@ -24,10 +24,9 @@
  */
 
 $string['addmorechoices'] = 'Weitere Optionen hinzuf&uuml;gen';
-$string['allowupdate'] = '&auml;nderung der Abstimmung erlauben';
+$string['allowupdate'] = '&Auml;nderung der Abstimmung erlauben';
 $string['answered'] = 'Beantwortet';
-$string['completionsubmit'] = 'Als abgeschlossen anzeigen, wenn die Abstimmung durchgef&uuml;hrt wurde
- ';
+$string['completionsubmit'] = 'Als abgeschlossen anzeigen, wenn die Abstimmung durchgef&uuml;hrt wurde';
 $string['displayhorizontal'] = 'Horizontal anzeigen';
 $string['displaymode'] = 'Anzeigemodus';
 $string['displayvertical'] = 'Vertikal anzeigen';
@@ -65,10 +64,10 @@ $string['noguestchoose'] = 'G&auml;ste d&uuml;rfen nicht an Abstimmungen teilneh
 $string['noresultsviewable'] = 'Ergebnisse sind aktuell nicht sichtbar.';
 /***************************************************************************************************/
 /***************************************************************************************************/
-$string['noresultsviewable'] = 'The results are not currently viewable.';
-$string['neverresultsviewable'] = 'The results are not viewable.';
-$string['afterresultsviewable'] = 'The results will be visible after you made your choice.';
-$string['notyetresultsviewable'] = 'The results will be visible after this activity is closed.';
+$string['noresultsviewable'] = 'Ergebnisse sind aktuell nicht sichtbar.';
+$string['neverresultsviewable'] = 'Ergebnisse sind nicht sichtbar.';
+$string['afterresultsviewable'] = 'Ergebnisse sind nach der eigenen Abstimmung sichtbar.';
+$string['notyetresultsviewable'] = 'Ergebnisse werden nach dem Ende der Abstimmung sichtbar.';
 /***************************************************************************************************/
 /***************************************************************************************************/
 $string['notanswered'] = 'Noch nicht abgestimmt';
@@ -104,5 +103,5 @@ $string['numberofuser'] = 'Anzahl von Nutzern';
 
 $string['members/max'] = 'Eingetragen / Maximal';
 $string['groupmembers'] = 'Gruppen Mitglieder';
-$string['page-mod-choice-x'] = 'Any choicegroup module page';
+$string['page-mod-choice-x'] = 'Jede Gruppenabstimmungsseite';
 
