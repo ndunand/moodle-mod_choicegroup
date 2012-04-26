@@ -83,7 +83,7 @@
         $myxls->write_string(0,1,get_string("firstname"));
         $myxls->write_string(0,2,get_string("idnumber"));
         $myxls->write_string(0,3,get_string("group"));
-        $myxls->write_string(0,4,get_string("choicegroup","choicegroup"));
+        $myxls->write_string(0,4,get_string("choice","choicegroup"));
 
     /// generate the data for the body of the spreadsheet
         $i=0;
@@ -136,7 +136,7 @@
         $myxls->write_string(0,1,get_string("firstname"));
         $myxls->write_string(0,2,get_string("idnumber"));
         $myxls->write_string(0,3,get_string("group"));
-        $myxls->write_string(0,4,get_string("choicegroup","choicegroup"));
+        $myxls->write_string(0,4,get_string("choice","choicegroup"));
 
 
     /// generate the data for the body of the spreadsheet

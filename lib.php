@@ -342,19 +342,24 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
     $display = clone($choicegroup);
     $display->coursemoduleid = $cm->id;
     $display->courseid = $course->id;
+//debugging('<pre>'.print_r($choicegroup->option, true).'</pre>', DEBUG_DEVELOPER);
+//debugging('<pre>'.print_r($allresponses, true).'</pre>', DEBUG_DEVELOPER);
 
     //overwrite options value;
     $display->options = array();
     $totaluser = 0;
-    foreach ($choicegroup->option as $optionid => $optiontext) {
+    foreach ($choicegroup->option as $optionid => $groupid) {
         $display->options[$optionid] = new stdClass;
-        $display->options[$optionid]->groupid = $optiontext;
+        $display->options[$optionid]->groupid = $groupid;
         $display->options[$optionid]->maxanswer = $choicegroup->maxanswers[$optionid];
 
-        if (array_key_exists($optionid, $allresponses)) {
-            $display->options[$optionid]->user = $allresponses[$optionid];
-            $totaluser += count($allresponses[$optionid]);
+        if (array_key_exists($groupid, $allresponses)) {
+            $display->options[$optionid]->user = $allresponses[$groupid];
+            $totaluser += count($allresponses[$groupid]);
         }
+    }
+    if ($choicegroup->showunanswered) {
+        $display->options[0]->user = $allresponses[0];
     }
     unset($display->option);
     unset($display->maxanswers);
