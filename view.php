@@ -176,9 +176,5 @@
         echo $OUTPUT->box(get_string('noresultsviewable', 'choicegroup'));
     }
 
-//    debugging('<pre>' . print_r(choicegroup_get_groups($choicegroup), true) . '</pre>', DEBUG_DEVELOPER);
-//    debugging('<pre>' . print_r(choicegroup_get_user_answer($choicegroup, $USER), true) . '</pre>', DEBUG_DEVELOPER);
-
     echo $OUTPUT->footer();
-
 
