@@ -33,10 +33,10 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         }
 
         $repeatarray = array();
-        $repeatarray[] = &MoodleQuickForm::createElement('header', '', get_string('option','choicegroup').' {no}');
-        $repeatarray[] = &MoodleQuickForm::createElement('select', 'option', get_string('option','choicegroup'), $groups);
-        $repeatarray[] = &MoodleQuickForm::createElement('text', 'limit', get_string('limit','choicegroup'));
-        $repeatarray[] = &MoodleQuickForm::createElement('hidden', 'optionid', 0);
+        $repeatarray[] = $mform->createElement('header', '', get_string('option','choicegroup').' {no}');
+        $repeatarray[] = $mform->createElement('select', 'option', get_string('option','choicegroup'), $groups);
+        $repeatarray[] = $mform->createElement('text', 'limit', get_string('limit','choicegroup'));
+        $repeatarray[] = $mform->createElement('hidden', 'optionid', 0);
 
 //-------------------------------------------------------------------------------
         $mform->addElement('header', 'miscellaneoussettingshdr', get_string('miscellaneoussettings', 'form'));
@@ -133,11 +133,8 @@ class mod_choicegroup_mod_form extends moodleform_mod {
             }
         }
 
-        if ($choicegroups < 1) {
-           $errors['option[0]'] = get_string('fillinatleastoneoption', 'choicegroup');
-        }
-
         if ($choicegroups < 2) {
+           $errors['option[0]'] = get_string('fillinatleastoneoption', 'choicegroup');
            $errors['option[1]'] = get_string('fillinatleastoneoption', 'choicegroup');
         }
 

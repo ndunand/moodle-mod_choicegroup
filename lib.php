@@ -581,31 +581,6 @@ function choicegroup_delete_instance($id) {
 }
 
 /**
- * Returns the users with data in one choicegroup
- * (users with records in choicegroup_responses, students)
- *
- * @param int $choicegroupid
- * @return array
- */
-function choicegroup_get_participants($choicegroupid) {
-    global $DB;
-
-    $groups = choicegroup_get_groups($choicegroup);
-    $students = array();
-
-    foreach ($groups as $group) {
-        $students = array_merge($students, $DB->get_records('groups_members', array('groupid' => $group->id)));
-    }
-
-    $studentsids = array();
-    foreach ($students as $student) {
-        $studentsids[] = $student->id;
-    }
-
-    return array_unique($studentsids);
-}
-
-/**
  * Returns text string which is the answer that matches the id
  *
  * @global object
