@@ -33,22 +33,6 @@
         $sections = get_all_sections($course->id);
     }
 
-    $sql = "SELECT cha.*
-              FROM {choicegroup} ch, {choicegroup_answers} cha
-             WHERE cha.choicegroupid = ch.id AND
-                   ch.course = ? AND cha.userid = ?";
-
-    $answers = array () ;
-    if (isloggedin() and !isguestuser() and $allanswers = $DB->get_records_sql($sql, array($course->id, $USER->id))) {
-        foreach ($allanswers as $aa) {
-            $answers[$aa->choicegroupid] = $aa;
-        }
-        unset($allanswers);
-    }
-
-
-    $timenow = time();
-
     $table = new html_table();
 
     if ($usesections) {
@@ -62,13 +46,9 @@
     $currentsection = "";
 
     foreach ($choicegroups as $choicegroup) {
-        if (!empty($answers[$choicegroup->id])) {
-            $answer = $answers[$choicegroup->id];
-        } else {
-            $answer = "";
-        }
-        if (!empty($answer->optionid)) {
-            $aa = format_string(choicegroup_get_option_text($choicegroup, $answer->optionid));
+        $answer = choicegroup_get_user_answer($choicegroup, $USER->id);
+        if (!empty($answer->id)) {
+            $aa = $answer->name;
         } else {
             $aa = "";
         }

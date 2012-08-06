@@ -49,6 +49,7 @@ Sie k&ouml;nnen jedes der vorhandenen Felder ausf&uuml;llen, Sie d&uuml;rfen abe
 $string['limitanswers_help'] = 'Diese Option setzt die maximale Anzahl von m&ouml;glichen Stimmabgaben f&uuml;r die betreffende Abstimmungsoption. Sobald diese Obergrenze erreicht ist, kann sich niemand mehr f&uuml;r diese Abstimmungsoption entscheiden.
 
 Wenn die Obergrenzen deaktiviert sind, gibt es keine Beschr&auml;nkung bei der Abstimmung.';
+$string['choicegroup:addinstance'] = 'Add a new group choice activity';
 $string['choicegroup:readresponses'] = 'Stimmabgaben sehen';
 $string['choicegroupsaved'] = 'Ihre Abstimmung wurde gespeichert';
 $string['choicetext'] = 'Abstimmungstext';

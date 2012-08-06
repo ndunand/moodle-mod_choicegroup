@@ -49,6 +49,7 @@ You can fill in any number of these. If you leave some of the options blank, the
 $string['limitanswers_help'] = 'This option allows you to limit the number of participants that can select each choice option. When the limit is reached then no-one else can select that option.
 
 If limits are disabled then any number of participants can select each of the options.';
+$string['choicegroup:addinstance'] = 'Add a new group choice activity';
 $string['choicegroup:readresponses'] = 'Read responses';
 $string['choicegroupsaved'] = 'Your choice has been saved';
 $string['choicetext'] = 'Choice text';

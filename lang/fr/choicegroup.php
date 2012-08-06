@@ -49,6 +49,7 @@ Vous pouvez remplir un certain nombre d\'options. Si vous laissez quelques-unes 
 $string['limitanswers_help'] = 'Cette option vous permet de limiter le nombre de participants dans un groupe. Lorsque la limite est atteinte, personne d\'autre ne peut s&eacute;lectionner ce groupe.
 
 Si les limites sont d&eacute;sactiv&eacute;es, n\'importe quel nombre de participants peut s\'inscrire dans le groupe.';
+$string['choicegroup:addinstance'] = 'Ajouter un nouveau choix de groupe';
 $string['choicegroup:readresponses'] = 'Lire les r&eacute;ponses';
 $string['choicegroupsaved'] = 'Votre choix a &eacute;t&eacute; enregistr&eacute;';
 $string['choicetext'] = 'Texte';
