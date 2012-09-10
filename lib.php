@@ -239,8 +239,8 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
             $option->maxanswers = $choicegroup->maxanswers[$optionid];
             $option->displaylayout = $choicegroup->display;
 
-            if (isset($allresponses[$optionid])) {
-                $option->countanswers = count($allresponses[$optionid]);
+            if (isset($allresponses[$text])) {
+                $option->countanswers = count($allresponses[$text]);
             } else {
                 $option->countanswers = 0;
             }
