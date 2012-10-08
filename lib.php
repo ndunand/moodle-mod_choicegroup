@@ -282,7 +282,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
 
     $countanswers=0;
     if($choicegroup->limitanswers) {
-        $groupmembers = $DB->get_records('groups_members', array('id' => $selected_option->groupid));
+        $groupmembers = $DB->get_records('groups_members', array('groupid' => $selected_option->groupid));
         $countanswers = count($groupmembers);
         $maxans = $choicegroup->maxanswers[$formanswer];
     }
@@ -303,7 +303,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
         }
     } else {
         if (!$current || !($current->id==$selected_option->groupid)) { //check to see if current choicegroup already selected - if not display error
-            print_error('choicegroupfull', 'choicegroup');
+            print_error('choicegroupfull', 'choicegroup', $CFG->wwwroot.'/mod/choicegroup/view.php?id='.$cm->id);
         }
     }
 }
