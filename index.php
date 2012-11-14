@@ -46,6 +46,7 @@
     $currentsection = "";
 
     foreach ($choicegroups as $choicegroup) {
+        $choicegroup_groups = choicegroup_get_groups($choicegroup);
         $answer = choicegroup_get_user_answer($choicegroup, $USER->id);
         if (!empty($answer->id)) {
             $aa = $answer->name;

@@ -86,7 +86,7 @@ function choicegroup_user_outline($course, $user, $mod, $choicegroup) {
  *
  */
 function choicegroup_get_user_answer($choicegroup, $user) {
-    global $DB;
+    global $DB, $choicegroup_groups;
 
     if (is_numeric($user)) {
         $userid = $user;
@@ -95,14 +95,25 @@ function choicegroup_get_user_answer($choicegroup, $user) {
         $userid = $user->id;
     }
 
-    $groups = choicegroup_get_groups($choicegroup);
+    $groups = $choicegroup_groups;
+    
+    $groupids = array();
     foreach ($groups as $group) {
-        if ($groupmembership = $DB->get_record('groups_members', array('groupid' => $group->id, 'userid' => $userid))) {
+        if (is_numeric($group->id)) {
+            $groupids[] = $group->id;
+        }
+    }
+    if ($groupids) {
+        $groupidsstr = implode(', ', $groupids);
+        $groupmembership = $DB->get_record_sql('SELECT * FROM {groups_members} WHERE `userid` = ? AND `groupid` IN (?)', array($userid, $groupidsstr));
+        if ($groupmembership) {
+            $group = $DB->get_record('groups', array('id' => $option->groupid));
             $group->timeuseradded = $groupmembership->timeadded;
             return $group;
         }
     }
     return false;
+    
 }
 
 /**
@@ -606,6 +617,7 @@ function choicegroup_get_option_text($choicegroup, $id) {
  * @return array
  */
 function choicegroup_get_groups($choicegroup) {
+
     if (is_numeric($choicegroup)) {
         $choicegroupid = $choicegroup;
     }
@@ -687,10 +699,9 @@ function choicegroup_reset_course_form_defaults($course) {
  * @uses CONTEXT_MODULE
  * @param object $choicegroup
  * @param object $cm
- * @param int $groupmode
  * @return array
  */
-function choicegroup_get_response_data($choicegroup, $cm, $groupmode) {
+function choicegroup_get_response_data($choicegroup, $cm) {
     global $CFG, $USER, $DB;
 
     $context = get_context_instance(CONTEXT_MODULE, $cm->id);

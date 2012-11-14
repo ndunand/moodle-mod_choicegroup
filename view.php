@@ -23,11 +23,12 @@
         print_error('coursemisconf');
     }
 
-    require_course_login($course, false, $cm);
+    require_course_login($course, false);
 
     if (!$choicegroup = choicegroup_get_choicegroup($cm->instance)) {
         print_error('invalidcoursemodule');
     }
+    $choicegroup_groups = choicegroup_get_groups($choicegroup);
 
     $strchoicegroup = get_string('modulename', 'choicegroup');
     $strchoicegroups = get_string('modulenameplural', 'choicegroup');
@@ -91,7 +92,7 @@
         groups_get_activity_group($cm, true);
         groups_print_activity_menu($cm, $CFG->wwwroot . '/mod/choicegroup/view.php?id='.$id);
     }
-    $allresponses = choicegroup_get_response_data($choicegroup, $cm, $groupmode);   // Big function, approx 6 SQL calls per user
+    $allresponses = choicegroup_get_response_data($choicegroup, $cm);   // Big function, approx 6 SQL calls per user
 
 
     if (has_capability('mod/choicegroup:readresponses', $context)) {
