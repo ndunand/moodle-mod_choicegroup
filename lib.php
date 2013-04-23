@@ -94,6 +94,10 @@ function choicegroup_get_user_answer($choicegroup, $user) {
     else {
         $userid = $user->id;
     }
+    
+    if (!isset($choicegroup_groups)) {
+        $choicegroup_groups = choicegroup_get_groups($choicegroup);
+    }
 
     $groups = $choicegroup_groups;
     
@@ -107,7 +111,7 @@ function choicegroup_get_user_answer($choicegroup, $user) {
         $groupidsstr = implode(', ', $groupids);
         $groupmembership = $DB->get_record_sql('SELECT * FROM {groups_members} WHERE `userid` = ? AND `groupid` IN (?)', array($userid, $groupidsstr));
         if ($groupmembership) {
-            $group = $DB->get_record('groups', array('id' => $option->groupid));
+            $group = $DB->get_record('groups', array('id' => $groupmembership->groupid));
             $group->timeuseradded = $groupmembership->timeadded;
             return $group;
         }
