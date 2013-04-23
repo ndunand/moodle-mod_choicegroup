@@ -22,8 +22,8 @@
  * @copyright 2012 Nicolas Dunand
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
-define ('DISPLAY_HORIZONTAL_LAYOUT', 0);
-define ('DISPLAY_VERTICAL_LAYOUT', 1);
+define ('CHOICEGROUP_DISPLAY_HORIZONTAL_LAYOUT', 0);
+define ('CHOICEGROUP_DISPLAY_VERTICAL_LAYOUT', 1);
 
 class mod_choicegroup_renderer extends plugin_renderer_base {
 
@@ -164,7 +164,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         if ($forcepublish) {  //CHOICEGROUP_PUBLISH_NAMES
             return $this->display_publish_name_vertical($choicegroups);
         } else { //CHOICEGROUP_PUBLISH_ANONYMOUS';
-            if ($displaylayout == DISPLAY_HORIZONTAL_LAYOUT) {
+            if ($displaylayout == CHOICEGROUP_DISPLAY_HORIZONTAL_LAYOUT) {
                 return $this->display_publish_anonymous_horizontal($choicegroups);
             }
             return $this->display_publish_anonymous_vertical($choicegroups);
