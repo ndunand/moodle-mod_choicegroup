@@ -23,7 +23,7 @@
         print_error('coursemisconf');
     }
 
-    require_course_login($course, false);
+    require_login($course, false, $cm);
 
     if (!$choicegroup = choicegroup_get_choicegroup($cm->instance)) {
         print_error('invalidcoursemodule');
