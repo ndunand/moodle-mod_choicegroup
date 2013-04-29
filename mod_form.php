@@ -8,10 +8,11 @@ require_once ($CFG->dirroot.'/course/moodleform_mod.php');
 class mod_choicegroup_mod_form extends moodleform_mod {
 
     function definition() {
-        global $CFG, $CHOICEGROUP_SHOWRESULTS, $CHOICEGROUP_PUBLISH, $CHOICEGROUP_DISPLAY, $DB, $COURSE;
+        global $CFG, $CHOICEGROUP_SHOWRESULTS, $CHOICEGROUP_PUBLISH, $CHOICEGROUP_DISPLAY, $DB, $COURSE, $PAGE;
 
         $mform    =& $this->_form;
-
+    	//Load jquery
+		$PAGE->requires->js('/mod/choicegroup/javascript/jquery-2.0.0.min.js');
 //-------------------------------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
@@ -22,7 +23,9 @@ class mod_choicegroup_mod_form extends moodleform_mod {
             $mform->setType('name', PARAM_CLEANHTML);
         }
         $mform->addRule('name', null, 'required', null, 'client');
-
+		
+		//Set default name of the group choice to modulename
+		$mform->setDefault('name', get_string('modulename', 'choicegroup'));
         $this->add_intro_editor(true, get_string('chatintro', 'chat'));
 
 //-------------------------------------------------------------------------------
@@ -53,19 +56,15 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $mform->addElement('selectyesno', 'showunanswered', get_string("showunanswered", "choicegroup"));
 
         $menuoptions = array();
+		$menuoptions[0] = get_string('disable');
         $menuoptions[1] = get_string('enable');
-        $menuoptions[0] = get_string('disable');
-        $mform->addElement('select', 'limitanswers', get_string('limitanswers', 'choicegroup'), $menuoptions);
+
+        $select = $mform->addElement('select', 'limitanswers', get_string('limitanswers', 'choicegroup'), $menuoptions);
         $mform->addHelpButton('limitanswers', 'limitanswers', 'choicegroup');
-
-
-        if ($this->_instance){
-            $repeatno = $DB->count_records('choicegroup_options', array('choicegroupid'=>$this->_instance));
-            $repeatno += 2;
-        } else {
-            $repeatno = 5;
-        }
-
+		
+        //Always as much group fields as there are groups in the course
+		$repeatno = count($db_groups);
+		
         $repeateloptions = array();
         $repeateloptions['limit']['default'] = 0;
         $repeateloptions['limit']['disabledif'] = array('limitanswers', 'eq', 0);
@@ -78,9 +77,17 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 
         $this->repeat_elements($repeatarray, $repeatno,
                     $repeateloptions, 'option_repeats', 'option_add_fields', 3);
+		//Remove "Add Fields"-Button as there are always enough fields
+		$mform->removeElement('option_add_fields');
 
-
-
+		//If this groupchoice activity is newly created, fill the groupchoice fields with all available groups in this course
+		if(!$this->_instance) {
+			$counter = 0;
+			foreach($db_groups as &$i) {
+				$mform->getElement('option['.$counter.']')->setSelected($i->id);
+				$counter++;
+			}
+		}
 
 //-------------------------------------------------------------------------------
         $mform->addElement('header', 'timerestricthdr', get_string('timerestrict', 'choicegroup'));
@@ -176,4 +183,3 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         return !empty($data['completionsubmit']);
     }
 }
-
