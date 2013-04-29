@@ -53,19 +53,12 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $mform->addElement('selectyesno', 'showunanswered', get_string("showunanswered", "choicegroup"));
 
         $menuoptions = array();
-        $menuoptions[1] = get_string('enable');
         $menuoptions[0] = get_string('disable');
+        $menuoptions[1] = get_string('enable');
         $mform->addElement('select', 'limitanswers', get_string('limitanswers', 'choicegroup'), $menuoptions);
         $mform->addHelpButton('limitanswers', 'limitanswers', 'choicegroup');
 
-
-        if ($this->_instance){
-            $repeatno = $DB->count_records('choicegroup_options', array('choicegroupid'=>$this->_instance));
-            $repeatno += 2;
-        } else {
-            $repeatno = 5;
-        }
-
+        $repeatno = count($db_groups);
         $repeateloptions = array();
         $repeateloptions['limit']['default'] = 0;
         $repeateloptions['limit']['disabledif'] = array('limitanswers', 'eq', 0);
@@ -76,10 +69,20 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 
         $mform->setType('optionid', PARAM_INT);
 
-        $this->repeat_elements($repeatarray, $repeatno,
-                    $repeateloptions, 'option_repeats', 'option_add_fields', 3);
+        $this->repeat_elements($repeatarray, $repeatno, $repeateloptions, 'option_repeats', 'option_add_fields', 3);
 
+        // Remove "Add Fields" button as there are always enough fields
+        $mform->removeElement('option_add_fields');
 
+        // If this groupchoice activity is newly created, fill the groupchoice fields
+        // with all available groups in this course
+        if(!$this->_instance) {
+            $counter = 0;
+            foreach($db_groups as &$i) {
+                $mform->getElement('option['.$counter.']')->setSelected($i->id);
+                $counter++;
+            }
+        }
 
 
 //-------------------------------------------------------------------------------
