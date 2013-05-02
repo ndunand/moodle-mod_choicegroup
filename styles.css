@@ -4,7 +4,7 @@
 .path-mod-choicegroup .attemptcell {width:5px;white-space: nowrap;}
 .path-mod-choicegroup .anonymous,
 .path-mod-choicegroup .names {margin-left:auto;margin-right:auto; width:80%;}
-.path-mod-choicegroup .downloadreport {border-width:0;margin-left:10%;}
+.path-mod-choicegroup div.downloadreport ul {list-style: none; margin-left: 1em;}
 .path-mod-choicegroup .choicegroupresponse {width:100%;}
 .path-mod-choicegroup .choicegroupresponse .picture {width:10px;white-space: nowrap;}
 .path-mod-choicegroup .choicegroupresponse .fullname {width:100%;white-space: nowrap;}
@@ -58,21 +58,10 @@
 #page-mod-choice-report.dir-rtl .downloadreport ul li{float:right;}
 #page-mod-choice-view.dir-rtl .reportlink {text-align: left;}
 
-
-
-
-
-
 .path-mod-choicegroup table { border: 1px #666 solid; }
 .path-mod-choicegroup td { border-top: 1px #666 solid; }
 .path-mod-choicegroup th, .path-mod-choicegroup td { padding:10px 15px; }
 .path-mod-choicegroup td.center { text-align:center; }
-
-
-
-
-
-
 
 .path-mod-choicegroup div.choicegroup-memberdisplay {
     width:12px;
@@ -85,8 +74,6 @@
     margin:0px auto;
 }
 
-
-
 .path-mod-choicegroup table.results .header {
     color:#000;
 }
@@ -95,15 +82,15 @@
     margin: 20px 0;
 }
 
-.path-mod-choicegroup form input[type=submit] {
-    margin-bottom: 20px;
-}
-
-.path-mod-choicegroup a.choicegroup-memberdisplay {
+.path-mod-choicegroup a.choicegroup-memberdisplay,
+.path-mod-choicegroup a.choicegroup-descriptiondisplay {
     display: block;
 }
 
-.path-mod-choicegroup div.choicegroups-membersnames.hidden, .path-mod-choicegroup a.choicegroup-memberdisplay.hidden {
+.path-mod-choicegroup div.choicegroups-membersnames.hidden,
+.path-mod-choicegroup div.choicegroups-descriptions.hidden,
+.path-mod-choicegroup a.choicegroup-memberdisplay.hidden,
+.path-mod-choicegroup a.choicegroup-descriptiondisplay.hidden {
     display:none;
 }
 
