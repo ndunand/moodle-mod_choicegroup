@@ -48,7 +48,12 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
         $html .= html_writer::start_tag('tr');
         $html .= html_writer::tag('th', get_string('choice', 'choicegroup'));
-        $html .= html_writer::tag('th', get_string('group'));
+
+        $group = get_string('group');
+        $group .= html_writer::tag('a', get_string('showdescription', 'choicegroup'), array('class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow', 'href' => '#'));
+        $group .= html_writer::tag('a', get_string('hidedescription', 'choicegroup'), array('class' => 'choicegroup-descriptiondisplay choicegroup-descriptionhide hidden', 'href' => '#'));
+        $html .= html_writer::tag('th', $group);
+
         if ( $showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or
         ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER and $current) or
         ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {
@@ -99,6 +104,8 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $option->attributes->disabled=true;
                 $availableoption--;
             }
+            $description = html_writer::tag('hr') . $group->description;
+            $labeltext .= html_writer::tag('div', $description, array('class' => 'choicegroups-descriptions hidden'));
             if ($disabled) {
                 $option->attributes->disabled=true;
             }
@@ -136,7 +143,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
             if (!empty($options['allowupdate']) && ($options['allowupdate'])) {
                 $url = new moodle_url('view.php', array('id'=>$coursemoduleid, 'action'=>'delchoicegroup', 'sesskey'=>sesskey()));
-                $html .= html_writer::link($url, get_string('removemychoicegroup','choicegroup'));
+                $html .= ' ' . html_writer::link($url, get_string('removemychoicegroup','choicegroup'));
             }
         } else {
             $html .= html_writer::tag('td', get_string('havetologin', 'choicegroup'));
