@@ -97,3 +97,9 @@
 .path-mod-choicegroup .results td {
     min-width: 120px;
 }
+
+.path-mod-choicegroup .choicegroups-descriptions {
+    border-top: 1px #ccc dotted;
+    margin-top: 5px;
+    padding-top: 5px;
+}
