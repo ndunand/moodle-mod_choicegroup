@@ -103,3 +103,6 @@ $string['members/max'] = 'Fill / Capacity';
 $string['members/'] = 'Fill';
 $string['groupmembers'] = 'Group members';
 $string['page-mod-choice-x'] = 'Any Group choice module page';
+$string['showdescription'] = 'Show descriptions';
+$string['hidedescription'] = 'Hide descriptions';
+

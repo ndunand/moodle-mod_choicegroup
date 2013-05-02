@@ -99,11 +99,15 @@
     margin-bottom: 20px;
 }
 
-.path-mod-choicegroup a.choicegroup-memberdisplay {
+.path-mod-choicegroup a.choicegroup-memberdisplay,
+.path-mod-choicegroup a.choicegroup-descriptiondisplay {
     display: block;
 }
 
-.path-mod-choicegroup div.choicegroups-membersnames.hidden, .path-mod-choicegroup a.choicegroup-memberdisplay.hidden {
+.path-mod-choicegroup div.choicegroups-membersnames.hidden,
+.path-mod-choicegroup div.choicegroups-descriptions.hidden,
+.path-mod-choicegroup a.choicegroup-memberdisplay.hidden,
+.path-mod-choicegroup a.choicegroup-descriptiondisplay.hidden {
     display:none;
 }
 
