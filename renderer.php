@@ -91,7 +91,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $option->attributes->name = 'answer';
             $option->attributes->type = 'radio';
 
-            $labeltext = $group->name;
+            $labeltext = html_writer::tag('label', $group->name, array('for' => 'choiceid_' . $option->attributes->value));
             $group_members = $DB->get_records('groups_members', array('groupid' => $group->id));
             $group_members_names = array();
             foreach ($group_members as $group_member) {
@@ -109,7 +109,9 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             if ($disabled) {
                 $option->attributes->disabled=true;
             }
-            $html .= html_writer::empty_tag('input', (array)$option->attributes);
+            $attributes = (array) $option->attributes;
+            $attributes['id'] = 'choiceid_' . $option->attributes->value;
+            $html .= html_writer::empty_tag('input', $attributes);
             $html .= html_writer::end_tag('td');
             $html .= html_writer::tag('td', $labeltext, array('for'=>$option->attributes->name));
 
