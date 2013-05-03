@@ -103,3 +103,5 @@ $string['members/max'] = 'Membres / Capacit&eacute;';
 $string['members/'] = 'Membres';
 $string['groupmembers'] = 'Membres du groupe';
 $string['page-mod-choice-x'] = 'Toute page du module Choix du groupe';
+$string['showdescription'] = 'Afficher descriptions';
+$string['hidedescription'] = 'Masquer descriptions';

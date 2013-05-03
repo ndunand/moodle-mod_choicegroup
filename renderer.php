@@ -104,8 +104,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $option->attributes->disabled=true;
                 $availableoption--;
             }
-            $description = html_writer::tag('hr') . $group->description;
-            $labeltext .= html_writer::tag('div', $description, array('class' => 'choicegroups-descriptions hidden'));
+            $labeltext .= html_writer::tag('div', $group->description, array('class' => 'choicegroups-descriptions hidden'));
             if ($disabled) {
                 $option->attributes->disabled=true;
             }
