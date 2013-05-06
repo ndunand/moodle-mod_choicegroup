@@ -308,7 +308,6 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
             groups_remove_member($current->id, $userid);
             add_to_log($course->id, "choicegroup", "choose again", "view.php?id=$cm->id", $choicegroup->id, $cm->id);
         } else {
-            add_to_log($course->id, "choicegroup", "choose again", "view.php?id=$cm->id", $choicegroup->id, $cm->id);
             // Update completion state
             $completion = new completion_info($course);
             if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
