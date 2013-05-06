@@ -109,8 +109,11 @@ function choicegroup_get_user_answer($choicegroup, $user) {
     }
     if ($groupids) {
         $groupidsstr = implode(', ', $groupids);
-        $groupmembership = $DB->get_record_sql('SELECT * FROM {groups_members} WHERE `userid` = ? AND `groupid` IN (?)', array($userid, $groupidsstr));
-        if ($groupmembership) {
+        // This line did not work on our MS SQL Server
+        //$groupmembership = $DB->get_record_sql('SELECT * FROM {groups_members} WHERE `userid` = ? AND `groupid` IN (?)', array($userid, $groupidsstr));
+        // The following line did
+        $groupmembership = $DB->get_record_sql('SELECT * FROM {groups_members} WHERE "userid" = '.$userid.' AND "groupid" IN ('.$groupidsstr.')');
+                if ($groupmembership) {
             $group = $DB->get_record('groups', array('id' => $groupmembership->groupid));
             $group->timeuseradded = $groupmembership->timeadded;
             return $group;
