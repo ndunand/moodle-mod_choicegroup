@@ -103,3 +103,5 @@ $string['members/max'] = 'Täitumus / Mahtuvus';
 $string['members/'] = 'Täitumus';
 $string['groupmembers'] = 'Rühma liikmed';
 $string['page-mod-choice-x'] = 'Iga rühma valimise mooduli leht';
+$string['showdescription'] = 'Näita kirjeldusi';
+$string['hidedescription'] = 'Varja kirjeldused';
