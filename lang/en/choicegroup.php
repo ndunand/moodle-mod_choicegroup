@@ -105,4 +105,5 @@ $string['groupmembers'] = 'Group members';
 $string['page-mod-choice-x'] = 'Any Group choice module page';
 $string['showdescription'] = 'Show descriptions';
 $string['hidedescription'] = 'Hide descriptions';
-
+$string['generallimitation'] = 'General limitation';
+$string['applytoallgroups'] = 'Apply to all groups';

@@ -8,9 +8,11 @@ require_once ($CFG->dirroot.'/course/moodleform_mod.php');
 class mod_choicegroup_mod_form extends moodleform_mod {
 
     function definition() {
-        global $CFG, $CHOICEGROUP_SHOWRESULTS, $CHOICEGROUP_PUBLISH, $CHOICEGROUP_DISPLAY, $DB, $COURSE;
+        global $CFG, $CHOICEGROUP_SHOWRESULTS, $CHOICEGROUP_PUBLISH, $CHOICEGROUP_DISPLAY, $DB, $COURSE, $PAGE;
 
         $mform    =& $this->_form;
+
+        $PAGE->requires->js_init_call('M.mod_choicegroup.init');
 
 //-------------------------------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
@@ -35,7 +37,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $repeatarray = array();
         $repeatarray[] = $mform->createElement('header', '', get_string('option','choicegroup').' {no}');
         $repeatarray[] = $mform->createElement('select', 'option', get_string('option','choicegroup'), $groups);
-        $repeatarray[] = $mform->createElement('text', 'limit', get_string('limit','choicegroup'));
+        $repeatarray[] = $mform->createElement('text', 'limit', get_string('limit','choicegroup'), array('class' => 'mod-choicegroup-limit-input'));
         $repeatarray[] = $mform->createElement('hidden', 'optionid', 0);
 
 //-------------------------------------------------------------------------------
@@ -57,6 +59,13 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $menuoptions[1] = get_string('enable');
         $mform->addElement('select', 'limitanswers', get_string('limitanswers', 'choicegroup'), $menuoptions);
         $mform->addHelpButton('limitanswers', 'limitanswers', 'choicegroup');
+
+        $mform->addElement('text', 'generallimitation', get_string('generallimitation', 'choicegroup'), array('size' => '6'));
+        $mform->disabledIf('generallimitation', 'limitanswers', 'neq', 1);
+        $mform->addRule('generallimitation', get_string('error'), 'numeric', 'extraruledata', 'client', false, false);
+        $mform->setDefault('generallimitation', 0);
+        $mform->addElement('button', 'setlimit', get_string('applytoallgroups', 'choicegroup'));
+        $mform->disabledIf('setlimit', 'limitanswers', 'neq', 1);
 
         $repeatno = count($db_groups);
         $repeateloptions = array();
