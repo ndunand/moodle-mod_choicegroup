@@ -1,17 +1,36 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-////////////////////////////////////////////////////////////////////////////////
-//  Code fragment to define the module version etc.
-//  This fragment is called by /admin/index.php
-////////////////////////////////////////////////////////////////////////////////
+/**
+ * Version information
+ *
+ * @package    mod
+ * @subpackage choicegroup
+ * @copyright  2013 Université de Lausanne
+ * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version  = 2012111400;
-$module->requires  = 2011120500;       // Requires this Moodle version
+$module->version  = 2013060100;
+$module->requires  = 2011120500;
 $module->maturity  = MATURITY_STABLE;
-$module->release = '1.3.3 (Build: 2012111400, based on mod_choice 2011112900)';
+$module->release = '1.4 (Build: 2013070100)';
 
-$module->component = 'mod_choicegroup';     // Full name of the plugin (used for diagnostics)
-$module->cron     = 0;
+$module->component = 'mod_choicegroup';
+$module->cron = 0;
 

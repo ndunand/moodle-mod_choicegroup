@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,10 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package   mod-choicegroup
- * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Version information
+ *
+ * @package    mod
+ * @subpackage choicegroup
+ * @copyright  2013 Université de Lausanne
+ * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
 
 /** @global int $CHOICEGROUP_COLUMN_HEIGHT */
 global $CHOICEGROUP_COLUMN_HEIGHT;
@@ -72,7 +77,6 @@ require_once($CFG->dirroot.'/group/lib.php');
  * @return object|null
  */
 function choicegroup_user_outline($course, $user, $mod, $choicegroup) {
-    global $DB;
     if ($groupmembership = choicegroup_get_user_answer($choicegroup, $user)) { // if user has answered
         $result = new stdClass();
         $result->info = "'".format_string($groupmembership->name)."'";
@@ -94,13 +98,13 @@ function choicegroup_get_user_answer($choicegroup, $user) {
     else {
         $userid = $user->id;
     }
-    
+
     if (!isset($choicegroup_groups)) {
         $choicegroup_groups = choicegroup_get_groups($choicegroup);
     }
 
     $groups = $choicegroup_groups;
-    
+
     $groupids = array();
     foreach ($groups as $group) {
         if (is_numeric($group->id)) {
@@ -108,8 +112,10 @@ function choicegroup_get_user_answer($choicegroup, $user) {
         }
     }
     if ($groupids) {
-        $groupidsstr = implode(', ', $groupids);
-        $groupmembership = $DB->get_record_sql('SELECT * FROM {groups_members} WHERE userid = ? AND groupid IN (?)', array($userid, $groupidsstr));
+        $params1 = array($userid);
+        list($insql, $params2) = $DB->get_in_or_equal($groupids);
+        $params = array_merge($params1, $params2);
+        $groupmembership = $DB->get_record_sql('SELECT * FROM {groups_members} WHERE userid = ? AND groupid '.$insql, $params);
         if ($groupmembership) {
             $group = $DB->get_record('groups', array('id' => $groupmembership->groupid));
             $group->timeuseradded = $groupmembership->timeadded;
@@ -117,7 +123,7 @@ function choicegroup_get_user_answer($choicegroup, $user) {
         }
     }
     return false;
-    
+
 }
 
 /**
@@ -129,7 +135,6 @@ function choicegroup_get_user_answer($choicegroup, $user) {
  * @return string|void
  */
 function choicegroup_user_complete($course, $user, $mod, $choicegroup) {
-    global $DB;
     if ($groupmembership = choicegroup_get_user_answer($choicegroup, $user)) { // if user has answered
         $result = new stdClass();
         $result->info = "'".format_string($groupmembership->name)."'";
@@ -237,7 +242,6 @@ function choicegroup_update_instance($choicegroup) {
  * @return array
  */
 function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allresponses) {
-    global $DB;
 
     $cdisplay = array('options'=>array());
 
@@ -351,7 +355,7 @@ function choicegroup_show_reportlink($user, $cm) {
  * @return object
  */
 function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allresponses, $forcepublish=false) {
-    global $CFG, $CHOICEGROUP_COLUMN_HEIGHT, $FULLSCRIPT, $PAGE, $OUTPUT, $DB;
+    global $CFG, $FULLSCRIPT, $PAGE, $OUTPUT;
 
     $display = clone($choicegroup);
     $display->coursemoduleid = $cm->id;
@@ -538,7 +542,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
  * @return bool
  */
 function choicegroup_delete_responses($userids, $choicegroup, $cm, $course) {
-    global $DB, $CFG;
+    global $CFG;
     require_once($CFG->libdir.'/completionlib.php');
 
     if(!is_array($userids) || empty($userids)) {
@@ -620,6 +624,7 @@ function choicegroup_get_option_text($choicegroup, $id) {
  * @return array
  */
 function choicegroup_get_groups($choicegroup) {
+    global $DB;
 
     if (is_numeric($choicegroup)) {
         $choicegroupid = $choicegroup;
@@ -627,7 +632,6 @@ function choicegroup_get_groups($choicegroup) {
     else {
         $choicegroupid = $choicegroup->id;
     }
-    global $DB;
     $groups = array();
 
     $options = $DB->get_records('choicegroup_options', array('choicegroupid' => $choicegroupid));
@@ -705,7 +709,6 @@ function choicegroup_reset_course_form_defaults($course) {
  * @return array
  */
 function choicegroup_get_response_data($choicegroup, $cm) {
-    global $CFG, $USER, $DB;
 
     $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
@@ -804,11 +807,10 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
  * @return bool True if completed, false if not, $type if conditions not set.
  */
 function choicegroup_get_completion_state($course, $cm, $userid, $type) {
-    global $CFG,$DB;
+    global $DB;
 
     // Get choicegroup details
-    $choicegroup = $DB->get_record('choicegroup', array('id'=>$cm->instance), '*',
-            MUST_EXIST);
+    $choicegroup = $DB->get_record('choicegroup', array('id'=>$cm->instance), '*', MUST_EXIST);
 
     // If completion option is enabled, evaluate it and return true/false
     if($choicegroup->completionsubmit) {
@@ -831,3 +833,4 @@ function choicegroup_page_type_list($pagetype, $parentcontext, $currentcontext) 
     $module_pagetype = array('mod-choicegroup-*'=>get_string('page-mod-choicegroup-x', 'choice'));
     return $module_pagetype;
 }
+

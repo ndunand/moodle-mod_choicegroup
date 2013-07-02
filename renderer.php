@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,12 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Moodle renderer used to display special elements of the lesson module
+ * Version information
  *
- * @package   Choicegroup
- * @copyright 2012 Nicolas Dunand
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- **/
+ * @package    mod
+ * @subpackage choicegroup
+ * @copyright  2013 Université de Lausanne
+ * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
 define ('CHOICEGROUP_DISPLAY_HORIZONTAL_LAYOUT', 0);
 define ('CHOICEGROUP_DISPLAY_VERTICAL_LAYOUT', 1);
 
@@ -381,7 +385,6 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
         return $html;
     }
-
 
 }
 

@@ -1,7 +1,30 @@
 <?php
-if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
-}
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Version information
+ *
+ * @package    mod
+ * @subpackage choicegroup
+ * @copyright  2013 Université de Lausanne
+ * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
 
 require_once ($CFG->dirroot.'/course/moodleform_mod.php');
 
@@ -61,6 +84,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $mform->addHelpButton('limitanswers', 'limitanswers', 'choicegroup');
 
         $mform->addElement('text', 'generallimitation', get_string('generallimitation', 'choicegroup'), array('size' => '6'));
+        $mform->setType('generallimitation', PARAM_INT);
         $mform->disabledIf('generallimitation', 'limitanswers', 'neq', 1);
         $mform->addRule('generallimitation', get_string('error'), 'numeric', 'extraruledata', 'client', false, false);
         $mform->setDefault('generallimitation', 0);
@@ -72,9 +96,10 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $repeateloptions['limit']['default'] = 0;
         $repeateloptions['limit']['disabledif'] = array('limitanswers', 'eq', 0);
         $repeateloptions['limit']['rule'] = 'numeric';
+        $repeateloptions['limit']['type'] = PARAM_INT;
 
         $repeateloptions['option']['helpbutton'] = array('choicegroupoptions', 'choicegroup');
-        $mform->setType('option', PARAM_CLEANHTML);
+//        $mform->setType('option', PARAM_CLEANHTML);
 
         $mform->setType('optionid', PARAM_INT);
 
