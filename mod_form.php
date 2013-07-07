@@ -170,7 +170,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
             }
         }
 
-        if ($choicegroups < 2) {
+        if ($choicegroups < 1) {
            $errors['option[0]'] = get_string('fillinatleastoneoption', 'choicegroup');
            $errors['option[1]'] = get_string('fillinatleastoneoption', 'choicegroup');
         }
