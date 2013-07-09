@@ -31,7 +31,8 @@ $string['displayhorizontal'] = 'Display horizontally';
 $string['displaymode'] = 'Display mode';
 $string['displayvertical'] = 'Display vertically';
 $string['expired'] = 'Sorry, this activity closed on {$a} and is no longer available';
-$string['fillinatleastoneoption'] = 'You need to provide at least two possible answers.';
+$string['fillinatleastoneoption'] = 'You need to provide at least one possible answer.';
+$string['fillinatleasttwooptions'] = 'You need to provide at least two possible answers.';
 $string['full'] = '(Full)';
 $string['havetologin'] = 'You have to log in before you can submit your choice';
 $string['choice'] = 'Choice';
@@ -107,3 +108,6 @@ $string['showdescription'] = 'Show descriptions';
 $string['hidedescription'] = 'Hide descriptions';
 $string['generallimitation'] = 'General limitation';
 $string['applytoallgroups'] = 'Apply to all groups';
+
+$string['multipleenrollmentspossible'] = 'Allow enrollment to multiple groups';
+$string['and'] = 'and';

@@ -65,7 +65,8 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 
 //-------------------------------------------------------------------------------
         $mform->addElement('header', 'miscellaneoussettingshdr', get_string('miscellaneoussettings', 'form'));
-
+       $mform->addElement('checkbox', 'multipleenrollmentspossible', get_string('multipleenrollmentspossible', 'choicegroup'));
+        
         $mform->addElement('select', 'showresults', get_string("publish", "choicegroup"), $CHOICEGROUP_SHOWRESULTS);
         $mform->setDefault('showresults', CHOICEGROUP_SHOWRESULTS_DEFAULT);
 
@@ -169,10 +170,16 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                 $choicegroups++;
             }
         }
-
-        if ($choicegroups < 1) {
-           $errors['option[0]'] = get_string('fillinatleastoneoption', 'choicegroup');
-           $errors['option[1]'] = get_string('fillinatleastoneoption', 'choicegroup');
+        
+        if (array_key_exists('multipleenrollmentspossible', $data) && $data['multipleenrollmentspossible'] === '1') {
+        	if ($choicegroups < 1) {
+        		$errors['option[0]'] = get_string('fillinatleastoneoption', 'choicegroup');
+        	}
+        } else {
+        	if ($choicegroups < 2) {
+        		$errors['option[0]'] = get_string('fillinatleasttwooptions', 'choicegroup');
+        		$errors['option[1]'] = get_string('fillinatleasttwooptions', 'choicegroup');
+        	}
         }
 
         $groups_selected = array();
