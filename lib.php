@@ -89,7 +89,7 @@ function choicegroup_user_outline($course, $user, $mod, $choicegroup) {
 /**
  *
  */
-function choicegroup_get_user_answer($choicegroup, $user) {
+function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE) {
     global $DB, $choicegroup_groups;
 
     if (is_numeric($user)) {
@@ -115,11 +115,19 @@ function choicegroup_get_user_answer($choicegroup, $user) {
         $params1 = array($userid);
         list($insql, $params2) = $DB->get_in_or_equal($groupids);
         $params = array_merge($params1, $params2);
-        $groupmembership = $DB->get_record_sql('SELECT * FROM {groups_members} WHERE userid = ? AND groupid '.$insql, $params);
-        if ($groupmembership) {
-            $group = $DB->get_record('groups', array('id' => $groupmembership->groupid));
-            $group->timeuseradded = $groupmembership->timeadded;
-            return $group;
+        $groupmemberships = $DB->get_records_sql('SELECT * FROM {groups_members} WHERE userid = ? AND groupid '.$insql, $params);
+        $groups = array();
+        foreach ($groupmemberships as $groupmembership) {
+        	$group = $DB->get_record('groups', array('id' => $groupmembership->groupid));
+        	$group->timeuseradded = $groupmembership->timeadded;
+        	$groups[] = $group;
+        }
+        if (count($groups) > 0) {
+        	if ($returnArray === TRUE) {
+        		return $groups;
+        	} else {
+        		return $groups[0];
+        	}
         }
     }
     return false;
@@ -204,6 +212,10 @@ function choicegroup_update_instance($choicegroup) {
         $choicegroup->timeopen = 0;
         $choicegroup->timeclose = 0;
     }
+    
+    if (empty($choicegroup->multipleenrollmentspossible)) {
+    	$choicegroup->multipleenrollmentspossible = 0;
+    }
 
     //update, delete or insert answers
     foreach ($choicegroup->option as $key => $value) {
@@ -247,7 +259,7 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
 
     $cdisplay['limitanswers'] = true;
     $context = get_context_instance(CONTEXT_MODULE, $coursemodule->id);
-    $answer = choicegroup_get_user_answer($choicegroup, $user);
+    $answers = choicegroup_get_user_answer($choicegroup, $user, TRUE);
 
     foreach ($choicegroup->option as $optionid => $text) {
         if (isset($text)) { //make sure there are no dud entries in the db with blank text values.
@@ -263,8 +275,12 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
             } else {
                 $option->countanswers = 0;
             }
-            if ($answer && $text == $answer->id) {
-                $option->attributes->checked = true;
+            if (is_array($answers)) {
+            	foreach($answers as $answer) {
+            		if ($answer && $text == $answer->id) {
+            			$option->attributes->checked = true;
+            		}
+            	}
             }
             if ( $choicegroup->limitanswers && ($option->countanswers >= $option->maxanswers) && empty($option->attributes->checked)) {
                 $option->attributes->disabled = true;
@@ -275,7 +291,7 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
 
     $cdisplay['hascapability'] = is_enrolled($context, NULL, 'mod/choicegroup:choose'); //only enrolled users are allowed to make a choicegroup
 
-    if ($choicegroup->allowupdate && $answer) {
+    if ($choicegroup->allowupdate && is_array($answers)) {
         $cdisplay['allowupdate'] = true;
     }
 
@@ -309,7 +325,9 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
     if (!($choicegroup->limitanswers && ($countanswers >= $maxans) )) {
         groups_add_member($selected_option->groupid, $userid);
         if ($current) {
-            groups_remove_member($current->id, $userid);
+        	if (!($choicegroup->multipleenrollmentspossible == '1')) {
+        		groups_remove_member($current->id, $userid);
+        	}
             add_to_log($course->id, "choicegroup", "choose again", "view.php?id=$cm->id", $choicegroup->id, $cm->id);
         } else {
             // Update completion state
