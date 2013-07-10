@@ -38,7 +38,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * @param bool $vertical
      * @return string
      */
-    public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false, $showresults = false, $current = false, $choicegroupopen = false, $disabled = false) {
+    public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false, $showresults = false, $current = false, $choicegroupopen = false, $disabled = false, $multipleenrollmentspossible = false) {
         global $DB, $PAGE, $course;
 
         $PAGE->requires->js('/mod/choicegroup/javascript.js');
@@ -76,6 +76,10 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $html .= html_writer::end_tag('tr');
 
         $availableoption = count($options['options']);
+        if ($multipleenrollmentspossible == '1') {
+        	$i=0;
+        	$answer_to_groupid_mappings = '';
+        }
         foreach ($options['options'] as $option) {
             $group = $DB->get_record('groups', array('id' => $option->groupid, 'courseid' => $course->id));
             if (!$group) {
@@ -92,8 +96,16 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             }
             $html .= html_writer::start_tag('tr', array('class'=>'option'));
             $html .= html_writer::start_tag('td', array());
-            $option->attributes->name = 'answer';
-            $option->attributes->type = 'radio';
+            
+            if ($multipleenrollmentspossible == '1') {
+            	$option->attributes->name = 'answer_'.$i;
+            	$option->attributes->type = 'checkbox';
+            	$answer_to_groupid_mappings .= '<input type="hidden" name="answer_'.$i.'_groupid" value="'.$option->groupid.'">';
+            	$i++;
+            } else {
+            	$option->attributes->name = 'answer';
+            	$option->attributes->type = 'radio';
+            }
 
             $labeltext = html_writer::tag('label', $group->name, array('for' => 'choiceid_' . $option->attributes->value));
             $group_members = $DB->get_records('groups_members', array('groupid' => $group->id));
@@ -133,6 +145,9 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $html .= html_writer::end_tag('tr');
         }
         $html .= html_writer::end_tag('table');
+        if ($multipleenrollmentspossible == '1') {
+        	$html .= '<input type="hidden" name="number_of_groups" value="'.$i.'">' . $answer_to_groupid_mappings;
+        }
         $html .= html_writer::tag('div', '', array('class'=>'clearfloat'));
         $html .= html_writer::empty_tag('input', array('type'=>'hidden', 'name'=>'sesskey', 'value'=>sesskey()));
         $html .= html_writer::empty_tag('input', array('type'=>'hidden', 'name'=>'id', 'value'=>$coursemoduleid));
@@ -146,7 +161,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 }
             }
 
-            if (!empty($options['allowupdate']) && ($options['allowupdate'])) {
+            if (!empty($options['allowupdate']) && ($options['allowupdate']) && !($multipleenrollmentspossible == '1')) {
                 $url = new moodle_url('view.php', array('id'=>$coursemoduleid, 'action'=>'delchoicegroup', 'sesskey'=>sesskey()));
                 $html .= ' ' . html_writer::link($url, get_string('removemychoicegroup','choicegroup'));
             }

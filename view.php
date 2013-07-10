@@ -85,23 +85,44 @@ $completion->set_module_viewed($cm);
 
 /// Submit any new data if there is any
 if (data_submitted() && is_enrolled($context, NULL, 'mod/choicegroup:choose') && confirm_sesskey()) {
-    $timenow = time();
-    if (has_capability('mod/choicegroup:deleteresponses', $context)) {
-        if ($action == 'delete') { //some responses need to be deleted
-            choicegroup_delete_responses($userids, $choicegroup, $cm, $course); //delete responses.
-            redirect("view.php?id=$cm->id");
-        }
-    }
-    $answer = optional_param('answer', '', PARAM_INT);
 
-    if (empty($answer)) {
-        redirect("view.php?id=$cm->id", get_string('mustchooseone', 'choicegroup'));
-    } else {
-        choicegroup_user_submit_response($answer, $choicegroup, $USER->id, $course, $cm);
+    if ($choicegroup->multipleenrollmentspossible == 1) {
+    	$number_of_groups = optional_param('number_of_groups', '', PARAM_INT);
+    	
+    	for ($i = 0; $i < $number_of_groups; $i++) {
+    		$answer_value = optional_param('answer_' . $i, '', PARAM_INT);
+    		if ($answer_value != '') {
+    			choicegroup_user_submit_response($answer_value, $choicegroup, $USER->id, $course, $cm);
+    		} else {
+    			$answer_value_group_id = optional_param('answer_'.$i.'_groupid', '', PARAM_INT);
+    			groups_remove_member($answer_value_group_id, $USER->id);
+    			add_to_log($course->id, "choicegroup", "choose again", "view.php?id=$cm->id", $choicegroup->id, $cm->id);
+    		}
+    	}
+    	
+
+    } else { // multipleenrollmentspossible != 1
+    	
+    	$timenow = time();
+    	if (has_capability('mod/choicegroup:deleteresponses', $context)) {
+    		if ($action == 'delete') { //some responses need to be deleted
+    			choicegroup_delete_responses($userids, $choicegroup, $cm, $course); //delete responses.
+    			redirect("view.php?id=$cm->id");
+    		}
+    	}
+    	
+    	$answer = optional_param('answer', '', PARAM_INT);
+
+    	if (empty($answer)) {
+    		redirect("view.php?id=$cm->id", get_string('mustchooseone', 'choicegroup'));
+    	} else {
+    		choicegroup_user_submit_response($answer, $choicegroup, $USER->id, $course, $cm);
+    	}
     }
+
     redirect("view.php?id=$cm->id", get_string('choicegroupsaved', 'choicegroup'));
 } else {
-    echo $OUTPUT->header();
+	echo $OUTPUT->header();
 }
 
 
@@ -130,7 +151,19 @@ if ($choicegroup->intro) {
 
 //if user has already made a selection, and they are not allowed to update it, show their selected answer.
 if (isloggedin() && ($current !== false) ) {
-    echo $OUTPUT->box(get_string("yourselection", "choicegroup", userdate($choicegroup->timeopen)).": ".format_string($current->name), 'generalbox', 'yourselection');
+    if ($choicegroup->multipleenrollmentspossible == 1) {
+    	$currents = choicegroup_get_user_answer($choicegroup, $USER, TRUE);
+
+    	$names = array();
+    	foreach ($currents as $current) {
+    		$names[] = format_string($current->name);
+    	}
+    	$formatted_names = join(' '.get_string("and", "choicegroup").' ', array_filter(array_merge(array(join(', ', array_slice($names, 0, -1))), array_slice($names, -1))));
+    	echo $OUTPUT->box(get_string("yourselection", "choicegroup", userdate($choicegroup->timeopen)).": ".$formatted_names, 'generalbox', 'yourselection');
+    	 
+    } else {
+    	echo $OUTPUT->box(get_string("yourselection", "choicegroup", userdate($choicegroup->timeopen)).": ".format_string($current->name), 'generalbox', 'yourselection');
+    }
 }
 
 /// Print the form
@@ -152,10 +185,10 @@ $renderer = $PAGE->get_renderer('mod_choicegroup');
 if ( (!$current or $choicegroup->allowupdate) and $choicegroupopen and is_enrolled($context, NULL, 'mod/choicegroup:choose')) {
 // They haven't made their choicegroup yet or updates allowed and choicegroup is open
 
-    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, false);
+    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, false, $choicegroup->multipleenrollmentspossible);
 } else {
     // form can not be updated
-    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, true);
+    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, true, $choicegroup->multipleenrollmentspossible);
 }
 $choicegroupformshown = true;
 
