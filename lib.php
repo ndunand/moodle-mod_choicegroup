@@ -118,16 +118,16 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE) 
         $groupmemberships = $DB->get_records_sql('SELECT * FROM {groups_members} WHERE userid = ? AND groupid '.$insql, $params);
         $groups = array();
         foreach ($groupmemberships as $groupmembership) {
-        	$group = $DB->get_record('groups', array('id' => $groupmembership->groupid));
-        	$group->timeuseradded = $groupmembership->timeadded;
-        	$groups[] = $group;
+            $group = $DB->get_record('groups', array('id' => $groupmembership->groupid));
+            $group->timeuseradded = $groupmembership->timeadded;
+            $groups[] = $group;
         }
         if (count($groups) > 0) {
-        	if ($returnArray === TRUE) {
-        		return $groups;
-        	} else {
-        		return $groups[0];
-        	}
+            if ($returnArray === TRUE) {
+                return $groups;
+            } else {
+                return $groups[0];
+            }
         }
     }
     return false;
@@ -214,7 +214,7 @@ function choicegroup_update_instance($choicegroup) {
     }
     
     if (empty($choicegroup->multipleenrollmentspossible)) {
-    	$choicegroup->multipleenrollmentspossible = 0;
+        $choicegroup->multipleenrollmentspossible = 0;
     }
 
     //update, delete or insert answers
@@ -276,11 +276,11 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
                 $option->countanswers = 0;
             }
             if (is_array($answers)) {
-            	foreach($answers as $answer) {
-            		if ($answer && $text == $answer->id) {
-            			$option->attributes->checked = true;
-            		}
-            	}
+                foreach($answers as $answer) {
+                    if ($answer && $text == $answer->id) {
+                        $option->attributes->checked = true;
+                    }
+                }
             }
             if ( $choicegroup->limitanswers && ($option->countanswers >= $option->maxanswers) && empty($option->attributes->checked)) {
                 $option->attributes->disabled = true;
@@ -325,9 +325,9 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
     if (!($choicegroup->limitanswers && ($countanswers >= $maxans) )) {
         groups_add_member($selected_option->groupid, $userid);
         if ($current) {
-        	if (!($choicegroup->multipleenrollmentspossible == '1')) {
-        		groups_remove_member($current->id, $userid);
-        	}
+            if (!($choicegroup->multipleenrollmentspossible == 1)) {
+                groups_remove_member($current->id, $userid);
+            }
             add_to_log($course->id, "choicegroup", "choose again", "view.php?id=$cm->id", $choicegroup->id, $cm->id);
         } else {
             // Update completion state

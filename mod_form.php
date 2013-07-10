@@ -172,14 +172,14 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         }
         
         if (array_key_exists('multipleenrollmentspossible', $data) && $data['multipleenrollmentspossible'] === '1') {
-        	if ($choicegroups < 1) {
-        		$errors['option[0]'] = get_string('fillinatleastoneoption', 'choicegroup');
-        	}
+            if ($choicegroups < 1) {
+                $errors['option[0]'] = get_string('fillinatleastoneoption', 'choicegroup');
+            }
         } else {
-        	if ($choicegroups < 2) {
-        		$errors['option[0]'] = get_string('fillinatleasttwooptions', 'choicegroup');
-        		$errors['option[1]'] = get_string('fillinatleasttwooptions', 'choicegroup');
-        	}
+            if ($choicegroups < 2) {
+                $errors['option[0]'] = get_string('fillinatleasttwooptions', 'choicegroup');
+                $errors['option[1]'] = get_string('fillinatleasttwooptions', 'choicegroup');
+            }
         }
 
         $groups_selected = array();

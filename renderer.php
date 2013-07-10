@@ -77,8 +77,8 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
         $availableoption = count($options['options']);
         if ($multipleenrollmentspossible == '1') {
-        	$i=0;
-        	$answer_to_groupid_mappings = '';
+            $i=0;
+            $answer_to_groupid_mappings = '';
         }
         foreach ($options['options'] as $option) {
             $group = $DB->get_record('groups', array('id' => $option->groupid, 'courseid' => $course->id));
@@ -98,13 +98,13 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $html .= html_writer::start_tag('td', array());
             
             if ($multipleenrollmentspossible == '1') {
-            	$option->attributes->name = 'answer_'.$i;
-            	$option->attributes->type = 'checkbox';
-            	$answer_to_groupid_mappings .= '<input type="hidden" name="answer_'.$i.'_groupid" value="'.$option->groupid.'">';
-            	$i++;
+                $option->attributes->name = 'answer_'.$i;
+                $option->attributes->type = 'checkbox';
+                $answer_to_groupid_mappings .= '<input type="hidden" name="answer_'.$i.'_groupid" value="'.$option->groupid.'">';
+                $i++;
             } else {
-            	$option->attributes->name = 'answer';
-            	$option->attributes->type = 'radio';
+                $option->attributes->name = 'answer';
+                $option->attributes->type = 'radio';
             }
 
             $labeltext = html_writer::tag('label', $group->name, array('for' => 'choiceid_' . $option->attributes->value));
@@ -146,7 +146,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         }
         $html .= html_writer::end_tag('table');
         if ($multipleenrollmentspossible == '1') {
-        	$html .= '<input type="hidden" name="number_of_groups" value="'.$i.'">' . $answer_to_groupid_mappings;
+            $html .= '<input type="hidden" name="number_of_groups" value="'.$i.'">' . $answer_to_groupid_mappings;
         }
         $html .= html_writer::tag('div', '', array('class'=>'clearfloat'));
         $html .= html_writer::empty_tag('input', array('type'=>'hidden', 'name'=>'sesskey', 'value'=>sesskey()));
