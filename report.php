@@ -154,8 +154,9 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
 /// Send HTTP headers
     $workbook->send($filename);
 /// Creating the first worksheet
-    $myxls =& $workbook->add_worksheet($strresponses);
-
+    // assigning by reference gives this: Strict standards: Only variables should be assigned by reference in /data_1/www/html/moodle/moodle/mod/choicegroup/report.php on line 157
+    // removed the ampersand.
+    $myxls = $workbook->add_worksheet($strresponses); 
 /// Print names of all the fields
     $myxls->write_string(0,0,get_string("lastname"));
     $myxls->write_string(0,1,get_string("firstname"));
