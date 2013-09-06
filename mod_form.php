@@ -32,7 +32,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 
     function definition() {
 <<<<<<< HEAD
-        global $CFG, $CHOICEGROUP_SHOWRESULTS, $CHOICEGROUP_PUBLISH, $CHOICEGROUP_DISPLAY, $DB, $COURSE, $PAGE, $OUTPUT;
+        global $CFG, $CHOICEGROUP_SHOWRESULTS, $CHOICEGROUP_PUBLISH, $CHOICEGROUP_DISPLAY, $DB, $COURSE, $PAGE;
 		
 		// Get the number to check if there are more than two
 		$db_groups = $DB->get_records('groups', array('courseid' => $COURSE->id));
