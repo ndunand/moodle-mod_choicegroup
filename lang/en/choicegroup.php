@@ -104,7 +104,6 @@ $string['members/max'] = 'Fill / Capacity';
 $string['members/'] = 'Fill';
 $string['groupmembers'] = 'Group members';
 $string['page-mod-choice-x'] = 'Any Group choice module page';
-<<<<<<< HEAD
 $string['showdescription'] = 'Show descriptions';
 $string['hidedescription'] = 'Hide descriptions';
 $string['generallimitation'] = 'General limitation';
@@ -118,4 +117,6 @@ $string['showdescription'] = 'Show descriptions';
 $string['hidedescription'] = 'Hide descriptions';
 
 $string['generallimitation'] = 'General Limitation';
->>>>>>> 601a7521be12c5948670ed24bef743e08a6b206c
+
+$string['nogroupsincourse'] = 'Please create at least two groups before using this activity!';
+$string['backtocourse'] = 'Back to course';
