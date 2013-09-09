@@ -727,15 +727,23 @@ function choicegroup_reset_course_form_defaults($course) {
  * @return array
  */
 function choicegroup_get_response_data($choicegroup, $cm) {
-
+    global $CFG;
     $context = get_context_instance(CONTEXT_MODULE, $cm->id);
-
-/// Initialise the returned array, which is a matrix:  $allresponses[responseid][userid] = responseobject
+    /// Initialise the returned array, which is a matrix:  $allresponses[responseid][userid] = responseobject
     $allresponses = array();
 
-/// First get all the users who have access here
-/// To start with we assume they are all "unanswered" then move them later
-    $allresponses[0] = get_enrolled_users($context, 'mod/choicegroup:choose', 0, user_picture::fields('u', array('idnumber')), 'u.lastname ASC,u.firstname ASC');
+    /// First get all the users who have access here
+    /// To start with we assume they are all "unanswered" then move them later
+    $allresponses[0] = get_enrolled_users($context, 'mod/choicegroup:choose', 0, user_picture::fields('u',        array('idnumber')), 'u.lastname ASC,u.firstname ASC');
+
+    if ($allresponses[0]) {
+        // if groupmembersonly used, remove users who are not in any group
+        if (!empty($CFG->enablegroupmembersonly) and $cm->groupmembersonly) {
+            if ($groupingusers = groups_get_grouping_members($cm->groupingid, 'u.id', 'u.id')) {
+                $allresponses[0] = array_intersect_key($allresponses[0], $groupingusers);
+            }
+        }
+    }
 
     foreach ($allresponses[0] as $user) {
         $currentAnswers = choicegroup_get_user_answer($choicegroup, $user, TRUE);
