@@ -140,7 +140,7 @@ $allresponses = choicegroup_get_response_data($choicegroup, $cm);   // Big funct
 
 
 if (has_capability('mod/choicegroup:readresponses', $context)) {
-    choicegroup_show_reportlink($allresponses, $cm);
+    choicegroup_show_reportlink($choicegroup, $allresponses, $cm);
 }
 
 echo '<div class="clearer"></div>';
