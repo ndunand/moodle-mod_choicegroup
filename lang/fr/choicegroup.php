@@ -108,6 +108,7 @@ $string['showdescription'] = 'Afficher descriptions';
 $string['hidedescription'] = 'Masquer descriptions';
 $string['generallimitation'] = 'Limite générale';
 $string['applytoallgroups'] = 'Appliquer à tous les groupes';
+$string['pleasesetgroups'] = 'Veuillez créer au préalable au moins deux groupes dans ce cours.';
 
 $string['multipleenrollmentspossible'] = 'Autoriser l\'inscription à plusieurs groupes.';
 $string['and'] = 'et';

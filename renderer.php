@@ -76,7 +76,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $html .= html_writer::end_tag('tr');
 
         $availableoption = count($options['options']);
-        if ($multipleenrollmentspossible == '1') {
+        if ($multipleenrollmentspossible == 1) {
             $i=0;
             $answer_to_groupid_mappings = '';
         }
@@ -97,7 +97,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $html .= html_writer::start_tag('tr', array('class'=>'option'));
             $html .= html_writer::start_tag('td', array());
             
-            if ($multipleenrollmentspossible == '1') {
+            if ($multipleenrollmentspossible == 1) {
                 $option->attributes->name = 'answer_'.$i;
                 $option->attributes->type = 'checkbox';
                 $answer_to_groupid_mappings .= '<input type="hidden" name="answer_'.$i.'_groupid" value="'.$option->groupid.'">';
@@ -145,7 +145,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $html .= html_writer::end_tag('tr');
         }
         $html .= html_writer::end_tag('table');
-        if ($multipleenrollmentspossible == '1') {
+        if ($multipleenrollmentspossible == 1) {
             $html .= '<input type="hidden" name="number_of_groups" value="'.$i.'">' . $answer_to_groupid_mappings;
         }
         $html .= html_writer::tag('div', '', array('class'=>'clearfloat'));
@@ -161,7 +161,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 }
             }
 
-            if (!empty($options['allowupdate']) && ($options['allowupdate']) && !($multipleenrollmentspossible == '1')) {
+            if (!empty($options['allowupdate']) && ($options['allowupdate']) && !($multipleenrollmentspossible == 1)) {
                 $url = new moodle_url('view.php', array('id'=>$coursemoduleid, 'action'=>'delchoicegroup', 'sesskey'=>sesskey()));
                 $html .= ' ' . html_writer::link($url, get_string('removemychoicegroup','choicegroup'));
             }

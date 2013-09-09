@@ -57,6 +57,10 @@ class mod_choicegroup_mod_form extends moodleform_mod {
             $groups[$group->id] = $group->name;
         }
 
+        if (count($db_groups) < 2) {
+            print_error('pleasesetgroups', 'choicegroup');
+        }
+
         $repeatarray = array();
         $repeatarray[] = $mform->createElement('header', '', get_string('option','choicegroup').' {no}');
         $repeatarray[] = $mform->createElement('select', 'option', get_string('option','choicegroup'), $groups);

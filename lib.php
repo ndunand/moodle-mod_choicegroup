@@ -738,14 +738,14 @@ function choicegroup_get_response_data($choicegroup, $cm) {
     $allresponses[0] = get_enrolled_users($context, 'mod/choicegroup:choose', 0, user_picture::fields('u', array('idnumber')), 'u.lastname ASC,u.firstname ASC');
 
     foreach ($allresponses[0] as $user) {
-    	$currentAnswers = choicegroup_get_user_answer($choicegroup, $user, TRUE);
-    	if ($currentAnswers != false) {
-    		foreach ($currentAnswers as $current) {
-    			$allresponses[$current->id][$user->id] = clone($allresponses[0][$user->id]);
-    			$allresponses[$current->id][$user->id]->timemodified = $current->timeuseradded;
-    		}
-    		unset($allresponses[0][$user->id]);   // Remove from unanswered column
-    	}
+        $currentAnswers = choicegroup_get_user_answer($choicegroup, $user, TRUE);
+        if ($currentAnswers != false) {
+            foreach ($currentAnswers as $current) {
+                $allresponses[$current->id][$user->id] = clone($allresponses[0][$user->id]);
+                $allresponses[$current->id][$user->id]->timemodified = $current->timeuseradded;
+            }
+            unset($allresponses[0][$user->id]);   // Remove from unanswered column
+        }
     }
     return $allresponses;
 }
