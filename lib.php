@@ -345,21 +345,23 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
 }
 
 /**
+ * @param object $choicegroup
  * @param array $user
  * @param object $cm
  * @return void Output is echo'd
  */
-function choicegroup_show_reportlink($user, $cm) {
+function choicegroup_show_reportlink($choicegroup, $user, $cm) {
     $responsecount =0;
     foreach($user as $optionid => $userlist) {
         if ($optionid) {
             $responsecount += count($userlist);
         }
     }
-
-    echo '<div class="reportlink">';
-    echo "<a href=\"report.php?id=$cm->id\">".get_string("viewallresponses", "choicegroup", $responsecount)."</a>";
-    echo '</div>';
+    echo '<div class="reportlink"><a href="report.php?id='.$cm->id.'">'.get_string("viewallresponses", "choicegroup", $responsecount);
+    if ($choicegroup->multipleenrollmentspossible == 1) {
+        echo ' ' . get_string("byparticipants", "choicegroup", count($userlist));
+    }
+    echo '</a></div>';
 }
 
 /**
@@ -802,9 +804,10 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
         if ($groupmode) {
             groups_get_activity_group($PAGE->cm, true);
         }
-        // We only actually need the choicegroup id here
-        $choicegroup = new stdClass;
-        $choicegroup->id = $PAGE->cm->instance;
+        if (!$choicegroup = choicegroup_get_choicegroup($PAGE->cm->instance)) {
+            print_error('invalidcoursemodule');
+            return false;
+        }
         $allresponses = choicegroup_get_response_data($choicegroup, $PAGE->cm, $groupmode);   // Big function, approx 6 SQL calls per user
 
         $responsecount =0;
@@ -813,7 +816,11 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
                 $responsecount += count($userlist);
             }
         }
-        $choicegroupnode->add(get_string("viewallresponses", "choicegroup", $responsecount), new moodle_url('/mod/choicegroup/report.php', array('id'=>$PAGE->cm->id)));
+        $viewallresponsestext = get_string("viewallresponses", "choicegroup", $responsecount);
+        if ($choicegroup->multipleenrollmentspossible == 1) {
+            $viewallresponsestext .= ' ' . get_string("byparticipants", "choicegroup", count($userlist));
+        }
+        $choicegroupnode->add($viewallresponsestext, new moodle_url('/mod/choicegroup/report.php', array('id'=>$PAGE->cm->id)));
     }
 }
 
