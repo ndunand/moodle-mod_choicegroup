@@ -67,6 +67,7 @@ class restore_choicegroup_activity_structure_step extends restore_activity_struc
 
         $data->choicegroupid = $this->get_new_parentid('choicegroup');
         $data->timemodified = $this->apply_date_offset($data->timemodified);
+        $data->groupid = $this->get_mappingid('group', $data->groupid);
 
         $newitemid = $DB->insert_record('choicegroup_options', $data);
         $this->set_mapping('choicegroup_option', $oldid, $newitemid);
