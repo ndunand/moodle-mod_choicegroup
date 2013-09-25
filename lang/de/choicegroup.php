@@ -49,7 +49,7 @@ Sie k&ouml;nnen jedes der vorhandenen Felder ausf&uuml;llen, Sie d&uuml;rfen abe
 $string['limitanswers_help'] = 'Diese Option setzt die maximale Anzahl von m&ouml;glichen Stimmabgaben f&uuml;r die betreffende Abstimmungsoption. Sobald diese Obergrenze erreicht ist, kann sich niemand mehr f&uuml;r diese Abstimmungsoption entscheiden.
 
 Wenn die Obergrenzen deaktiviert sind, gibt es keine Beschr&auml;nkung bei der Abstimmung.';
-$string['choicegroup:addinstance'] = 'Add a new group choice activity';
+$string['choicegroup:addinstance'] = 'Neue Gruppenwahl-Aktivit&auml;t hinzuf&uuml;gen';
 $string['choicegroup:readresponses'] = 'Stimmabgaben sehen';
 $string['choicegroupsaved'] = 'Ihre Abstimmung wurde gespeichert';
 $string['choicetext'] = 'Abstimmungstext';
@@ -63,20 +63,27 @@ $string['modulenameplural'] = 'Gruppenabstimmungen';
 $string['mustchooseone'] = 'Sie m&uuml;ssen zuerst eine Auswahl treffen, bevor Sie speichern k&ouml;nnen. Es wurde noch nichts gespeichert.';
 $string['noguestchoose'] = 'G&auml;ste d&uuml;rfen nicht an Abstimmungen teilnehmen.';
 $string['noresultsviewable'] = 'Ergebnisse sind aktuell nicht sichtbar.';
+$string['neverresultsviewable'] = 'Ergebnisse sind nicht sichtbar.';
+$string['afterresultsviewable'] = 'Ergebnisse sind nach der eigenen Abstimmung sichtbar.';
+$string['notyetresultsviewable'] = 'Ergebnisse werden nach dem Ende der Abstimmung sichtbar.';
 $string['notanswered'] = 'Noch nicht abgestimmt';
 $string['notenrolledchoose'] = 'Nur eingeschriebene Teilnehmer/innen d&uuml;rfen an der Abstimmung teilnehmen.';
 $string['notopenyet'] = 'Aktivit&auml;t ist erst ab {$a} verf&uuml;gbar';
 $string['option'] = 'Gruppe';
 $string['pluginadministration'] = 'Abstimmungsadministration';
 $string['pluginname'] = 'Gruppenabstimmung';
+$string['multipleenrollmentspossible'] = 'Eintrag in mehrere Gruppen erlauben';
+$string['pleasesetgroups'] = 'Bitte mindestens zwei Gruppen in diesem Kurs anlegen.';
 $string['privacy'] = 'Anonymit&auml;t';
 $string['publish'] = 'Ergebnisse ver&ouml;ffentlichen';
 $string['publishafteranswer'] = 'Nach der eigenen Stimmabgabe';
 $string['publishafterclose'] = 'Nach Abstimmungsende';
 $string['publishalways'] = 'Ergebnisse immer zeigen';
 $string['publishanonymous'] = 'Anonyme Ergebnisse';
-$string['publishnames'] = 'Vollständige Ergebnisse (mit Name und Stimme)';
+$string['publishnames'] = 'Vollst&auml;ndige Ergebnisse (mit Name und Stimme)';
 $string['publishnot'] = 'Keine Ergebnisse ver&ouml;ffentlichen';
+$string['generallimitation'] = 'Generelle Obergrenze';
+$string['applytoallgroups'] = 'Obergrenze für alle Gruppen anwenden';
 $string['removemychoicegroup'] = 'Meine Auswahl entfernen';
 $string['removeresponses'] = 'Alle Stimmabgaben entfernen';
 $string['responses'] = 'Stimmabgaben';
@@ -88,21 +95,21 @@ $string['spacesleft'] = 'Pl&auml;tze verf&uuml;gbar';
 $string['taken'] = 'Eingetragen';
 $string['timerestrict'] = 'Abstimmung nur im Zeitraum:';
 $string['viewallresponses'] = 'Zeige {$a} Stimmabgaben';
+$string['byparticipants'] = 'von {$a} Teilnehmer(n)';
 $string['withselected'] = 'Eingetragen';
 $string['yourselection'] = 'Ihre Auswahl';
-$string['skipresultgraph'] = 'SErgebnisanzeige &uuml;berspringen';
+$string['skipresultgraph'] = 'Ergebnisanzeige &uuml;berspringen';
 $string['moveselectedusersto'] = 'Ausgew&auml;hlte Nutzer/innen bewegen nach...';
 $string['numberofuser'] = 'Anzahl von Nutzern';
+$string['groupdoesntexist'] = 'Einige der ausgew&uuml;hlten Gruppen sind im Kurs nicht vorhanden. Der Dozent/Kursverwalter sollte diese anlegen und/oder die Abstimmung anpassen.';
+$string['samegroupused'] = 'Eine Gruppe kann nicht mehrmals verwendet werden.';
 
 $string['members/'] = 'Mitgliederanzahl';
 $string['members/max'] = 'Eingetragen / Maximal';
-$string['groupmembers'] = 'Gruppen Mitglieder';
+$string['groupmembers'] = 'Gruppenmitglieder';
 $string['page-mod-choice-x'] = 'Jede Gruppenabstimmungsseite';
+$string['showdescription'] = 'Beschreibung zeigen';
+$string['hidedescription'] = 'Beschreibung verbergen';
 
-$string['noresultsviewable'] = 'Ergebnisse sind aktuell nicht sichtbar.';
-$string['neverresultsviewable'] = 'Ergebnisse sind nicht sichtbar.';
-$string['afterresultsviewable'] = 'Ergebnisse sind nach der eigenen Abstimmung sichtbar.';
-$string['notyetresultsviewable'] = 'Ergebnisse werden nach dem Ende der Abstimmung sichtbar.';
-$string['groupdoesntexist'] = 'Einige der ausgew&uuml;hlten Gruppen sind im Kurs nicht vorhanden. Der Dozent/Kursverwalter sollte diese anlegen und/oder die Abstimmung anpassen.';
-$string['samegroupused'] = 'Eine Gruppe kann nicht mehrmals verwendet werden.';
+$string['and'] = 'und';
 
