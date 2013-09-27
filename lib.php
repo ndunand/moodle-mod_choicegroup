@@ -313,6 +313,10 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
     $selected_option = $DB->get_record('choicegroup_options', array('id' => $formanswer));
 
     $current = choicegroup_get_user_answer($choicegroup, $userid);
+    if ($current) {
+        $currentgroup = $DB->get_record('groups', array('id' => $current->id), 'id,name', MUST_EXIST);
+    }
+    $selectedgroup = $DB->get_record('groups', array('id' => $selected_option->groupid), 'id,name', MUST_EXIST);
     $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
     $countanswers=0;
@@ -327,17 +331,20 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
         if ($current) {
             if (!($choicegroup->multipleenrollmentspossible == 1)) {
                 if ($selected_option->groupid != $current->id) {
-                    groups_remove_member($current->id, $userid);
+                    if (groups_is_member($current->id, $userid)) {
+                        groups_remove_member($current->id, $userid);
+                        add_to_log($course->id, "choicegroup", "remove choice", "view.php?id=$cm->id", $currentgroup->name, $cm->id);
+                    }
                 }
             }
-            add_to_log($course->id, "choicegroup", "choose again", "view.php?id=$cm->id", $choicegroup->id, $cm->id);
+            add_to_log($course->id, "choicegroup", "choose again", "view.php?id=$cm->id", $selectedgroup->name, $cm->id);
         } else {
             // Update completion state
             $completion = new completion_info($course);
             if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
                 $completion->update_state($cm, COMPLETION_COMPLETE);
             }
-            add_to_log($course->id, "choicegroup", "choose", "view.php?id=$cm->id", $choicegroup->id, $cm->id);
+            add_to_log($course->id, "choicegroup", "choose", "view.php?id=$cm->id", $selectedgroup->name, $cm->id);
         }
     } else {
         if (!$current || !($current->id==$selected_option->groupid)) { //check to see if current choicegroup already selected - if not display error
@@ -580,7 +587,11 @@ function choicegroup_delete_responses($userids, $choicegroup, $cm, $course) {
     $completion = new completion_info($course);
     foreach($userids as $userid) {
         if ($current = choicegroup_get_user_answer($choicegroup, $userid)) {
-            groups_remove_member($current->id, $userid);
+            $currentgroup = $DB->get_record('groups', array('id' => $current->id), 'id,name', MUST_EXIST);
+            if (groups_is_member($current->id, $userid)) {
+                groups_remove_member($current->id, $userid);
+                add_to_log($course->id, "choicegroup", "remove choice", "view.php?id=$cm->id", $currentgroup->name, $cm->id);
+            }
             // Update completion state
             if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
                 $completion->update_state($cm, COMPLETION_INCOMPLETE, $userid);

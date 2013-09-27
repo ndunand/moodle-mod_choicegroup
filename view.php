@@ -62,11 +62,14 @@ if (!$context = get_context_instance(CONTEXT_MODULE, $cm->id)) {
 }
 
 $current = choicegroup_get_user_answer($choicegroup, $USER);
-
 if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, NULL, 'mod/choicegroup:choose') and $choicegroup->allowupdate) {
     // user wants to delete his own choice:
     if ($current !== false) {
-        groups_remove_member($current->id, $USER->id);
+        if (groups_is_member($current->id, $USER->id)) {
+            $currentgroup = $DB->get_record('groups', array('id' => $current->id), 'id,name', MUST_EXIST);
+            groups_remove_member($current->id, $USER->id);
+            add_to_log($course->id, "choicegroup", "remove choice", "view.php?id=$cm->id", $currentgroup->name, $cm->id);
+        }
         $current = choicegroup_get_user_answer($choicegroup, $USER);
         // Update completion state
         $completion = new completion_info($course);
@@ -95,8 +98,11 @@ if (data_submitted() && is_enrolled($context, NULL, 'mod/choicegroup:choose') &&
                 choicegroup_user_submit_response($answer_value, $choicegroup, $USER->id, $course, $cm);
             } else {
                 $answer_value_group_id = optional_param('answer_'.$i.'_groupid', '', PARAM_INT);
-                groups_remove_member($answer_value_group_id, $USER->id);
-                add_to_log($course->id, "choicegroup", "choose again", "view.php?id=$cm->id", $choicegroup->id, $cm->id);
+                if (groups_is_member($answer_value_group_id, $USER->id)) {
+                    $answer_value_group = $DB->get_record('groups', array('id' => $answer_value_group_id), 'id,name', MUST_EXIST);
+                    groups_remove_member($answer_value_group_id, $USER->id);
+                    add_to_log($course->id, "choicegroup", "remove choice", "view.php?id=$cm->id", $answer_value_group->name, $cm->id);
+                }
             }
         }
         
@@ -127,7 +133,7 @@ if (data_submitted() && is_enrolled($context, NULL, 'mod/choicegroup:choose') &&
 
 
 /// Display the choicegroup and possibly results
-add_to_log($course->id, "choicegroup", "view", "view.php?id=$cm->id", $choicegroup->id, $cm->id);
+add_to_log($course->id, "choicegroup", "view", "view.php?id=$cm->id", '', $cm->id);
 
 /// Check to see if groups are being used in this choicegroup
 $groupmode = groups_get_activity_groupmode($cm);
