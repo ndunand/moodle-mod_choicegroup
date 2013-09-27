@@ -326,7 +326,9 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
         groups_add_member($selected_option->groupid, $userid);
         if ($current) {
             if (!($choicegroup->multipleenrollmentspossible == 1)) {
-                groups_remove_member($current->id, $userid);
+                if ($selected_option->groupid != $current->id) {
+                    groups_remove_member($current->id, $userid);
+                }
             }
             add_to_log($course->id, "choicegroup", "choose again", "view.php?id=$cm->id", $choicegroup->id, $cm->id);
         } else {

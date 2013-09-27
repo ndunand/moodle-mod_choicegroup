@@ -80,6 +80,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $i=0;
             $answer_to_groupid_mappings = '';
         }
+        $initiallyHideSubmitButton = false;
         foreach ($options['options'] as $option) {
             $group = $DB->get_record('groups', array('id' => $option->groupid, 'courseid' => $course->id));
             if (!$group) {
@@ -105,6 +106,9 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             } else {
                 $option->attributes->name = 'answer';
                 $option->attributes->type = 'radio';
+                if (array_key_exists('attributes', $option) && array_key_exists('checked', $option->attributes) && $option->attributes->checked == true) {
+                    $initiallyHideSubmitButton = true;
+                }
             }
 
             $labeltext = html_writer::tag('label', $group->name, array('for' => 'choiceid_' . $option->attributes->value));
@@ -157,7 +161,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                $html .= html_writer::tag('td', get_string('choicegroupfull', 'choicegroup'));
             } else {
                 if (!$disabled) {
-                    $html .= html_writer::empty_tag('input', array('type'=>'submit', 'value'=>get_string('savemychoicegroup','choicegroup'), 'class'=>'button'));
+                    $html .= html_writer::empty_tag('input', array('type'=>'submit', 'value'=>get_string('savemychoicegroup','choicegroup'), 'class'=>'button', 'style' => $initiallyHideSubmitButton?'display: none':''));
                 }
             }
 

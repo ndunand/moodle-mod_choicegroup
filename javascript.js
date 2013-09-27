@@ -50,5 +50,7 @@ var NDY = YUI().use("node", function(Y) {
 
     };
     Y.on("click", choicegroup_descriptiondisplay_click, "a.choicegroup-descriptiondisplay");
+    Y.delegate('click', function() { Y.one("table.choicegroups~input[type='submit'][class='button']").hide(); },  Y.config.doc, "table.choicegroups input[id^='choiceid_'][type='radio'][checked]", this);
+    Y.delegate('click', function() { Y.one("table.choicegroups~input[type='submit'][class='button']").show(); },  Y.config.doc, "table.choicegroups input[id^='choiceid_'][type='radio']:not([checked])", this);
 });
 
