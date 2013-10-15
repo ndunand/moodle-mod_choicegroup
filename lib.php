@@ -571,7 +571,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
  * @return bool
  */
 function choicegroup_delete_responses($userids, $choicegroup, $cm, $course) {
-    global $CFG;
+    global $CFG, $DB;
     require_once($CFG->libdir.'/completionlib.php');
 
     if(!is_array($userids) || empty($userids)) {
