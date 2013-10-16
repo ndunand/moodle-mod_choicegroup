@@ -136,8 +136,6 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 
 //-------------------------------------------------------------------------------
         $this->standard_coursemodule_elements();
-        $mform->removeElement('groupmode');
-        $mform->removeElement('groupingid');
 //-------------------------------------------------------------------------------
         $this->add_action_buttons();
     }
