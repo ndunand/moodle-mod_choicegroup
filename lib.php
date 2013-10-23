@@ -90,7 +90,7 @@ function choicegroup_user_outline($course, $user, $mod, $choicegroup) {
  *
  */
 function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE) {
-    global $DB, $choicegroup_groups;
+    global $DB;
 
     if (is_numeric($user)) {
         $userid = $user;
@@ -99,11 +99,7 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE) 
         $userid = $user->id;
     }
 
-    if (!isset($choicegroup_groups)) {
-        $choicegroup_groups = choicegroup_get_groups($choicegroup);
-    }
-
-    $groups = $choicegroup_groups;
+    $groups = choicegroup_get_groups($choicegroup);
 
     $groupids = array();
     foreach ($groups as $group) {

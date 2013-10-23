@@ -58,7 +58,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         }
 
         if (count($db_groups) < 2) {
-            print_error('pleasesetgroups', 'choicegroup');
+            print_error('pleasesetgroups', 'choicegroup', new moodle_url('/course/view.php?id='.$COURSE->id));
         }
 
         $repeatarray = array();
