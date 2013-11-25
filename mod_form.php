@@ -31,12 +31,24 @@ require_once ($CFG->dirroot.'/course/moodleform_mod.php');
 class mod_choicegroup_mod_form extends moodleform_mod {
 
     function definition() {
+<<<<<<< HEAD
         global $CFG, $CHOICEGROUP_SHOWRESULTS, $CHOICEGROUP_PUBLISH, $CHOICEGROUP_DISPLAY, $DB, $COURSE, $PAGE;
-
+		
+		// Get the number to check if there are more than two
+		$db_groups = $DB->get_records('groups', array('courseid' => $COURSE->id));
+		$repeatno = count($db_groups);
+		
+		if($repeatno >= 2) {
         $mform    =& $this->_form;
 
         $PAGE->requires->js_init_call('M.mod_choicegroup.init');
 
+=======
+        global $CFG, $CHOICEGROUP_SHOWRESULTS, $CHOICEGROUP_PUBLISH, $CHOICEGROUP_DISPLAY, $DB, $COURSE, $PAGE;
+
+        $mform    =& $this->_form;
+    	$PAGE->requires->js_init_call('M.mod_choicegroup.init');
+>>>>>>> 601a7521be12c5948670ed24bef743e08a6b206c
 //-------------------------------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
@@ -52,7 +64,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 
 //-------------------------------------------------------------------------------
         $groups = array('' => get_string('choosegroup', 'choicegroup'));
-        $db_groups = $DB->get_records('groups', array('courseid' => $COURSE->id));
+        
         foreach ($db_groups as $group) {
             $groups[$group->id] = $group->name;
         }
@@ -86,6 +98,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $menuoptions[0] = get_string('disable');
         $menuoptions[1] = get_string('enable');
         $mform->addElement('select', 'limitanswers', get_string('limitanswers', 'choicegroup'), $menuoptions);
+<<<<<<< HEAD
         $mform->addHelpButton('limitanswers', 'limitanswers', 'choicegroup');
 
         $mform->addElement('text', 'generallimitation', get_string('generallimitation', 'choicegroup'), array('size' => '6'));
@@ -96,7 +109,19 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $mform->addElement('button', 'setlimit', get_string('applytoallgroups', 'choicegroup'));
         $mform->disabledIf('setlimit', 'limitanswers', 'neq', 1);
 
+=======
+		$mform->addHelpButton('limitanswers', 'limitanswers', 'choicegroup');
+
+	
+		$mform->addElement('text', 'generallimitation', get_string('generallimitation', 'choicegroup'), array('size'=>'6'));
+		$mform->disabledIf('generallimitation', 'limitanswers', 'neq', 1);
+		$mform->addRule('generallimitation', get_string('error'), 'numeric', 'extraruledata', 'client', false, false);
+		$mform->setDefault('generallimitation', 0);
+		$mform->addElement('button', 'setlimit', get_string('submit', 'moodle'));
+		$mform->disabledIf('setlimit', 'limitanswers', 'neq', 1);
+        
         $repeatno = count($db_groups);
+>>>>>>> 601a7521be12c5948670ed24bef743e08a6b206c
         $repeateloptions = array();
         $repeateloptions['limit']['default'] = 0;
         $repeateloptions['limit']['disabledif'] = array('limitanswers', 'eq', 0);
@@ -122,6 +147,10 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                 $counter++;
             }
         }
+<<<<<<< HEAD
+		
+=======
+>>>>>>> 601a7521be12c5948670ed24bef743e08a6b206c
 
 
 //-------------------------------------------------------------------------------
@@ -138,6 +167,17 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $this->standard_coursemodule_elements();
 //-------------------------------------------------------------------------------
         $this->add_action_buttons();
+		}
+		else {
+			$mform =& $this->_form;
+			$mform->addElement('hidden', 'update', 0);
+			$mform->setType('update', PARAM_INT);
+			$mform->addElement('static', 'error_message', get_string('error', 'moodle'), get_string('nogroupsincourse', 'choicegroup'));
+			//$this->add_action_buttons(true, false, false);
+			$link = '"'.$CFG->wwwroot.'/course/view.php?id='.$COURSE->id.'"';
+			$attributes = array('onclick' => 'window.location.href='.$link);
+			$mform->addElement('button', 'intro', get_string('backtocourse', 'choicegroup'), $attributes);
+		}
     }
 
     function data_preprocessing(&$default_values){

@@ -113,3 +113,12 @@ $string['pleasesetgroups'] = 'Please create at least two groups in this course.'
 
 $string['multipleenrollmentspossible'] = 'Allow enrollment to multiple groups';
 $string['and'] = 'and';
+=======
+
+$string['showdescription'] = 'Show descriptions';
+$string['hidedescription'] = 'Hide descriptions';
+
+$string['generallimitation'] = 'General Limitation';
+
+$string['nogroupsincourse'] = 'Please create at least two groups before using this activity!';
+$string['backtocourse'] = 'Back to course';
