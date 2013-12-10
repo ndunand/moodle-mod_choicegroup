@@ -56,7 +56,7 @@ if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
 
 require_login($course->id, false, $cm);
 
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+$context = context_module::instance($cm->id);
 
 require_capability('mod/choicegroup:readresponses', $context);
 

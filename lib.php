@@ -254,7 +254,7 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
     $cdisplay = array('options'=>array());
 
     $cdisplay['limitanswers'] = true;
-    $context = get_context_instance(CONTEXT_MODULE, $coursemodule->id);
+    $context = context_module::instance($coursemodule->id);
     $answers = choicegroup_get_user_answer($choicegroup, $user, TRUE);
 
     foreach ($choicegroup->option as $optionid => $text) {
@@ -313,7 +313,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
         $currentgroup = $DB->get_record('groups', array('id' => $current->id), 'id,name', MUST_EXIST);
     }
     $selectedgroup = $DB->get_record('groups', array('id' => $selected_option->groupid), 'id,name', MUST_EXIST);
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+    $context = context_module::instance($cm->id);
 
     $countanswers=0;
     if($choicegroup->limitanswers) {
@@ -408,7 +408,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
     unset($display->maxanswers);
 
     $display->numberofuser = $totaluser;
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+    $context = context_module::instance($cm->id);
     $display->viewresponsecapability = has_capability('mod/choicegroup:readresponses', $context);
     $display->deleterepsonsecapability = has_capability('mod/choicegroup:deleteresponses',$context);
     $display->fullnamecapability = has_capability('moodle/site:viewfullnames', $context);
@@ -426,7 +426,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
         }
     }
 
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+    $context = context_module::instance($cm->id);
 
     $hascapfullnames = has_capability('moodle/site:viewfullnames', $context);
 
@@ -739,7 +739,7 @@ function choicegroup_reset_course_form_defaults($course) {
  */
 function choicegroup_get_response_data($choicegroup, $cm) {
     global $CFG;
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+    $context = context_module::instance($cm->id);
     /// Initialise the returned array, which is a matrix:  $allresponses[responseid][userid] = responseobject
     $allresponses = array();
 

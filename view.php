@@ -57,7 +57,7 @@ $choicegroup_groups = choicegroup_get_groups($choicegroup);
 $strchoicegroup = get_string('modulename', 'choicegroup');
 $strchoicegroups = get_string('modulenameplural', 'choicegroup');
 
-if (!$context = get_context_instance(CONTEXT_MODULE, $cm->id)) {
+if (!$context = context_module::instance($cm->id)) {
     print_error('badcontext');
 }
 
@@ -198,7 +198,7 @@ if ( (!$current or $choicegroup->allowupdate) and $choicegroupopen and is_enroll
 }
 $choicegroupformshown = true;
 
-$sitecontext = get_context_instance(CONTEXT_SYSTEM);
+$sitecontext = context_system::instance();
 
 if (isguestuser()) {
     // Guest account
@@ -209,7 +209,7 @@ if (isguestuser()) {
     $SESSION->wantsurl = $FULLME;
     $SESSION->enrolcancel = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';
 
-    $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+    $coursecontext = context_course::instance($course->id);
     $courseshortname = format_string($course->shortname, true, array('context' => $coursecontext));
 
     echo $OUTPUT->box_start('generalbox', 'notice');
