@@ -92,6 +92,7 @@ $string['spacesleft'] = 'espaces disponibles';
 $string['taken'] = 'Pris';
 $string['timerestrict'] = 'Restreindre la réponse à cette période de temp';
 $string['viewallresponses'] = 'Afficher {$a} réponses';
+$string['byparticipants'] = 'par {$a} participants';
 $string['withselected'] = 'Avec xxx';
 $string['yourselection'] = 'Votre sélection';
 $string['skipresultgraph'] = 'Sauter le graphique de résultat';
