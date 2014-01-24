@@ -208,7 +208,7 @@ function choicegroup_update_instance($choicegroup) {
         $choicegroup->timeopen = 0;
         $choicegroup->timeclose = 0;
     }
-    
+
     if (empty($choicegroup->multipleenrollmentspossible)) {
         $choicegroup->multipleenrollmentspossible = 0;
     }
@@ -351,20 +351,28 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
 
 /**
  * @param object $choicegroup
- * @param array $user
+ * @param array $allresponses
  * @param object $cm
  * @return void Output is echo'd
  */
-function choicegroup_show_reportlink($choicegroup, $user, $cm) {
-    $responsecount =0;
-    foreach($user as $optionid => $userlist) {
+function choicegroup_show_reportlink($choicegroup, $allresponses, $cm) {
+    $responsecount = 0;
+    $respondents = array();
+    foreach($allresponses as $optionid => $userlist) {
         if ($optionid) {
             $responsecount += count($userlist);
+            if ($choicegroup->multipleenrollmentspossible) {
+                foreach ($userlist as $user) {
+                    if (!in_array($user->id, $respondents)) {
+                        $respondents[] = $user->id;
+                    }
+                }
+            }
         }
     }
     echo '<div class="reportlink"><a href="report.php?id='.$cm->id.'">'.get_string("viewallresponses", "choicegroup", $responsecount);
     if ($choicegroup->multipleenrollmentspossible == 1) {
-        echo ' ' . get_string("byparticipants", "choicegroup", count($userlist));
+        echo ' ' . get_string("byparticipants", "choicegroup", count($respondents));
     }
     echo '</a></div>';
 }
@@ -827,15 +835,23 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
         }
         $allresponses = choicegroup_get_response_data($choicegroup, $PAGE->cm, $groupmode);   // Big function, approx 6 SQL calls per user
 
-        $responsecount =0;
+        $responsecount = 0;
+        $respondents = array();
         foreach($allresponses as $optionid => $userlist) {
             if ($optionid) {
                 $responsecount += count($userlist);
+                if ($choicegroup->multipleenrollmentspossible) {
+                    foreach ($userlist as $user) {
+                        if (!in_array($user->id, $respondents)) {
+                            $respondents[] = $user->id;
+                        }
+                    }
+                }
             }
         }
         $viewallresponsestext = get_string("viewallresponses", "choicegroup", $responsecount);
         if ($choicegroup->multipleenrollmentspossible == 1) {
-            $viewallresponsestext .= ' ' . get_string("byparticipants", "choicegroup", count($userlist));
+            $viewallresponsestext .= ' ' . get_string("byparticipants", "choicegroup", count($respondents));
         }
         $choicegroupnode->add($viewallresponsestext, new moodle_url('/mod/choicegroup/report.php', array('id'=>$PAGE->cm->id)));
     }
