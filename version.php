@@ -26,10 +26,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version  = 2013120100;
+$module->version  = 2014010100;
 $module->requires  = 2011120500;
 $module->maturity  = MATURITY_STABLE;
-$module->release = '1.4.3 (Build: 2013120100)';
+$module->release = '1.4.4 (Build: 2014010100)';
 
 $module->component = 'mod_choicegroup';
 $module->cron = 0;
