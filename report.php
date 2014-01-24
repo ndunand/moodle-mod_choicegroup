@@ -88,6 +88,11 @@ if (!$download) {
     }
 } else {
     $groupmode = groups_get_activity_groupmode($cm);
+    $groups = choicegroup_get_groups($choicegroup);
+    $groups_ids = array();
+    foreach($groups as $group) {
+        $groups_ids[] = $group->id;
+    }
 }
 $users = choicegroup_get_response_data($choicegroup, $cm, $groupmode);
 
@@ -101,7 +106,7 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
 /// Send HTTP headers
     $workbook->send($filename);
 /// Creating the first worksheet
-    $myxls =& $workbook->add_worksheet($strresponses);
+    $myxls & $workbook->add_worksheet($strresponses);
 
 /// Print names of all the fields
     $myxls->write_string(0,0,get_string("lastname"));
@@ -114,24 +119,26 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
     $i=0;
     $row=1;
     if ($users) {
+        $displayed = array();
         foreach ($users as $option => $userid) {
-            $option_text = choicegroup_get_option_text($choicegroup, $option);
             foreach($userid as $user) {
+                if (in_array($user->id, $displayed)) {
+                    continue;
+                }
+                $displayed[] = $user->id;
                 $myxls->write_string($row,0,$user->lastname);
                 $myxls->write_string($row,1,$user->firstname);
                 $studentid=(!empty($user->idnumber) ? $user->idnumber : " ");
                 $myxls->write_string($row,2,$studentid);
-                $ug2 = '';
+                $ug2 = array();
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
-                    foreach ($usergrps as $ug) {
-                        $ug2 = $ug2. $ug->name;
+                    foreach ($groups_ids as $gid) {
+                        if (array_key_exists($gid, $usergrps)) {
+                            $ug2[] = $usergrps[$gid]->name;
+                        }
                     }
                 }
-                $myxls->write_string($row,3,$ug2);
-
-                if (isset($option_text)) {
-                    $myxls->write_string($row,4,format_string($option_text,true));
-                }
+                $myxls->write_string($row, 3, implode(', ', $ug2));
                 $row++;
                 $pos=4;
             }
@@ -156,7 +163,7 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
 /// Creating the first worksheet
     // assigning by reference gives this: Strict standards: Only variables should be assigned by reference in /data_1/www/html/moodle/moodle/mod/choicegroup/report.php on line 157
     // removed the ampersand.
-    $myxls = $workbook->add_worksheet($strresponses); 
+    $myxls = $workbook->add_worksheet($strresponses);
 /// Print names of all the fields
     $myxls->write_string(0,0,get_string("lastname"));
     $myxls->write_string(0,1,get_string("firstname"));
@@ -169,23 +176,26 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
     $i=0;
     $row=1;
     if ($users) {
+        $displayed = array();
         foreach ($users as $option => $userid) {
-            $option_text = choicegroup_get_option_text($choicegroup, $option);
             foreach($userid as $user) {
+                if (in_array($user->id, $displayed)) {
+                    continue;
+                }
+                $displayed[] = $user->id;
                 $myxls->write_string($row,0,$user->lastname);
                 $myxls->write_string($row,1,$user->firstname);
                 $studentid=(!empty($user->idnumber) ? $user->idnumber : " ");
                 $myxls->write_string($row,2,$studentid);
-                $ug2 = '';
+                $ug2 = array();
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
-                    foreach ($usergrps as $ug) {
-                        $ug2 = $ug2. $ug->name;
+                    foreach ($groups_ids as $gid) {
+                        if (array_key_exists($gid, $usergrps)) {
+                            $ug2[] = $usergrps[$gid]->name;
+                        }
                     }
                 }
-                $myxls->write_string($row,3,$ug2);
-                if (isset($option_text)) {
-                    $myxls->write_string($row,4,format_string($option_text,true));
-                }
+                $myxls->write_string($row, 3, implode(', ', $ug2));
                 $row++;
             }
         }
@@ -215,9 +225,13 @@ if ($download == "txt" && has_capability('mod/choicegroup:downloadresponses', $c
     /// generate the data for the body of the spreadsheet
     $i=0;
     if ($users) {
+        $displayed = array();
         foreach ($users as $option => $userid) {
-            $option_text = choicegroup_get_option_text($choicegroup, $option);
             foreach($userid as $user) {
+                if (in_array($user->id, $displayed)) {
+                    continue;
+                }
+                $displayed[] = $user->id;
                 echo $user->lastname;
                 echo "\t".$user->firstname;
                 $studentid = " ";
@@ -225,16 +239,15 @@ if ($download == "txt" && has_capability('mod/choicegroup:downloadresponses', $c
                     $studentid = $user->idnumber;
                 }
                 echo "\t". $studentid."\t";
-                $ug2 = '';
+                $ug2 = array();
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
-                    foreach ($usergrps as $ug) {
-                        $ug2 = $ug2. $ug->name;
+                    foreach ($groups_ids as $gid) {
+                        if (array_key_exists($gid, $usergrps)) {
+                            $ug2[] = $usergrps[$gid]->name;
+                        }
                     }
                 }
-                echo $ug2. "\t";
-                if (isset($option_text)) {
-                    echo format_string($option_text,true);
-                }
+                echo implode(', ', $ug2) . "\t";
                 echo "\n";
             }
         }
