@@ -59,7 +59,7 @@ $string['choosegroup'] = 'Choose a group';
 $string['limit'] = 'Limit';
 $string['limitanswers'] = 'Limit the number of responses allowed';
 $string['modulename'] = 'Group choice';
-$string['modulename_help'] = 'The Group Choice module allows students to enrol themselves in a group within a course. The teacher can select which groups students can chose from and the maximum number of students allowed in each group.';
+$string['modulename_help'] = 'The Group Choice module allows students to enrol themselves in a group within a course. The teacher can select which groups students can choose from and the maximum number of students allowed in each group.';
 $string['modulenameplural'] = 'Group choices';
 $string['mustchooseone'] = 'You must choose an answer before saving.  Nothing was saved.';
 $string['noguestchoose'] = 'Sorry, guests are not allowed to make choices.';
@@ -97,7 +97,7 @@ $string['withselected'] = 'With selected';
 $string['yourselection'] = 'Your selection';
 $string['skipresultgraph'] = 'Skip result graph';
 $string['moveselectedusersto'] = 'Move selected users to...';
-$string['numberofuser'] = 'The number of user';
+$string['numberofuser'] = 'The number of users';
 $string['groupdoesntexist'] = 'Some of the specified groups don\'t exist within this course. The teacher should create the necessary groups and/or modify this activity.';
 $string['samegroupused'] = 'The same group can not be used several times.';
 
