@@ -1,0 +1,88 @@
+<?php
+/* By mohammad moreb mmoreb@hebron.edu  *** www.hebron.edu ***  */
+
+
+
+$string['addmorechoices'] = 'أضف خيارات أكثر';
+$string['allowupdate'] = 'اسمح للطالب بتعديل إحتيارة';
+$string['answered'] = 'تم الاختيار';
+$string['completionsubmit'] = 'اضهر بشكل كلي عند انهاء الاضافة';
+$string['displayhorizontal'] = 'عرض افقي';
+$string['displaymode'] = 'طريقة العرض';
+$string['displayvertical'] = 'عرض عمودي';
+$string['expired'] = 'نأسف الوقت المسوموح بة للاضافة انتى{$a} يرجى مراجعو المدرس';
+$string['fillinatleastoneoption'] = 'تحتاج على الاقل الى اخيار احدى الخيارات المعروضة';
+$string['fillinatleasttwooptions'] = 'تحتاج الى اختيار خيارين على الاقل';
+$string['full'] = '(كامل)';
+$string['havetologin'] = 'يرجى تسجيل الدخول لاكمال تسجيلك';
+$string['choice'] = 'الخيارات';
+$string['choicegroupclose'] = 'حتى تاريخ';
+$string['choicegroup:deleteresponses'] = 'حذف من الشعبة';
+$string['choicegroup:downloadresponses'] = 'تحميل قائمة الطلاب في الشعب';
+$string['choicegroupfull'] = 'لا يسمح بإضافة طلبة اخرين في المجموعة وصل العدد الى السقف العلوي المسموح بة';
+$string['choicegroup:choose'] = 'اضف للشعبة';
+$string['choicegroupname'] = 'اسم المجموعة';
+$string['choicegroupopen'] = 'من تاريخ';
+$string['choicegroupoptions'] = 'الخيارات';
+$string['choicegroupoptions_help'] = 'Here is where you specify the options that participants have to choose from.
+
+You can fill in any number of these. If you leave some of the options blank, they will not be displayed. If you need more options, click the "Add 3 fields to form" button.';
+$string['limitanswers_help'] = 'الحد الاقصى في المسموح الوصول الية في المجموعة';
+$string['choicegroup:addinstance'] = 'إضافة نشاط جديد لاختيار مجموعة';
+$string['choicegroup:readresponses'] = 'اظهر قائمة الطلبة';
+$string['choicegroupsaved'] = 'تم الحفظ بنجاح';
+$string['choicetext'] = 'اختر النص';
+$string['chooseaction'] = 'اختيار إجراء ...';
+$string['choosegroup'] = 'اختر المجموعة ';
+$string['limit'] = 'الحد الاعلى';
+$string['limitanswers'] = 'الحد الاعلى ';
+$string['modulename'] = 'قائمة شعب المساق';
+$string['modulename_help'] = 'إختيار الشعب  حيث يتم اضافة رابط يسمح للطلبة اختيار الشعبة الخاصة بة والتي تسمح للمدرس بفصل الطلاب داخل المساق الى عدة شعب ';
+$string['modulenameplural'] = 'اختيارات المجموعات';
+$string['mustchooseone'] = 'يرجى تحديد اي شعبة قبل الحفظ';
+$string['noguestchoose'] = 'نأسف غير مسموح للزائر بهذا الاجراء';
+$string['notanswered'] = 'لم يتم الاجابة علية';
+$string['notopenyet'] = 'نآسف، هذا النشاط غير متوفرة حتى {$a}';
+$string['option'] = 'المحموعة';
+$string['pluginadministration'] = 'إدارة الاختيار';
+$string['pluginname'] = 'اختيار مجموعة';
+$string['privacy'] = 'خصوصية النتيجة';
+$string['publish'] = 'نشر الاختيار';
+$string['publishafteranswer'] = 'تظهر النتائج للطلاب بعد تسجيلهم';
+$string['publishafterclose'] = 'تظهر النتائج للطلاب فقط بعد إغلاق الاختيار';
+$string['publishalways'] = 'دائما أظهر الاختيار';
+$string['publishanonymous'] = 'نشر نتائج بدون أسماء الطلاب';
+$string['publishnames'] = 'نشر النتائج الكاملة، والتي تبين أسماء وخياراتهم';
+$string['publishnot'] = 'لا تنشر النتائج للطلاب';
+$string['removemychoicegroup'] = 'حذفي من الشعبة المحددة';
+$string['removeresponses'] = 'حذف جميع تسجيلاتي';
+$string['responses'] = 'ردود';
+$string['responsesto'] = 'الردود على {$a}';
+$string['savemychoicegroup'] = 'حفظ في الشعبة المحدده';
+$string['showunanswered'] = 'اضهر العمود لغير المختار';
+$string['spaceleft'] = 'متوفر';
+$string['spacesleft'] = 'متوفر';
+$string['taken'] = 'تم حجزة';
+$string['timerestrict'] = 'السماح باختيار المجوعات / الشعب لفترة زمنية';
+$string['viewallresponses'] = 'استعراض {$a} اختيار';
+$string['byparticipants'] = ' {$a} المشتركين ';
+$string['withselected'] = 'مع المحدد';
+$string['yourselection'] = 'اختيارك';
+$string['skipresultgraph'] = 'تخطي نتيجة الرسم البياني';
+$string['moveselectedusersto'] = 'انقل الطلبة المحددين الى ..';
+$string['numberofuser'] = 'عدد المستخدمين';
+$string['groupdoesntexist'] = 'Some of the specified groups don\'t exist within this course. The teacher should create the necessary groups and/or modify this activity.';
+$string['samegroupused'] = 'نفس المجموعة لا يمكن استخدامها عدة مرات.';
+
+$string['members/max'] = 'محجوز / السعة';
+$string['members/'] = 'محجوز';
+$string['groupmembers'] = 'اعظاء المجموعة';
+$string['page-mod-choice-x'] = 'لاي مجموعة';
+$string['showdescription'] = 'أظهر الوصف';
+$string['hidedescription'] = 'إخفاء الوصف';
+$string['generallimitation'] = 'قيود عامة';
+$string['applytoallgroups'] = 'تطبيق على جميع الشعب';
+$string['pleasesetgroups'] = 'يرجى اضافة مجموعتين الى المساق';
+
+$string['multipleenrollmentspossible'] = 'اسمح للطالب بالتسجيل في عدة شعب';
+$string['and'] = 'و ';
