@@ -113,3 +113,4 @@ $string['pleasesetgroups'] = 'Please create at least two groups in this course.'
 
 $string['multipleenrollmentspossible'] = 'Allow enrollment to multiple groups';
 $string['and'] = 'and';
+$string['groupingsheader'] = "Groupings";
