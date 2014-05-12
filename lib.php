@@ -171,20 +171,27 @@ function choicegroup_add_instance($choicegroup) {
 
     //insert answers
     $choicegroup->id = $DB->insert_record("choicegroup", $choicegroup);
-    foreach ($choicegroup->option as $key => $value) {
-        $value = trim($value);
-        if (isset($value) && $value <> '') {
+    
+    // deserialize the selected groups
+    
+    $groupIDs = explode(';', $choicegroup->serializedselectedgroups);
+    $groupIDs = array_diff( $groupIDs, array( '' ) );
+    
+    foreach ($groupIDs as $groupID) {
+        $groupID = trim($groupID);
+        if (isset($groupID) && $groupID != '') {
             $option = new stdClass();
-            $option->groupid = $value;
+            $option->groupid = $groupID;
             $option->choicegroupid = $choicegroup->id;
-            if (isset($choicegroup->limit[$key])) {
-                $option->maxanswers = $choicegroup->limit[$key];
+            $property = 'group_' . $groupID . '_limit';
+            if (isset($choicegroup->$property)) {
+            	$option->maxanswers = $choicegroup->$property;
             }
             $option->timemodified = time();
             $DB->insert_record("choicegroup_options", $option);
-        }
+        }	
     }
-
+    
     return $choicegroup->id;
 }
 

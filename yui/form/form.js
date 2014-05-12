@@ -27,6 +27,36 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 				var limitInputUIDIVNode = Y.one('#fitem_id_limit_0');
 				
 				
+				
+				
+				// this code happens on form load
+				if (Y.one('#serializedselectedgroups').get('value') != '') {
+					var selectedGroups = Y.one('#serializedselectedgroups').get('value').split(';');
+					selectedGroups = selectedGroups.filter(function(n) {return n != '';});
+					var selectedOptionsNodes = Y.all("#availablegroups option");
+					selectedOptionsNodes.each(function(optNode) {
+						selectedGroups.forEach(function (selectedGroup) {
+							if (selectedGroup == optNode.get('value')) {
+								addOtionNodeToSelectedGroupsList(optNode);
+							}
+						});
+					});
+					cleanSelectedGroupsList();
+				}
+				
+				if (limitAnswersSelectNode.get('value') == '1') { // limiting is enabled, show limit box
+					limitInputUIDIVNode.show();
+					
+				} else { // limiting is disabled
+					limitInputUIDIVNode.hide();
+					
+				}
+				
+				// -------------------------------
+				
+				
+				
+				
 				function getInputLimitNodeOfSelectedGroupNode(n) {
 					return Y.one('#group_' + n.get('value') + '_limit');
 				}

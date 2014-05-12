@@ -183,13 +183,28 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         
         $mform->setExpanded('groups');
         
-		$mform->addElement('hidden', 'serializedselectedgroups', '', array('id' => 'serializedselectedgroups'));
-        $mform->setType('serializedselectedgroups', PARAM_RAW);
-
-		foreach ($groups as $group) {
+    	foreach ($groups as $group) {
 			$mform->addElement('hidden', 'group_' . $group->id . '_limit', '', array('id' => 'group_' . $group->id . '_limit', 'class' => 'limit_input_node'));
         	$mform->setType('group_' . $group->id . '_limit', PARAM_RAW);
 		}
+        
+        
+        $serializedselectedgroupsValue = '';
+        if (isset($this->_instance) && $this->_instance != '') {
+        	// this is presumably edit mode, try to fill in the data for javascript
+        	$cg = choicegroup_get_choicegroup($this->_instance);
+        	foreach ($cg->option as $optionID => $groupID) {
+        		$serializedselectedgroupsValue .= ';' . $groupID;
+        		$mform->setDefault('group_' . $groupID . '_limit', $cg->maxanswers[$optionID]);
+        	}
+        	
+        }
+        
+        
+		$mform->addElement('hidden', 'serializedselectedgroups', $serializedselectedgroupsValue, array('id' => 'serializedselectedgroups'));
+        $mform->setType('serializedselectedgroups', PARAM_RAW);
+
+
 
 
 
