@@ -219,29 +219,49 @@ function choicegroup_update_instance($choicegroup) {
     if (empty($choicegroup->multipleenrollmentspossible)) {
         $choicegroup->multipleenrollmentspossible = 0;
     }
+    
+    
+    // deserialize the selected groups
+    
+    $groupIDs = explode(';', $choicegroup->serializedselectedgroups);
+    $groupIDs = array_diff( $groupIDs, array( '' ) );
 
-    //update, delete or insert answers
-    foreach ($choicegroup->option as $key => $value) {
-        $value = trim($value);
-        $option = new stdClass();
-        $option->groupid = $value;
-        $option->choicegroupid = $choicegroup->id;
-        if (isset($choicegroup->limit[$key])) {
-            $option->maxanswers = $choicegroup->limit[$key];
-        }
-        $option->timemodified = time();
-        if (isset($choicegroup->optionid[$key]) && !empty($choicegroup->optionid[$key])){//existing choicegroup record
-            $option->id=$choicegroup->optionid[$key];
-            if (isset($value) && $value <> '') {
-                $DB->update_record("choicegroup_options", $option);
-            } else { //empty old option - needs to be deleted.
-                $DB->delete_records("choicegroup_options", array("id"=>$option->id));
-            }
-        } else {
-            if (isset($value) && $value <> '') {
-                $DB->insert_record("choicegroup_options", $option);
-            }
-        }
+    // prepare pre-existing selected groups from database
+    
+    if (!($preExistingGroups = $DB->get_records("choicegroup_options", array("choicegroupid" => $choicegroup->id), "id"))) {
+    	return false;
+    }
+
+    // walk through form-selected groups
+    foreach ($groupIDs as $groupID) {
+    	$groupID = trim($groupID);
+    	if (isset($groupID) && $groupID != '') {
+    		$option = new stdClass();
+    		$option->groupid = $groupID;
+    		$option->choicegroupid = $choicegroup->id;
+    		$property = 'group_' . $groupID . '_limit';
+    		if (isset($choicegroup->$property)) {
+    			$option->maxanswers = $choicegroup->$property;
+    		}
+    		$option->timemodified = time();
+    		// Find out if this selection already exists
+    		foreach ($preExistingGroups as $key => $preExistingGroup) {
+    			if ($option->groupid == $preExistingGroup->groupid) {
+    				// match found, so instead of creating a new record we should merely update a pre-existing record
+    				$option->id = $preExistingGroup->id;
+    				$DB->update_record("choicegroup_options", $option);
+    				// remove the element from the array to not deal with it later
+    				unset($preExistingGroups[$key]);
+    				continue 2; // continue the big loop
+    			}
+    		}
+    		$DB->insert_record("choicegroup_options", $option);	
+    	}
+    	 
+    }
+    // remove all remaining selected groups which did not appear in the form
+    foreach ($preExistingGroups as $preExistingGroup) {
+    	$DB->delete_records("choicegroup_options", array("id"=>$preExistingGroup->id));
     }
 
     return $DB->update_record('choicegroup', $choicegroup);
