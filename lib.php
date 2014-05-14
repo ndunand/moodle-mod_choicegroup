@@ -259,7 +259,7 @@ function choicegroup_update_instance($choicegroup) {
     	}
     	 
     }
-    // remove all remaining selected groups which did not appear in the form
+    // remove all remaining pre-existing groups which did not appear in the form (and are thus assumed to have been deleted)
     foreach ($preExistingGroups as $preExistingGroup) {
     	$DB->delete_records("choicegroup_options", array("id"=>$preExistingGroup->id));
     }
