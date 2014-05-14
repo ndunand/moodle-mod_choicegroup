@@ -120,7 +120,6 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 
 
 		$mform->addElement('header', 'groups', 'groups');
-		$mform->addElement('static', 'description', 'exercise1', 'exercise2');
 		$mform->addElement('html', '<fieldset class="clearfix"><legend class="ftoggler">Groups</legend>
 				<div class="fcontainer clearfix">
 				<div id="fitem_id_option_0" class="fitem fitem_fselect ">
@@ -144,7 +143,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 				$mform->addElement('html', '<option value="'.$group->id.'" class="group toplevel">'.$group->name.'</option>');
 			}
 		}
-		$mform->addElement('html','</select>');
+		$mform->addElement('html','</select><br><button name="expandButton" type="button" disabled id="expandButton">+</button><button name="collapseButton" type="button" disabled id="collapseButton">-</button>');
 
 
 

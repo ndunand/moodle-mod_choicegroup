@@ -29,10 +29,21 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 				var applyLimitToAllGroupsButtonNode = Y.one("#id_setlimit");
 				var limitAnswersSelectNode = Y.one('#id_limitanswers');
 				var limitInputUIDIVNode = Y.one('#fitem_id_limit_0');
+				var expandButtonNode = Y.one('#expandButton');
+				var collapseButtonNode = Y.one('#collapseButton');
+				
+				var groupingsNodesContainer = new Array();
 				
 				// --------------------------------
 				// Global Functions
 				// --------------------------------
+				
+				
+				function removeElementFromArray(ar, from, to) {
+					  var rest = ar.slice((to || from) + 1 || ar.length);
+					  ar.length = from < 0 ? ar.length + from : from;
+					  return ar.push.apply(ar, rest);
+				}
 				
 				function getInputLimitNodeOfSelectedGroupNode(n) {
 					return Y.one('#group_' + n.get('value') + '_limit');
@@ -52,15 +63,24 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 					});
 				}
 				
-				function addOtionNodeToSelectedGroupsList(optNode) {
+				function addOptionNodeToSelectedGroupsList(optNode) {
 					if (optNode.hasClass('grouping') == true) {
-						// This is a grouping, so instead of adding this item we actually need to add everything underneath it
-						var sib = optNode.next(); // sib means sibling, as in, the next element in the DOM tree
-						while (sib.hasClass('nested') && sib.hasClass('group')) {
-							// add sib
-							selectedGroupsNode.append(sib.cloneNode(true));
-							// go to next node
-							sib = sib.next();
+						// check if option is collapsed
+						if (((typeof groupingsNodesContainer[optNode.get('value')]) == 'undefined') || ( groupingsNodesContainer[optNode.get('value')].length == 0)) {
+							// it is expanded, take nodes from UI
+							// This is a grouping, so instead of adding this item we actually need to add everything underneath it
+							var sib = optNode.next(); // sib means sibling, as in, the next element in the DOM tree
+							while (sib.hasClass('nested') && sib.hasClass('group')) {
+								// add sib
+								selectedGroupsNode.append(sib.cloneNode(true));
+								// go to next node
+								sib = sib.next();
+							}
+						} else {
+							// yes it IS collapsed, need to take the nodes from the container rather than from the UI
+							groupingsNodesContainer[optNode.get('value')].forEach(function (underlyingGroupNode) {
+								selectedGroupsNode.append(underlyingGroupNode.cloneNode(true));
+							});
 						}
 					} else {
 						selectedGroupsNode.append(optNode.cloneNode(true));
@@ -76,7 +96,55 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 					});
 				}
 				
+				function collapseGrouping(groupingNode) {
+					var sib = groupingNode.next(); // sib means sibling, as in, the next element in the DOM tree
+					while (sib.hasClass('nested') && sib.hasClass('group')) {
+						// save this node somewhere first
+						if (typeof groupingsNodesContainer[groupingNode.get('value')] == 'undefined') {
+							groupingsNodesContainer[groupingNode.get('value')] = new Array();
+						}
+						groupingsNodesContainer[groupingNode.get('value')].push(sib.cloneNode(true));
+						// save the next node before removing the current one
+						var nextSibling = sib.next();
+						sib.remove();
+						// go to next node
+						sib = nextSibling;
+					}
+				}
 				
+				function expandGrouping(groupingNode) {
+					var nextOpt = groupingNode.next();
+					if (typeof groupingsNodesContainer[groupingNode.get('value')] != 'undefined') {
+						groupingsNodesContainer[groupingNode.get('value')].forEach(function(underlyingGroupNode) {
+							if (typeof nextOpt != 'undefined') {
+								Y.all("#availablegroups").insertBefore(underlyingGroupNode, nextOpt);
+							} else {
+								Y.all("#availablegroups").appendChild(underlyingGroupNode);
+							}
+						});
+						groupingsNodesContainer[groupingNode.get('value')] = new Array();
+					}
+						
+					
+				}
+				
+				function collapseAllGroupings() {
+					var availableOptionsNodes = Y.all("#availablegroups option");
+					availableOptionsNodes.each(function(optNode) {
+						if (optNode.hasClass('grouping') == true) {
+							collapseGrouping(optNode);
+						}
+					});
+				}
+				
+				function expandAllGroupings() {
+					var availableOptionsNodes = Y.all("#availablegroups option");
+					availableOptionsNodes.each(function(optNode) {
+						if (optNode.hasClass('grouping') == true) {
+							expandGrouping(optNode);
+						}
+					});
+				}
 				
 				
 				
@@ -86,11 +154,11 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 				if (Y.one('#serializedselectedgroups').get('value') != '') {
 					var selectedGroups = Y.one('#serializedselectedgroups').get('value').split(';');
 					selectedGroups = selectedGroups.filter(function(n) {return n != '';});
-					var selectedOptionsNodes = Y.all("#availablegroups option");
-					selectedOptionsNodes.each(function(optNode) {
+					var availableOptionsNodes = Y.all("#availablegroups option");
+					availableOptionsNodes.each(function(optNode) {
 						selectedGroups.forEach(function (selectedGroup) {
 							if (selectedGroup == optNode.get('value')) {
-								addOtionNodeToSelectedGroupsList(optNode);
+								addOptionNodeToSelectedGroupsList(optNode);
 							}
 						});
 					});
@@ -104,6 +172,16 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 					limitInputUIDIVNode.hide();
 					
 				}
+				
+				// Collapse all groupings on load
+				
+				
+				
+				collapseAllGroupings();
+				Y.one('#expandButton').set('disabled', false);
+
+				
+				
 				// -------------------------------
 				// -------------------------------
 				
@@ -115,6 +193,21 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 				// ---------------------------------
 				// Setup UI Bindings (on load)
 				// ---------------------------------
+				
+				
+				Y.one('#expandButton').on('click', function(e) {
+					expandAllGroupings();
+					Y.one('#expandButton').set('disabled', true);
+					Y.one('#collapseButton').set('disabled', false);
+					
+				});
+				Y.one('#collapseButton').on('click', function(e) {
+					collapseAllGroupings();
+					Y.one('#collapseButton').set('disabled', true);
+					Y.one('#expandButton').set('disabled', false);
+					
+				});
+				
 
 				// On click fill in the limit in every field
 				applyLimitToAllGroupsButtonNode.on('click', function (e) {
@@ -179,8 +272,20 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 
 				});
 				Y.delegate('dblclick', function(e) { 
-					addOtionNodeToSelectedGroupsList(e.currentTarget);
-					cleanSelectedGroupsList();
+					if (e.currentTarget.hasClass('grouping') == true) {
+						if (((typeof groupingsNodesContainer[e.currentTarget.get('value')]) == 'undefined') || ( groupingsNodesContainer[e.currentTarget.get('value')].length == 0)) {
+							collapseGrouping(e.currentTarget);
+							Y.one('#expandButton').set('disabled', false);
+						} else {
+							expandGrouping(e.currentTarget);
+							Y.one('#collapseButton').set('disabled', false);
+						}
+
+					} else {
+						addOptionNodeToSelectedGroupsList(e.currentTarget);
+						cleanSelectedGroupsList();
+					}
+
 					
 				},  Y.config.doc, "select[id='availablegroups'] option", this);
 				
@@ -213,7 +318,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 				
 				addGroupButtonNode.on('click', function(e) {
 					var selectedOptionsNodes = Y.all("#availablegroups option:checked");
-					selectedOptionsNodes.each(function(optNode) { addOtionNodeToSelectedGroupsList(optNode); });
+					selectedOptionsNodes.each(function(optNode) { addOptionNodeToSelectedGroupsList(optNode); });
 					cleanSelectedGroupsList();
 				});
 				removeGroupButtonNode.on('click', function(e) {
