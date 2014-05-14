@@ -16,6 +16,10 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 	Y.Moodle.mod_choicegroup.form = {
 			init: function() {
 				
+				// -------------------------------
+				// Global Variables 
+				// -------------------------------
+				
 				var availableGroupsNode = Y.one('#availablegroups');
 				var addGroupButtonNode = Y.one('#addGroupButton');
 				var selectedGroupsNode = Y.one('#id_selectedGroups');
@@ -26,36 +30,9 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 				var limitAnswersSelectNode = Y.one('#id_limitanswers');
 				var limitInputUIDIVNode = Y.one('#fitem_id_limit_0');
 				
-				
-				
-				
-				// this code happens on form load
-				if (Y.one('#serializedselectedgroups').get('value') != '') {
-					var selectedGroups = Y.one('#serializedselectedgroups').get('value').split(';');
-					selectedGroups = selectedGroups.filter(function(n) {return n != '';});
-					var selectedOptionsNodes = Y.all("#availablegroups option");
-					selectedOptionsNodes.each(function(optNode) {
-						selectedGroups.forEach(function (selectedGroup) {
-							if (selectedGroup == optNode.get('value')) {
-								addOtionNodeToSelectedGroupsList(optNode);
-							}
-						});
-					});
-					cleanSelectedGroupsList();
-				}
-				
-				if (limitAnswersSelectNode.get('value') == '1') { // limiting is enabled, show limit box
-					limitInputUIDIVNode.show();
-					
-				} else { // limiting is disabled
-					limitInputUIDIVNode.hide();
-					
-				}
-				
-				// -------------------------------
-				
-				
-				
+				// --------------------------------
+				// Global Functions
+				// --------------------------------
 				
 				function getInputLimitNodeOfSelectedGroupNode(n) {
 					return Y.one('#group_' + n.get('value') + '_limit');
@@ -101,6 +78,43 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 				
 				
 				
+				
+				
+				// --------------------------------
+				// this code happens on form load
+				// --------------------------------
+				if (Y.one('#serializedselectedgroups').get('value') != '') {
+					var selectedGroups = Y.one('#serializedselectedgroups').get('value').split(';');
+					selectedGroups = selectedGroups.filter(function(n) {return n != '';});
+					var selectedOptionsNodes = Y.all("#availablegroups option");
+					selectedOptionsNodes.each(function(optNode) {
+						selectedGroups.forEach(function (selectedGroup) {
+							if (selectedGroup == optNode.get('value')) {
+								addOtionNodeToSelectedGroupsList(optNode);
+							}
+						});
+					});
+					cleanSelectedGroupsList();
+				}
+				
+				if (limitAnswersSelectNode.get('value') == '1') { // limiting is enabled, show limit box
+					limitInputUIDIVNode.show();
+					
+				} else { // limiting is disabled
+					limitInputUIDIVNode.hide();
+					
+				}
+				// -------------------------------
+				// -------------------------------
+				
+				
+				
+				
+
+				
+				// ---------------------------------
+				// Setup UI Bindings (on load)
+				// ---------------------------------
 
 				// On click fill in the limit in every field
 				applyLimitToAllGroupsButtonNode.on('click', function (e) {
@@ -121,9 +135,15 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 				
 				formNode.on('submit', function(e) {
 					var selectedOptionsNodes = Y.all("#id_selectedGroups option");
+					if (selectedOptionsNodes.size() < 2) {
+						alert('You must select at least two group choices.');
+				        e.preventDefault();
+				        e.stopPropagation();
+					}
 					var serializedSelection = '';
 					selectedOptionsNodes.each(function(optNode) { serializedSelection += ';' + optNode.get('value'); });
 					Y.one('#serializedselectedgroups').set('value', serializedSelection);
+
 				});
 				
 				
@@ -181,7 +201,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 						
 					} else {
 						removeGroupButtonNode.set('disabled', true);
-						removeGroupButtonNode.setContent('Add');
+						removeGroupButtonNode.setContent('Remove');
 						uiInputLimitNode.set('disabled', true);
 					}
 
@@ -220,4 +240,4 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 
 
 	};
-}, '@VERSION@', {requires: ['node', 'event'] });
+}, '@VERSION@', {requires: ['node', 'event', 'anim'] });
