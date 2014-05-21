@@ -119,19 +119,19 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 		// -------------------------
 
 
-		$mform->addElement('header', 'groups', 'groups');
-		$mform->addElement('html', '<fieldset class="clearfix"><legend class="ftoggler">Groups</legend>
+		$mform->addElement('header', 'groups', get_string('groupsheader', 'choicegroup'));
+		$mform->addElement('html', '<fieldset class="clearfix">
 				<div class="fcontainer clearfix">
 				<div id="fitem_id_option_0" class="fitem fitem_fselect ">
-				<div class="fitemtitle"><label for="id_option_0">Group </label><span class="helptooltip"><a href="http://dmoodle2.ethz.ch/moodle/help.php?component=choicegroup&amp;identifier=choicegroupoptions&amp;lang=en" title="Help with Choice options" aria-haspopup="true" target="_blank"><img src="http://dmoodle2.ethz.ch/moodle/theme/image.php?theme=standard&amp;component=core&amp;image=help" alt="Help with Choice options" class="iconhelp"></a></span></div><div class="felement fselect">
+				<div class="fitemtitle"><label for="id_option_0">'.get_string('groupsheader', 'choicegroup').'</label><span class="helptooltip"><a href="'. $CFG->wwwroot .'/help.php?component=choicegroup&amp;identifier=choicegroupoptions&amp;lang=en" title="Help with Choice options" aria-haspopup="true" target="_blank"><img src="'.$CFG->wwwroot.'/theme/image.php?theme=standard&amp;component=core&amp;image=help" alt="Help with Choice options" class="iconhelp"></a></span></div><div class="felement fselect">
 
-				<table><tr><td>Available Groups</td><td>&nbsp;</td><td>Selected Groups</td><td>&nbsp;</td></tr><tr><td>');
+				<table><tr><td>'.get_string('available_groups', 'choicegroup').'</td><td>&nbsp;</td><td>'.get_string('selected_groups', 'choicegroup').'</td><td>&nbsp;</td></tr><tr><td style="vertical-align: top">');
 
 		$mform->addElement('html','<select id="availablegroups" name="availableGroups" multiple size=10 style="width:200px">');
 		foreach ($groupings as $groupingID => $grouping) {
 			// find all linked groups to this grouping
 			if (count($grouping->linkedGroupsIDs) > 1) { // grouping has more than 2 items, thus we should display it (otherwise it would be clearer to display only that single group alone)
-				$mform->addElement('html', '<option value="'.$groupingID.'" style="font-weight: bold" class="grouping">['.$grouping->name.']</option>');
+				$mform->addElement('html', '<option value="'.$groupingID.'" style="font-weight: bold" class="grouping">'.get_string('char_bullet_expanded', 'choicegroup').$grouping->name.'</option>');
 				foreach ($grouping->linkedGroupsIDs as $linkedGroupID) {
 					$mform->addElement('html', '<option value="'.$linkedGroupID.'" class="group nested">&nbsp;&nbsp;&nbsp;&nbsp;'.$groups[$linkedGroupID]->name.'</option>');
 					$groups[$linkedGroupID]->mentioned = true;
@@ -143,7 +143,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 				$mform->addElement('html', '<option value="'.$group->id.'" class="group toplevel">'.$group->name.'</option>');
 			}
 		}
-		$mform->addElement('html','</select><br><button name="expandButton" type="button" disabled id="expandButton">+</button><button name="collapseButton" type="button" disabled id="collapseButton">-</button>');
+		$mform->addElement('html','</select><br><button name="expandButton" type="button" disabled id="expandButton">'.get_string('expand_all_groupings', 'choicegroup').'</button><button name="collapseButton" type="button" disabled id="collapseButton">'.get_string('collapse_all_groupings', 'choicegroup').'</button><br>'.get_string('double_click_grouping_legend', 'choicegroup').'<br>'.get_string('double_click_group_legend', 'choicegroup'));
 
 
 
@@ -151,10 +151,10 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 
 
 		$mform->addElement('html','
-				</td><td><button id="addGroupButton" name="add" type="button" disabled>Add</button></td><td>');
-		$mform->addElement('html','<select id="id_selectedGroups" name="selectedGroups" multiple size=10 style="width:200px"></select>');
+				</td><td><button id="addGroupButton" name="add" type="button" disabled>'.get_string('add', 'choicegroup').'</button><div><button name="remove" type="button" disabled id="removeGroupButton">'.get_string('del', 'choicegroup').'</button></div></td>');
+		$mform->addElement('html','<td style="vertical-align: top"><select id="id_selectedGroups" name="selectedGroups" multiple size=10 style="width:200px"></select></td>');
 
-		$mform->addElement('html','</td><td><div><button name="remove" type="button" disabled id="removeGroupButton">Remove</button></div><div><div id="fitem_id_limit_0" class="fitem fitem_ftext" style="display:none"><div class="fitemtitle"><label for="id_limit_0">Limit&nbsp;</label></div><div class="felement ftext">
+		$mform->addElement('html','<td><div><div id="fitem_id_limit_0" class="fitem fitem_ftext" style="display:none"><div class=""><label for="id_limit_0" id="label_for_limit_ui">'.get_string('set_limit_for_group', 'choicegroup').'</label></div><div class="ftext">
 				<input class="mod-choicegroup-limit-input" type="text" value="0" id="ui_limit_input" disabled="disabled"></div></div></div></td></tr></table>
 				</div></div>
 				 
@@ -263,6 +263,9 @@ function data_preprocessing(&$default_values){
 	public function js_call() {
 		global $PAGE;
 		$PAGE->requires->yui_module('moodle-mod_choicegroup-form', 'Y.Moodle.mod_choicegroup.form.init');
+		foreach (array_keys(get_string_manager()->load_component_strings('choicegroup', current_language())) as $string) {
+			$PAGE->requires->string_for_js($string, 'choicegroup');
+		}
 	}
 
 }

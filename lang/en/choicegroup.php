@@ -113,4 +113,26 @@ $string['pleasesetgroups'] = 'Please create at least two groups in this course.'
 
 $string['multipleenrollmentspossible'] = 'Allow enrollment to multiple groups';
 $string['and'] = 'and';
-$string['groupingsheader'] = "Groupings";
+$string['groupsheader'] = "Groups";
+$string['the_value_you_entered_is_not_a_number'] = "The value you entered is not a number.";
+$string['add_groupings'] = "Add Groupings";
+$string['add_grouping'] = "Add Grouping";
+$string['add_groups'] = "Add Groups";
+$string['del_groups'] = "Remove Groups";
+$string['del_group'] = "Remove Group";
+$string['add_group'] = "Add Group";
+$string['add'] = "Add";
+$string['del'] = "Remove";
+$string['set_limit_for_group'] = "Limit For ";
+$string['available_groups'] = 'Available Groups';
+$string['selected_groups'] = 'Selected Groups';
+$string['char_bullet_collapsed'] = '►';
+$string['char_bullet_expanded'] = '▼';
+$string['char_limitui_parenthesis_start'] = '⦗';
+$string['char_limitui_parenthesis_end'] = '⦘';
+$string['expand_all_groupings'] = 'Expand All Groupings';
+$string['collapse_all_groupings'] = 'Collapse All Groupings';
+$string['double_click_grouping_legend'] = 'Double click on a grouping to expand/collapse individually.';
+$string['double_click_group_legend'] = 'Double click on a group to add it.';
+
+
