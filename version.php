@@ -26,15 +26,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-// Backwards compatibility (pre-2.5).
-if (!isset($plugin)) {
-    $plugin = &$module;
-}
-
-$plugin->version  = 2014010100;
-$plugin->requires  = 2011120500;
+$plugin->version  = 2015050100;
+$plugin->requires  = 2014050800;
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release = '1.4.4 (Build: 2014010100)';
+$plugin->release = '1.5 (Build: 2015010100)';
 
 $plugin->component = 'mod_choicegroup';
 $plugin->cron = 0;
+
+
