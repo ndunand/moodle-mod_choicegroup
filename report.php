@@ -68,7 +68,15 @@ $strchoicegroup = get_string("modulename", "choicegroup");
 $strchoicegroups = get_string("modulenameplural", "choicegroup");
 $strresponses = get_string("responses", "choicegroup");
 
-add_to_log($course->id, "choicegroup", "report", "report.php?id=$cm->id", "$choicegroup->id", $cm->id);
+$eventparams = array(
+    'context' => $context,
+    'objectid' => $choicegroup->id
+);
+$event = \mod_choicegroup\event\report_viewed::create($eventparams);
+$event->add_record_snapshot('course_modules', $cm);
+$event->add_record_snapshot('course', $course);
+$event->add_record_snapshot('choicegroup', $choicegroup);
+$event->trigger();
 
 if (data_submitted() && $action == 'delete' && has_capability('mod/choicegroup:deleteresponses',$context) && confirm_sesskey()) {
     choicegroup_delete_responses($userids, $choicegroup, $cm, $course); //delete responses.

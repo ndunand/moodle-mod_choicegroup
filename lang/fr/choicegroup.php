@@ -113,3 +113,9 @@ $string['pleasesetgroups'] = 'Veuillez créer au préalable au moins deux groupe
 
 $string['multipleenrollmentspossible'] = 'Autoriser l\'inscription à plusieurs groupes.';
 $string['and'] = 'et';
+$string['event:answered'] = 'Choix fait';
+$string['event:answered_desc'] = 'L\'utilisateur id \'{$a->userid}\' a fait un choix dans l\'activité choix de groupe, module de cours id \'{$a->contextinstanceid\'.';
+$string['event:removed'] = 'Choix supprimé';
+$string['event:removed_desc'] = 'L\'utilisateur id \'{$a->userid}\' a supprimé son choix dans l\'activité choix de groupe, module de cours id \'{$a->contextinstanceid}\'.';
+$string['event:reportviewed'] = 'Rapport affiché';
+$string['event:reportviewed_desc'] = 'L\'utilisateur id \'{$a->userid}\' a visualisé le rapport de l\'activité choix de groupe, module de cours id \'{$a->contextinstanceid}\'.';

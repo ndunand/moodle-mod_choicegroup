@@ -39,7 +39,12 @@ if (!$course = $DB->get_record('course', array('id'=>$id))) {
 require_course_login($course);
 $PAGE->set_pagelayout('incourse');
 
-add_to_log($course->id, "choicegroup", "view all", "index.php?id=$course->id", "");
+$params = array(
+    'context' => context_course::instance($course->id)
+);
+$event = \mod_choicegroup\event\course_module_instance_list_viewed::create($params);
+$event->add_record_snapshot('course', $course);
+$event->trigger();
 
 $strchoicegroup = get_string("modulename", "choicegroup");
 $strchoicegroups = get_string("modulenameplural", "choicegroup");

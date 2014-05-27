@@ -61,6 +61,11 @@ if (!$context = context_module::instance($cm->id)) {
     print_error('badcontext');
 }
 
+$eventparams = array(
+    'context' => $context,
+    'objectid' => $choicegroup->id
+);
+
 $current = choicegroup_get_user_answer($choicegroup, $USER);
 if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, NULL, 'mod/choicegroup:choose') and $choicegroup->allowupdate) {
     // user wants to delete his own choice:
@@ -68,7 +73,11 @@ if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, 
         if (groups_is_member($current->id, $USER->id)) {
             $currentgroup = $DB->get_record('groups', array('id' => $current->id), 'id,name', MUST_EXIST);
             groups_remove_member($current->id, $USER->id);
-            add_to_log($course->id, "choicegroup", "remove choice", "view.php?id=$cm->id", $currentgroup->name, $cm->id);
+            $event = \mod_choicegroup\event\choice_removed::create($eventparams);
+            $event->add_record_snapshot('course_modules', $cm);
+            $event->add_record_snapshot('course', $course);
+            $event->add_record_snapshot('choicegroup', $choicegroup);
+            $event->trigger();
         }
         $current = choicegroup_get_user_answer($choicegroup, $USER);
         // Update completion state
@@ -101,14 +110,18 @@ if (data_submitted() && is_enrolled($context, NULL, 'mod/choicegroup:choose') &&
                 if (groups_is_member($answer_value_group_id, $USER->id)) {
                     $answer_value_group = $DB->get_record('groups', array('id' => $answer_value_group_id), 'id,name', MUST_EXIST);
                     groups_remove_member($answer_value_group_id, $USER->id);
-                    add_to_log($course->id, "choicegroup", "remove choice", "view.php?id=$cm->id", $answer_value_group->name, $cm->id);
+                    $event = \mod_choicegroup\event\choice_removed::create($eventparams);
+                    $event->add_record_snapshot('course_modules', $cm);
+                    $event->add_record_snapshot('course', $course);
+                    $event->add_record_snapshot('choicegroup', $choicegroup);
+                    $event->trigger();
                 }
             }
         }
-        
+
 
     } else { // multipleenrollmentspossible != 1
-        
+
         $timenow = time();
         if (has_capability('mod/choicegroup:deleteresponses', $context)) {
             if ($action == 'delete') { //some responses need to be deleted
@@ -133,7 +146,14 @@ if (data_submitted() && is_enrolled($context, NULL, 'mod/choicegroup:choose') &&
 
 
 /// Display the choicegroup and possibly results
-add_to_log($course->id, "choicegroup", "view", "view.php?id=$cm->id", '', $cm->id);
+
+
+$event = \mod_choicegroup\event\course_module_viewed::create($eventparams);
+$event->add_record_snapshot('course_modules', $cm);
+$event->add_record_snapshot('course', $course);
+$event->add_record_snapshot('choicegroup', $choicegroup);
+$event->trigger();
+
 
 /// Check to see if groups are being used in this choicegroup
 $groupmode = groups_get_activity_groupmode($cm);

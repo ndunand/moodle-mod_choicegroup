@@ -306,6 +306,12 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
     global $DB, $CFG;
     require_once($CFG->libdir.'/completionlib.php');
 
+    $context = context_module::instance($cm->id);
+    $eventparams = array(
+        'context' => $context,
+        'objectid' => $choicegroup->id
+    );
+
     $selected_option = $DB->get_record('choicegroup_options', array('id' => $formanswer));
 
     $current = choicegroup_get_user_answer($choicegroup, $userid);
@@ -313,7 +319,6 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
         $currentgroup = $DB->get_record('groups', array('id' => $current->id), 'id,name', MUST_EXIST);
     }
     $selectedgroup = $DB->get_record('groups', array('id' => $selected_option->groupid), 'id,name', MUST_EXIST);
-    $context = context_module::instance($cm->id);
 
     $countanswers=0;
     if($choicegroup->limitanswers) {
@@ -329,18 +334,27 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
                 if ($selected_option->groupid != $current->id) {
                     if (groups_is_member($current->id, $userid)) {
                         groups_remove_member($current->id, $userid);
-                        add_to_log($course->id, "choicegroup", "remove choice", "view.php?id=$cm->id", $currentgroup->name, $cm->id);
+//                        $eventparams['groupname'] = $currentgroup->name;
+                        $event = \mod_choicegroup\event\choice_removed::create($eventparams);
+                        $event->add_record_snapshot('course_modules', $cm);
+                        $event->add_record_snapshot('course', $course);
+                        $event->add_record_snapshot('choicegroup', $choicegroup);
+                        $event->trigger();
                     }
                 }
             }
-            add_to_log($course->id, "choicegroup", "choose again", "view.php?id=$cm->id", $selectedgroup->name, $cm->id);
         } else {
             // Update completion state
             $completion = new completion_info($course);
             if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
                 $completion->update_state($cm, COMPLETION_COMPLETE);
             }
-            add_to_log($course->id, "choicegroup", "choose", "view.php?id=$cm->id", $selectedgroup->name, $cm->id);
+//            $eventparams['groupname'] = $selectedgroup->name;
+            $event = \mod_choicegroup\event\choice_updated::create($eventparams);
+            $event->add_record_snapshot('course_modules', $cm);
+            $event->add_record_snapshot('course', $course);
+            $event->add_record_snapshot('choicegroup', $choicegroup);
+            $event->trigger();
         }
     } else {
         if (!$current || !($current->id==$selected_option->groupid)) { //check to see if current choicegroup already selected - if not display error
@@ -575,7 +589,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
  * @return bool
  */
 function choicegroup_delete_responses($userids, $choicegroup, $cm, $course) {
-    global $CFG, $DB;
+    global $CFG, $DB, $context;
     require_once($CFG->libdir.'/completionlib.php');
 
     if(!is_array($userids) || empty($userids)) {
@@ -589,12 +603,21 @@ function choicegroup_delete_responses($userids, $choicegroup, $cm, $course) {
     }
 
     $completion = new completion_info($course);
+    $eventparams = array(
+        'context' => $context,
+        'objectid' => $choicegroup->id
+    );
+
     foreach($userids as $userid) {
         if ($current = choicegroup_get_user_answer($choicegroup, $userid)) {
             $currentgroup = $DB->get_record('groups', array('id' => $current->id), 'id,name', MUST_EXIST);
             if (groups_is_member($current->id, $userid)) {
                 groups_remove_member($current->id, $userid);
-                add_to_log($course->id, "choicegroup", "remove choice", "view.php?id=$cm->id", $currentgroup->name, $cm->id);
+                $event = \mod_choicegroup\event\choice_removed::create($eventparams);
+                $event->add_record_snapshot('course_modules', $cm);
+                $event->add_record_snapshot('course', $course);
+                $event->add_record_snapshot('choicegroup', $choicegroup);
+                $event->trigger();
             }
             // Update completion state
             if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {

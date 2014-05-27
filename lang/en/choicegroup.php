@@ -113,3 +113,9 @@ $string['pleasesetgroups'] = 'Please create at least two groups in this course.'
 
 $string['multipleenrollmentspossible'] = 'Allow enrollment to multiple groups';
 $string['and'] = 'and';
+$string['event:answered'] = 'Choice made';
+$string['event:answered_desc'] = 'The user with id \'{$a->userid}\' has chosen a group in the group choice with the course module id \'{$a->contextinstanceid\'.';
+$string['event:removed'] = 'Choice removed';
+$string['event:removed_desc'] = 'The user with id \'{$a->userid}\' has removed his choice in the group choice with the course module id \'{$a->contextinstanceid}\'.';
+$string['event:reportviewed'] = 'Report viewed';
+$string['event:reportviewed_desc'] = 'The user with id \'{$a->userid}\' has viewed the report for the group choice activity with the course module id \'{$a->contextinstanceid}\'.';
