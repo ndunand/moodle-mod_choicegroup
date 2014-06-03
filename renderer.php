@@ -39,7 +39,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * @return string
      */
     public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false, $showresults = false, $current = false, $choicegroupopen = false, $disabled = false, $multipleenrollmentspossible = false) {
-        global $DB, $PAGE, $course;
+        global $DB, $PAGE, $course, $choicegroup_groups, $choicegroup_users;
 
         $PAGE->requires->js('/mod/choicegroup/javascript.js');
 
@@ -82,7 +82,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         }
         $initiallyHideSubmitButton = false;
         foreach ($options['options'] as $option) {
-            $group = $DB->get_record('groups', array('id' => $option->groupid, 'courseid' => $course->id));
+            $group = (isset($choicegroup_groups[$option->groupid])) ? ($choicegroup_groups[$option->groupid]) : (false);
             if (!$group) {
                 $colspan = 2;
                 if ( $showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER and $current) or ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {
@@ -97,7 +97,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             }
             $html .= html_writer::start_tag('tr', array('class'=>'option'));
             $html .= html_writer::start_tag('td', array());
-            
+
             if ($multipleenrollmentspossible == 1) {
                 $option->attributes->name = 'answer_'.$i;
                 $option->attributes->type = 'checkbox';
@@ -115,7 +115,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $group_members = $DB->get_records('groups_members', array('groupid' => $group->id));
             $group_members_names = array();
             foreach ($group_members as $group_member) {
-                $group_user = $DB->get_record('user', array('id' => $group_member->userid));
+                $group_user = (isset($choicegroup_users[$group_member->userid])) ? ($choicegroup_users[$group_member->userid]) : ($DB->get_record('user', array('id' => $group_member->userid)));
                 $group_members_names[] = $group_user->lastname . ', ' . $group_user->firstname;
             }
             sort($group_members_names);

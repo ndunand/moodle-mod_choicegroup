@@ -90,7 +90,9 @@ function choicegroup_user_outline($course, $user, $mod, $choicegroup) {
  *
  */
 function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE) {
-    global $DB;
+    global $DB, $choicegroup_groups;
+
+    static $user_answers = array();
 
     if (is_numeric($user)) {
         $userid = $user;
@@ -99,10 +101,20 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE) 
         $userid = $user->id;
     }
 
-    $groups = choicegroup_get_groups($choicegroup);
+    if (isset($user_answers[$userid])) {
+        if ($returnArray === TRUE) {
+            return $user_answers[$userid];
+        } else {
+            return $user_answers[$userid][0];
+        }
+    }
+
+    if (!count($choicegroup_groups)) {
+        $choicegroup_groups = choicegroup_get_groups($choicegroup);
+    }
 
     $groupids = array();
-    foreach ($groups as $group) {
+    foreach ($choicegroup_groups as $group) {
         if (is_numeric($group->id)) {
             $groupids[] = $group->id;
         }
@@ -114,11 +126,12 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE) 
         $groupmemberships = $DB->get_records_sql('SELECT * FROM {groups_members} WHERE userid = ? AND groupid '.$insql, $params);
         $groups = array();
         foreach ($groupmemberships as $groupmembership) {
-            $group = $DB->get_record('groups', array('id' => $groupmembership->groupid));
+            $group = $choicegroup_groups[$groupmembership->groupid];
             $group->timeuseradded = $groupmembership->timeadded;
             $groups[] = $group;
         }
         if (count($groups) > 0) {
+            $user_answers[$userid] = $groups;
             if ($returnArray === TRUE) {
                 return $groups;
             } else {
@@ -686,18 +699,24 @@ function choicegroup_get_option_text($choicegroup, $id) {
 function choicegroup_get_groups($choicegroup) {
     global $DB;
 
+    static $groups = array();
+
+    if (count($groups)) {
+        return $groups;
+    }
+
     if (is_numeric($choicegroup)) {
         $choicegroupid = $choicegroup;
     }
     else {
         $choicegroupid = $choicegroup->id;
     }
-    $groups = array();
 
+    $groups = array();
     $options = $DB->get_records('choicegroup_options', array('choicegroupid' => $choicegroupid));
     foreach ($options as $option) {
         if ($group = $DB->get_record('groups', array('id' => $option->groupid)))
-        $groups[] = $group;
+        $groups[$group->id] = $group;
     }
     return $groups;
 }
@@ -769,14 +788,19 @@ function choicegroup_reset_course_form_defaults($course) {
  * @return array
  */
 function choicegroup_get_response_data($choicegroup, $cm) {
-    global $CFG;
-    $context = context_module::instance($cm->id);
+    global $CFG, $context, $choicegrop_users;
+
     /// Initialise the returned array, which is a matrix:  $allresponses[responseid][userid] = responseobject
-    $allresponses = array();
+    static $allresponses = array();
+
+    if (count($allresponses)) {
+        return $allresponses;
+    }
 
     /// First get all the users who have access here
     /// To start with we assume they are all "unanswered" then move them later
-    $allresponses[0] = get_enrolled_users($context, 'mod/choicegroup:choose', 0, user_picture::fields('u',        array('idnumber')), 'u.lastname ASC,u.firstname ASC');
+    $choicegrop_users = get_enrolled_users($context, 'mod/choicegroup:choose', 0, user_picture::fields('u', array('idnumber')), 'u.lastname ASC,u.firstname ASC');
+    $allresponses[0] = $choicegrop_users;
 
     if ($allresponses[0]) {
         // if groupmembersonly used, remove users who are not in any group

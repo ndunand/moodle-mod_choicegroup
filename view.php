@@ -53,6 +53,7 @@ if (!$choicegroup = choicegroup_get_choicegroup($cm->instance)) {
     print_error('invalidcoursemodule');
 }
 $choicegroup_groups = choicegroup_get_groups($choicegroup);
+$choicegroup_users = array();
 
 $strchoicegroup = get_string('modulename', 'choicegroup');
 $strchoicegroups = get_string('modulenameplural', 'choicegroup');
@@ -100,7 +101,7 @@ if (data_submitted() && is_enrolled($context, NULL, 'mod/choicegroup:choose') &&
 
     if ($choicegroup->multipleenrollmentspossible == 1) {
         $number_of_groups = optional_param('number_of_groups', '', PARAM_INT);
-        
+
         for ($i = 0; $i < $number_of_groups; $i++) {
             $answer_value = optional_param('answer_' . $i, '', PARAM_INT);
             if ($answer_value != '') {
@@ -129,7 +130,7 @@ if (data_submitted() && is_enrolled($context, NULL, 'mod/choicegroup:choose') &&
                 redirect("view.php?id=$cm->id");
             }
         }
-        
+
         $answer = optional_param('answer', '', PARAM_INT);
 
         if (empty($answer)) {
@@ -162,6 +163,7 @@ if ($groupmode) {
     groups_get_activity_group($cm, true);
     groups_print_activity_menu($cm, $CFG->wwwroot . '/mod/choicegroup/view.php?id='.$id);
 }
+
 $allresponses = choicegroup_get_response_data($choicegroup, $cm);   // Big function, approx 6 SQL calls per user
 
 
@@ -186,7 +188,7 @@ if (isloggedin() && ($current !== false) ) {
         }
         $formatted_names = join(' '.get_string("and", "choicegroup").' ', array_filter(array_merge(array(join(', ', array_slice($names, 0, -1))), array_slice($names, -1))));
         echo $OUTPUT->box(get_string("yourselection", "choicegroup", userdate($choicegroup->timeopen)).": ".$formatted_names, 'generalbox', 'yourselection');
-         
+
     } else {
         echo $OUTPUT->box(get_string("yourselection", "choicegroup", userdate($choicegroup->timeopen)).": ".format_string($current->name), 'generalbox', 'yourselection');
     }
