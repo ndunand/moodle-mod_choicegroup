@@ -113,14 +113,12 @@ $string['pleasesetgroups'] = 'Please create at least two groups in this course.'
 
 $string['multipleenrollmentspossible'] = 'Allow enrollment to multiple groups';
 $string['and'] = 'and';
-<<<<<<< HEAD
 $string['event:answered'] = 'Choice made';
 $string['event:answered_desc'] = 'The user with id \'{$a->userid}\' has chosen a group in the group choice with the course module id \'{$a->contextinstanceid}\'.';
 $string['event:removed'] = 'Choice removed';
 $string['event:removed_desc'] = 'The user with id \'{$a->userid}\' has removed his choice in the group choice with the course module id \'{$a->contextinstanceid}\'.';
 $string['event:reportviewed'] = 'Report viewed';
 $string['event:reportviewed_desc'] = 'The user with id \'{$a->userid}\' has viewed the report for the group choice activity with the course module id \'{$a->contextinstanceid}\'.';
-=======
 $string['groupsheader'] = "Groups";
 $string['the_value_you_entered_is_not_a_number'] = "The value you entered is not a number.";
 $string['add_groupings'] = "Add Groupings";
@@ -144,4 +142,3 @@ $string['double_click_grouping_legend'] = 'Double click on a grouping to expand/
 $string['double_click_group_legend'] = 'Double click on a group to add it.';
 
 
->>>>>>> 19bb2a5e7bd9ee12be80632fc125e1e0baa05537
