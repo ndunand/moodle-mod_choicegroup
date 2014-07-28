@@ -68,16 +68,19 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 		}
 
 		$db_groupings = $DB->get_records('groupings', array('courseid' => $COURSE->id));
-		foreach ($db_groupings as $grouping) {
-			$groupings[$grouping->id] = new stdClass();
-			$groupings[$grouping->id]->name = $grouping->name;
-		}
+        $groupings = array();
+        if ($db_groupings) {
+            foreach ($db_groupings as $grouping) {
+                $groupings[$grouping->id] = new stdClass();
+                $groupings[$grouping->id]->name = $grouping->name;
+            }
 
-		$db_groupings_groups = $DB->get_records('groupings_groups');
+            $db_groupings_groups = $DB->get_records('groupings_groups');
 
-		foreach ($db_groupings_groups as $grouping_group_link) {
-			$groupings[$grouping_group_link->groupingid]->linkedGroupsIDs[] =  $grouping_group_link->groupid;
-		}
+            foreach ($db_groupings_groups as $grouping_group_link) {
+                $groupings[$grouping_group_link->groupingid]->linkedGroupsIDs[] =  $grouping_group_link->groupid;
+            }
+        }
 		// -------------------------
 		// -------------------------
 
@@ -123,7 +126,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 		$mform->addElement('html', '<fieldset class="clearfix">
 				<div class="fcontainer clearfix">
 				<div id="fitem_id_option_0" class="fitem fitem_fselect ">
-				<div class="fitemtitle"><label for="id_option_0">'.get_string('groupsheader', 'choicegroup').'</label><span class="helptooltip"><a href="'. $CFG->wwwroot .'/help.php?component=choicegroup&amp;identifier=choicegroupoptions&amp;lang=en" title="Help with Choice options" aria-haspopup="true" target="_blank"><img src="'.$CFG->wwwroot.'/theme/image.php?theme=standard&amp;component=core&amp;image=help" alt="Help with Choice options" class="iconhelp"></a></span></div><div class="felement fselect">
+				<div class="fitemtitle"><label for="id_option_0">'.get_string('groupsheader', 'choicegroup').'</label><span class="helptooltip"><a href="'. $CFG->wwwroot .'/help.php?component=choicegroup&amp;identifier=choicegroupoptions&amp;lang=en" title="Help with Choice options" aria-haspopup="true" target="_blank"><img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$PAGE->theme->name.'&component=core&image=help" alt="Help with Choice options" class="iconhelp"></a></span></div><div class="felement fselect">
 
 				<table><tr><td>'.get_string('available_groups', 'choicegroup').'</td><td>&nbsp;</td><td>'.get_string('selected_groups', 'choicegroup').'</td><td>&nbsp;</td></tr><tr><td style="vertical-align: top">');
 
@@ -157,7 +160,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 		$mform->addElement('html','<td><div><div id="fitem_id_limit_0" class="fitem fitem_ftext" style="display:none"><div class=""><label for="id_limit_0" id="label_for_limit_ui">'.get_string('set_limit_for_group', 'choicegroup').'</label></div><div class="ftext">
 				<input class="mod-choicegroup-limit-input" type="text" value="0" id="ui_limit_input" disabled="disabled"></div></div></div></td></tr></table>
 				</div></div>
-				 
+
 				</div>
 				</fieldset>');
 
@@ -177,13 +180,13 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 				$serializedselectedgroupsValue .= ';' . $groupID;
 				$mform->setDefault('group_' . $groupID . '_limit', $cg->maxanswers[$optionID]);
 			}
-			 
+
 		}
 
 
 		$mform->addElement('hidden', 'serializedselectedgroups', $serializedselectedgroupsValue, array('id' => 'serializedselectedgroups'));
 		$mform->setType('serializedselectedgroups', PARAM_RAW);
-		
+
 		// -------------------------
 		// Go on the with the remainder of the form
 		// -------------------------
