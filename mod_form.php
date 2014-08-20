@@ -75,7 +75,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                 $groupings[$grouping->id]->name = $grouping->name;
             }
 
-            $db_groupings_groups = $db_groupings_groups = $DB->get_records('groupings_groups', array('groupingid' => $grouping->id));
+            $db_groupings_groups = $db_groupings_groups = $DB->get_records('groupings_groups', array('groupingid' => $grouping->id));;
 
             foreach ($db_groupings_groups as $grouping_group_link) {
                 $groupings[$grouping_group_link->groupingid]->linkedGroupsIDs[] =  $grouping_group_link->groupid;
