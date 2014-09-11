@@ -30,11 +30,11 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 	Y.namespace('Moodle.mod_choicegroup.form');
 	Y.Moodle.mod_choicegroup.form = {
 			init: function() {
-				
+
 				// -------------------------------
-				// Global Variables 
+				// Global Variables
 				// -------------------------------
-	
+
                 var CHAR_LIMITUI_PAR_LEFT = M.util.get_string('char_limitui_parenthesis_start', 'choicegroup');
                 var CHAR_LIMITUI_PAR_RIGHT = M.util.get_string('char_limitui_parenthesis_end', 'choicegroup');
                 var CHAR_SELECT_BULLET_COLLAPSED = M.util.get_string('char_bullet_collapsed', 'choicegroup');
@@ -53,24 +53,24 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 				var expandButtonNode = Y.one(SELECTORS.EXPAND_ALL_GRPNGS_BTN);
 				var collapseButtonNode = Y.one(SELECTORS.COLLAPSE_ALL_GRPNGS_BTN);
 				var serializedSelectedGroupsListNode = Y.one(SELECTORS.SERIALIZED_SELECTED_GRPS_LIST);
-				
+
 				var groupingsNodesContainer = new Array();
-				
+
 				// --------------------------------
 				// Global Functions
 				// --------------------------------
-				
-				
+
+
 				function removeElementFromArray(ar, from, to) {
 					  var rest = ar.slice((to || from) + 1 || ar.length);
 					  ar.length = from < 0 ? ar.length + from : from;
 					  return ar.push.apply(ar, rest);
 				}
-				
+
 				function getInputLimitNodeOfSelectedGroupNode(n) {
 					return Y.one('#group_' + n.get('value') + '_limit');
 				}
-				
+
 				function cleanSelectedGroupsList() {
 					var optionsNodes = Y.all(SELECTORS.SELECTED_GRPS_SELECT + " option");
 					optionsNodes.each(function(optNode) {
@@ -84,7 +84,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 					}
 					});
 				}
-				
+
 				function addOptionNodeToSelectedGroupsList(optNode) {
 					if (optNode.hasClass('grouping') == true) {
 						// check if option is collapsed
@@ -92,7 +92,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 							// it is expanded, take nodes from UI
 							// This is a grouping, so instead of adding this item we actually need to add everything underneath it
 							var sib = optNode.next(); // sib means sibling, as in, the next element in the DOM tree
-							while (sib.hasClass('nested') && sib.hasClass('group')) {
+							while (sib && sib.hasClass('nested') && sib.hasClass('group')) {
 								// add sib
 								selectedGroupsNode.append(sib.cloneNode(true));
 								// go to next node
@@ -107,11 +107,11 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 					} else {
 						selectedGroupsNode.append(optNode.cloneNode(true));
 					}
-                    if (limitAnswersSelectNode.get('value') == '1') { 
+                    if (limitAnswersSelectNode.get('value') == '1') {
                         updateLimitUIOfAllSelectedGroups();
                     }
 				}
-				
+
 				function updateGroupLimit(e) {
 					var selectedOptionsNodes = Y.all(SELECTORS.SELECTED_GRPS_SELECT + " option:checked");
 					// get value of input box
@@ -121,12 +121,12 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
                         updateLimitUIOfSelectedGroup(optNode);
 					});
 				}
-				
+
 				function collapseGrouping(groupingNode) {
 					// Change the text of this <option> so that it is marked as collapsed:
 					groupingNode.set('text', CHAR_SELECT_BULLET_COLLAPSED + groupingNode.get('text').substring(1));
 					var sib = groupingNode.next(); // sib means sibling, as in, the next element in the DOM tree
-					while (sib.hasClass('nested') && sib.hasClass('group')) {
+					while (sib && sib.hasClass('nested') && sib.hasClass('group')) {
 						// save this node somewhere first
 						if (typeof groupingsNodesContainer[groupingNode.get('value')] == 'undefined') {
 							groupingsNodesContainer[groupingNode.get('value')] = new Array();
@@ -139,7 +139,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 						sib = nextSibling;
 					}
 				}
-				
+
 				function expandGrouping(groupingNode) {
 					// Change the text of this <option> so that it is marked as collapsed:
 					groupingNode.set('text', CHAR_SELECT_BULLET_EXPANDED + groupingNode.get('text').substring(1));
@@ -154,10 +154,10 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 						});
 						groupingsNodesContainer[groupingNode.get('value')] = new Array();
 					}
-						
-					
+
+
 				}
-				
+
 				function collapseAllGroupings() {
 					var availableOptionsNodes = Y.all(SELECTORS.AVAILABLE_GRPS_SELECT + " option");
 					availableOptionsNodes.each(function(optNode) {
@@ -166,7 +166,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 						}
 					});
 				}
-				
+
 				function expandAllGroupings() {
 					var availableOptionsNodes = Y.all(SELECTORS.AVAILABLE_GRPS_SELECT + " option");
 					availableOptionsNodes.each(function(optNode) {
@@ -175,7 +175,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 						}
 					});
 				}
-				
+
                 function getGroupNameWithoutLimitText(groupNode) {
                     var indexOfLimitUIText = groupNode.get('text').indexOf(' ' + CHAR_LIMITUI_PAR_LEFT);
                     if (indexOfLimitUIText !== -1) {
@@ -184,8 +184,8 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
                         return groupNode.get('text');
                     }
                 }
-                function clearLimitUIFromSelectedGroup(groupNode) { 
-                	groupNode.set('text', getGroupNameWithoutLimitText(groupNode)); 
+                function clearLimitUIFromSelectedGroup(groupNode) {
+                	groupNode.set('text', getGroupNameWithoutLimitText(groupNode));
                 }
 
                 function updateLimitUIOfSelectedGroup(groupNode) {
@@ -193,13 +193,13 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
                 }
 
                 function updateLimitUIOfAllSelectedGroups() {
-                    Y.all(SELECTORS.SELECTED_GRPS_SELECT + " option").each(function(optNode) { updateLimitUIOfSelectedGroup(optNode); }); 
+                    Y.all(SELECTORS.SELECTED_GRPS_SELECT + " option").each(function(optNode) { updateLimitUIOfSelectedGroup(optNode); });
                 }
-				
+
                 function clearLimitUIFromAllSelectedGroups() {
-                    Y.all(SELECTORS.SELECTED_GRPS_SELECT + " option").each(function(optNode) { clearLimitUIFromSelectedGroup(optNode); }); 
+                    Y.all(SELECTORS.SELECTED_GRPS_SELECT + " option").each(function(optNode) { clearLimitUIFromSelectedGroup(optNode); });
                 }
-                
+
                 function expandOrCollapseGrouping(groupingNode) {
 					if (((typeof groupingsNodesContainer[groupingNode.get('value')]) == 'undefined') || ( groupingsNodesContainer[groupingNode.get('value')].length == 0)) {
 						collapseGrouping(groupingNode);
@@ -209,7 +209,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 						collapseButtonNode.set('disabled', false);
 					}
                 }
-                
+
                 getTextWidth = function(text, font) {
                 	// Thanks for http://stackoverflow.com/a/21015393/3430277
                     // re-use canvas object for better performance
@@ -219,7 +219,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
                     var metrics = context.measureText(text);
                     return metrics.width;
                 };
-                
+
                 function wasFirstCharacterClicked(e, n) {
                 	// Thanks for http://stackoverflow.com/a/21015393/3430277
                 	// e is the event, n is the node to check
@@ -229,7 +229,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 					}
 					return false;
                 }
-				
+
 				// --------------------------------
 				// this code happens on form load
 				// --------------------------------
@@ -246,8 +246,8 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 					});
 					cleanSelectedGroupsList();
 				}
-				
-				
+
+
 				// Collapse all groupings on load
 				collapseAllGroupings();
 				expandButtonNode.set('disabled', false);
@@ -255,33 +255,33 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 				if (limitAnswersSelectNode.get('value') == '1') { // limiting is enabled, show limit box
                     updateLimitUIOfAllSelectedGroups();
                 }
-				
-				// -------------------------------
-				// -------------------------------
-				
-				
-				
-				
 
-				
+				// -------------------------------
+				// -------------------------------
+
+
+
+
+
+
 				// ---------------------------------
 				// Setup UI Bindings (on load)
 				// ---------------------------------
-				
-				
+
+
 				Y.one('#expandButton').on('click', function(e) {
 					expandAllGroupings();
 					expandButtonNode.set('disabled', true);
 					collapseButtonNode.set('disabled', false);
-					
+
 				});
 				Y.one('#collapseButton').on('click', function(e) {
 					collapseAllGroupings();
 					collapseButtonNode.set('disabled', true);
 					expandButtonNode.set('disabled', false);
-					
+
 				});
-				
+
 
 				// On click fill in the limit in every field
 				applyLimitToAllGroupsButtonNode.on('click', function (e) {
@@ -297,10 +297,10 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 					}
                     updateLimitUIOfAllSelectedGroups();
 				});
-				
-				
 
-				
+
+
+
 				formNode.on('submit', function(e) {
 					var selectedOptionsNodes = Y.all(SELECTORS.SELECTED_GRPS_SELECT + " option");
 					if (selectedOptionsNodes.size() < 2) {
@@ -313,8 +313,8 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 					serializedSelectedGroupsListNode.set('value', serializedSelection);
 
 				});
-				
-				
+
+
 				availableGroupsNode.on('click', function(e) {
 					var selectedOptionsNodes = Y.all(SELECTORS.AVAILABLE_GRPS_SELECT + " option:checked");
 					if (selectedOptionsNodes.size() >= 2) {
@@ -330,7 +330,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 							addGroupButtonNode.setContent(M.util.get_string('add_groups', 'choicegroup'));
 						}
 						addGroupButtonNode.set('disabled', false);
-						
+
 					} else if (selectedOptionsNodes.size() >= 1) {
 						var firstNode = selectedOptionsNodes.item(0);
 						if (firstNode.hasClass('grouping')) {
@@ -338,19 +338,19 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 							if (wasFirstCharacterClicked(e, firstNode)) {
 								expandOrCollapseGrouping(firstNode);
 							}
-							
+
 						} else {
 							addGroupButtonNode.setContent(M.util.get_string('add_group', 'choicegroup'));
 						}
 						addGroupButtonNode.set('disabled', false);
-						
+
 					} else {
 						addGroupButtonNode.set('disabled', true);
-						addGroupButtonNode.setContent(M.util.get_string('add', 'choicegroup'));	
+						addGroupButtonNode.setContent(M.util.get_string('add', 'choicegroup'));
 					}
 
 				});
-				Y.delegate('dblclick', function(e) { 
+				Y.delegate('dblclick', function(e) {
 					if (e.currentTarget.hasClass('grouping') == true) {
 						expandOrCollapseGrouping(e.currentTarget);
 					} else {
@@ -358,9 +358,9 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 						cleanSelectedGroupsList();
 					}
 
-					
+
 				},  Y.config.doc, SELECTORS.AVAILABLE_GRPS_SELECT_OPTIONS, this);
-				
+
 				selectedGroupsNode.on('click', function(e) {
 					var selectedOptionsNodes = Y.all(SELECTORS.SELECTED_GRPS_SELECT + " option:checked");
 					if (selectedOptionsNodes.size() >= 2) {
@@ -369,7 +369,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 						uiInputLimitNode.set('disabled', true);
 						//uiInputLimitNode.set('value', 'multiple values');
 						limitInputUIDIVNode.hide();
-						
+
 					} else if (selectedOptionsNodes.size() >= 1) {
 						removeGroupButtonNode.setContent(M.util.get_string('del_group', 'choicegroup'));
 						removeGroupButtonNode.set('disabled', false);
@@ -377,10 +377,10 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 						uiInputLimitNode.set('value', getInputLimitNodeOfSelectedGroupNode(selectedOptionsNodes.item(0)).get('value'));
 						Y.one(SELECTORS.LIMIT_UI_LABEL).set('text', M.util.get_string('set_limit_for_group', 'choicegroup') + getGroupNameWithoutLimitText(selectedOptionsNodes.item(0)) + ":");
 						if (limitAnswersSelectNode.get('value') == '1') { // limiting is enabled, show limit box
-							limitInputUIDIVNode.show();	
+							limitInputUIDIVNode.show();
 						}
-						
-						
+
+
 					} else {
 						removeGroupButtonNode.set('disabled', true);
 						removeGroupButtonNode.setContent(M.util.get_string('del', 'choicegroup'));
@@ -389,11 +389,11 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 					}
 
 				});
-				
+
 				uiInputLimitNode.on('change', function(e) { updateGroupLimit(e); });
 				uiInputLimitNode.on('blur', function(e) { updateGroupLimit(e); });
-				
-				
+
+
 				addGroupButtonNode.on('click', function(e) {
 					var selectedOptionsNodes = Y.all(SELECTORS.AVAILABLE_GRPS_SELECT + " option:checked");
 					selectedOptionsNodes.each(function(optNode) { addOptionNodeToSelectedGroupsList(optNode); });
@@ -403,15 +403,15 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 					var selectedOptionsNodes = Y.all(SELECTORS.SELECTED_GRPS_SELECT + " option:checked");
 					selectedOptionsNodes.each(function(optNode) {
 							optNode.remove();
-						
+
 					});
 				});
-				
+
 				limitAnswersSelectNode.on('change', function(e) {
 					if (limitAnswersSelectNode.get('value') == '1') { // limiting is enabled, show limit box
 						var selectedOptionsNodes = Y.all(SELECTORS.SELECTED_GRPS_SELECT + " option:checked");
 						if (selectedOptionsNodes.size() == 1) {
-							limitInputUIDIVNode.show();	
+							limitInputUIDIVNode.show();
 						}
                         updateLimitUIOfAllSelectedGroups();
 
@@ -422,7 +422,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 
 				});
 
-				
+
 			},
 
 
