@@ -89,7 +89,7 @@ function choicegroup_user_outline($course, $user, $mod, $choicegroup) {
 /**
  *
  */
-function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE) {
+function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE, $refresh = FALSE) {
     global $DB, $choicegroup_groups;
 
     static $user_answers = array();
@@ -101,12 +101,14 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE) 
         $userid = $user->id;
     }
 
-    if (isset($user_answers[$userid])) {
+    if (!$refresh and isset($user_answers[$userid])) {
         if ($returnArray === TRUE) {
             return $user_answers[$userid];
         } else {
             return $user_answers[$userid][0];
         }
+    } else {
+        $user_answers = array();
     }
 
     if (!count($choicegroup_groups)) {

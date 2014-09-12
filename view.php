@@ -80,7 +80,7 @@ if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, 
             $event->add_record_snapshot('choicegroup', $choicegroup);
             $event->trigger();
         }
-        $current = choicegroup_get_user_answer($choicegroup, $USER);
+        $current = choicegroup_get_user_answer($choicegroup, $USER, FALSE, TRUE);
         // Update completion state
         $completion = new completion_info($course);
         if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
