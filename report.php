@@ -120,8 +120,9 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
     $myxls->write_string(0,0,get_string("lastname"));
     $myxls->write_string(0,1,get_string("firstname"));
     $myxls->write_string(0,2,get_string("idnumber"));
-    $myxls->write_string(0,3,get_string("group"));
-    $myxls->write_string(0,4,get_string("choice","choicegroup"));
+    $myxls->write_string(0,3,get_string("email"));
+    $myxls->write_string(0,4,get_string("group"));
+    $myxls->write_string(0,5,get_string("choice","choicegroup"));
 
 /// generate the data for the body of the spreadsheet
     $i=0;
@@ -138,6 +139,7 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
                 $myxls->write_string($row,1,$user->firstname);
                 $studentid=(!empty($user->idnumber) ? $user->idnumber : " ");
                 $myxls->write_string($row,2,$studentid);
+                $myxls->write_string($row,3,$user->email);
                 $ug2 = array();
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
                     foreach ($groups_ids as $gid) {
@@ -146,9 +148,9 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
                         }
                     }
                 }
-                $myxls->write_string($row, 3, implode(', ', $ug2));
+                $myxls->write_string($row, 4, implode(', ', $ug2));
                 $row++;
-                $pos=4;
+                $pos=5;
             }
         }
     }
@@ -176,8 +178,9 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
     $myxls->write_string(0,0,get_string("lastname"));
     $myxls->write_string(0,1,get_string("firstname"));
     $myxls->write_string(0,2,get_string("idnumber"));
-    $myxls->write_string(0,3,get_string("group"));
-    $myxls->write_string(0,4,get_string("choice","choicegroup"));
+    $myxls->write_string(0,3,get_string("email"));
+    $myxls->write_string(0,4,get_string("group"));
+    $myxls->write_string(0,5,get_string("choice","choicegroup"));
 
 
 /// generate the data for the body of the spreadsheet
@@ -195,6 +198,7 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
                 $myxls->write_string($row,1,$user->firstname);
                 $studentid=(!empty($user->idnumber) ? $user->idnumber : " ");
                 $myxls->write_string($row,2,$studentid);
+                $myxls->write_string($row,3,$user->email);
                 $ug2 = array();
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
                     foreach ($groups_ids as $gid) {
@@ -203,11 +207,11 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
                         }
                     }
                 }
-                $myxls->write_string($row, 3, implode(', ', $ug2));
+                $myxls->write_string($row, 4, implode(', ', $ug2));
                 $row++;
             }
         }
-        $pos=4;
+        $pos=5;
     }
     /// Close the workbook
     $workbook->close();
