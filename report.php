@@ -251,6 +251,7 @@ if ($download == "txt" && has_capability('mod/choicegroup:downloadresponses', $c
                     $studentid = $user->idnumber;
                 }
                 echo "\t". $studentid."\t";
+                echo $user->email . "\t";
                 $ug2 = array();
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
                     foreach ($groups_ids as $gid) {
