@@ -817,37 +817,33 @@ function choicegroup_reset_course_form_defaults($course) {
  * @return array
  */
 function choicegroup_get_response_data($choicegroup, $cm) {
-    global $CFG, $context, $choicegrop_users;
-
-    /// Initialise the returned array, which is a matrix:  $allresponses[responseid][userid] = responseobject
+    // Initialise the returned array, which is a matrix:  $allresponses[responseid][userid] = responseobject.
     static $allresponses = array();
 
     if (count($allresponses)) {
         return $allresponses;
     }
 
-    /// First get all the users who have access here
-    /// To start with we assume they are all "unanswered" then move them later
-    $choicegrop_users = get_enrolled_users($context, 'mod/choicegroup:choose', 0, user_picture::fields('u', array('idnumber')), 'u.lastname ASC,u.firstname ASC');
-    $allresponses[0] = $choicegrop_users;
-
-    if ($allresponses[0]) {
-        // if groupmembersonly used, remove users who are not in any group
-        if (!empty($CFG->enablegroupmembersonly) and $cm->groupmembersonly) {
-            if ($groupingusers = groups_get_grouping_members($cm->groupingid, 'u.id', 'u.id')) {
-                $allresponses[0] = array_intersect_key($allresponses[0], $groupingusers);
-            }
-        }
+    // First get all the users who have access here.
+    // To start with we assume they are all "unanswered" then move them later.
+    $ctx = \context_module::instance($cm->id);
+    $users = get_enrolled_users($ctx, 'mod/choicegroup:choose', 0, user_picture::fields('u', array('idnumber')), 'u.lastname ASC,u.firstname ASC');
+    if ($users) {
+        $availability = new \core_availability\info_module($cm);
+        $users = $availability->filter_user_list($users);
     }
 
+    $allresponses[0] = $users;
     foreach ($allresponses[0] as $user) {
-        $currentAnswers = choicegroup_get_user_answer($choicegroup, $user, TRUE);
-        if ($currentAnswers != false) {
-            foreach ($currentAnswers as $current) {
-                $allresponses[$current->id][$user->id] = clone($allresponses[0][$user->id]);
+        $currentanswers = choicegroup_get_user_answer($choicegroup, $user, true);
+        if ($currentanswers != false) {
+            foreach ($currentanswers as $current) {
+                $allresponses[$current->id][$user->id] = clone $allresponses[0][$user->id];
                 $allresponses[$current->id][$user->id]->timemodified = $current->timeuseradded;
             }
-            unset($allresponses[0][$user->id]);   // Remove from unanswered column
+
+            // Remove from unanswered column.
+            unset($allresponses[0][$user->id]);
         }
     }
     return $allresponses;
