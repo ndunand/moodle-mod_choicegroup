@@ -761,7 +761,7 @@ function choicegroup_get_choicegroup($choicegroupid) {
     global $DB;
 
     if ($choicegroup = $DB->get_record("choicegroup", array("id" => $choicegroupid))) {
-        if ($options = $DB->get_records("choicegroup_options", array("choicegroupid" => $choicegroupid), "id")) {
+        if ($options = $DB->get_records_sql('SELECT {choicegroup_options}.* FROM {choicegroup_options} JOIN {groups} ON {choicegroup_options}.groupid = {groups}.id WHERE choicegroupid = ? ORDER BY {groups}.name', array($choicegroupid))) {
             foreach ($options as $option) {
                 $choicegroup->option[$option->id] = $option->groupid;
                 $choicegroup->maxanswers[$option->id] = $option->maxanswers;
