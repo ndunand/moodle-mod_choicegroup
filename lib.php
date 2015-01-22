@@ -829,7 +829,8 @@ function choicegroup_get_response_data($choicegroup, $cm) {
     $ctx = \context_module::instance($cm->id);
     $users = get_enrolled_users($ctx, 'mod/choicegroup:choose', 0, user_picture::fields('u', array('idnumber')), 'u.lastname ASC,u.firstname ASC');
     if ($users) {
-        $availability = new \core_availability\info_module($cm);
+        $cminfo = \cm_info::create($cm);
+        $availability = new \core_availability\info_module($cminfo);
         $users = $availability->filter_user_list($users);
     }
 
