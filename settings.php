@@ -24,13 +24,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2015022301;
-$plugin->requires  = 2014050800; // Moodle 2.7
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release = '1.8.1 for Moodle 2.7-2.8 (Build: 2015010101)';
+require_once($CFG->dirroot . '/mod/choicegroup/lib.php');
 
-$plugin->component = 'mod_choicegroup';
-$plugin->cron = 0;
+if ($ADMIN->fulltree) {
+    $settings->add(new admin_setting_heading('defaults', get_string('defaultsettings', 'choicegroup'), ''));
 
+    $options = choicegroup_get_sort_options();
+    $settings->add(new admin_setting_configselect('choicegroup/sortgroupsby', get_string('sortgroupsby', 'choicegroup'), '', CHOICEGROUP_SORTGROUPS_ID, $options));
+}
