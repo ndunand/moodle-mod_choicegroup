@@ -46,7 +46,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 		}
 		$mform->addRule('name', null, 'required', null, 'client');
 
-		$this->add_intro_editor(true, get_string('chatintro', 'chat'));
+		$this->add_intro_editor(true, get_string('description'));
 
 		//-------------------------------------------------------------------------------
 
