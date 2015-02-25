@@ -52,7 +52,19 @@ function xmldb_choicegroup_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2013070900, 'choicegroup');
     }
 
-    
+    if ($oldversion < 2015022301) {
+        $table = new xmldb_table('choicegroup');
+
+        // Adding field to table choicegroup
+        $newField = $table->add_field('sortgroupsby', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        if (!$dbman->field_exists($table, $newField)) {
+            $dbman->add_field($table, $newField);
+        }
+
+        upgrade_mod_savepoint(true, 2015022301, 'choicegroup');
+    }
+
     return true;
 }
 

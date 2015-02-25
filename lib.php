@@ -47,6 +47,10 @@ define('CHOICEGROUP_SHOWRESULTS_DEFAULT',      '3');
 define('CHOICEGROUP_DISPLAY_HORIZONTAL',  '0');
 define('CHOICEGROUP_DISPLAY_VERTICAL',    '1');
 
+define('CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT',    '0');
+define('CHOICEGROUP_SORTGROUPS_CREATEDATE',    '1');
+define('CHOICEGROUP_SORTGROUPS_NAME',    '2');
+
 /** @global array $CHOICEGROUP_PUBLISH */
 global $CHOICEGROUP_PUBLISH;
 $CHOICEGROUP_PUBLISH = array (CHOICEGROUP_PUBLISH_ANONYMOUS  => get_string('publishanonymous', 'choicegroup'),
@@ -761,15 +765,43 @@ function choicegroup_get_choicegroup($choicegroupid) {
     global $DB;
 
     if ($choicegroup = $DB->get_record("choicegroup", array("id" => $choicegroupid))) {
-        if ($options = $DB->get_records("choicegroup_options", array("choicegroupid" => $choicegroupid), "groupid")) {
-            foreach ($options as $option) {
-                $choicegroup->option[$option->id] = $option->groupid;
-                $choicegroup->maxanswers[$option->id] = $option->maxanswers;
-            }
-            return $choicegroup;
+        $sortcolumn = choicegroup_get_sort_column($choicegroup);
+
+        $sql = "SELECT grp_o.id, grp_o.groupid, grp_o.maxanswers FROM {groups} grp
+            INNER JOIN {choicegroup_options} grp_o on grp.id = grp_o.groupid
+            WHERE grp_o.choicegroupid = :choicegroupid
+            ORDER BY $sortcolumn ASC";
+
+        $params = array(
+            'choicegroupid' => $choicegroupid
+        );
+        $options = $DB->get_records_sql($sql, $params);
+
+        foreach ($options as $option) {
+            $choicegroup->option[$option->id] = $option->groupid;
+            $choicegroup->maxanswers[$option->id] = $option->maxanswers;
         }
+
+        return $choicegroup;
     }
     return false;
+}
+
+function choicegroup_get_sort_column($choicegroup) {
+    if ($choicegroup->sortgroupsby == CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT) {
+        $sortcolumn = get_config('choicegroup', 'sortgroupsby');
+    } else {
+        $sortcolumn = $choicegroup->sortgroupsby;
+    }
+
+    switch ($sortcolumn) {
+        case CHOICEGROUP_SORTGROUPS_CREATEDATE:
+            return 'timecreated';
+        case CHOICEGROUP_SORTGROUPS_NAME:
+            return 'name';
+        default:
+            return 'timecreated';
+    }
 }
 
 /**
@@ -969,3 +1001,10 @@ function choicegroup_page_type_list($pagetype, $parentcontext, $currentcontext) 
     return $module_pagetype;
 }
 
+
+function choicegroup_get_sort_options() {
+    return array (
+        CHOICEGROUP_SORTGROUPS_CREATEDATE => get_string('createdate', 'choicegroup'),
+        CHOICEGROUP_SORTGROUPS_NAME => get_string('name', 'choicegroup')
+    );
+}
