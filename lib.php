@@ -48,7 +48,7 @@ define('CHOICEGROUP_DISPLAY_HORIZONTAL',  '0');
 define('CHOICEGROUP_DISPLAY_VERTICAL',    '1');
 
 define('CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT',    '0');
-define('CHOICEGROUP_SORTGROUPS_ID',    '1');
+define('CHOICEGROUP_SORTGROUPS_CREATEDATE',    '1');
 define('CHOICEGROUP_SORTGROUPS_NAME',    '2');
 
 /** @global array $CHOICEGROUP_PUBLISH */
@@ -793,14 +793,14 @@ function choicegroup_get_sort_column($choicegroup) {
     } else {
         $sortcolumn = $choicegroup->sortgroupsby;
     }
-    
+
     switch ($sortcolumn) {
-        case CHOICEGROUP_SORTGROUPS_ID:
-            return 'groupid';
+        case CHOICEGROUP_SORTGROUPS_CREATEDATE:
+            return 'timecreated';
         case CHOICEGROUP_SORTGROUPS_NAME:
             return 'name';
         default:
-            return 'groupid';
+            return 'timecreated';
     }
 }
 
@@ -1004,7 +1004,7 @@ function choicegroup_page_type_list($pagetype, $parentcontext, $currentcontext) 
 
 function choicegroup_get_sort_options() {
     return array (
-        CHOICEGROUP_SORTGROUPS_ID => get_string('id', 'choicegroup'),
+        CHOICEGROUP_SORTGROUPS_CREATEDATE => get_string('createdate', 'choicegroup'),
         CHOICEGROUP_SORTGROUPS_NAME => get_string('name', 'choicegroup')
     );
 }
