@@ -188,7 +188,15 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 		$mform->addElement('hidden', 'serializedselectedgroups', $serializedselectedgroupsValue, array('id' => 'serializedselectedgroups'));
 		$mform->setType('serializedselectedgroups', PARAM_RAW);
 
-        $systemdefault = array(CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT => get_string('systemdefault', 'choicegroup'));
+        switch (get_config('choicegroup', 'sortgroupsby')) {
+            case CHOICEGROUP_SORTGROUPS_CREATEDATE:
+                $systemdefault = array(CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT => get_string('systemdefault_date', 'choicegroup'));
+                break;
+            case CHOICEGROUP_SORTGROUPS_NAME:
+                $systemdefault = array(CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT => get_string('systemdefault_name', 'choicegroup'));
+                break;
+        }
+
         $options = array_merge($systemdefault, choicegroup_get_sort_options());
         $mform->addElement('select', 'sortgroupsby', get_string('sortgroupsby', 'choicegroup'), $options);
         $mform->setDefault('sortgroupsby', CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT);
