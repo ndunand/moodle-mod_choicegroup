@@ -105,8 +105,8 @@ $string['numberofuser'] = 'El número de usuarios';
 $string['groupdoesntexist'] = 'Algunos de los grupos especificados no existen en este curso. El profesor debe crear los grupos necesarios y/o modificar esta actividad..';
 $string['samegroupused'] = 'El mismo grupo no se puede utilizar varias veces.';
 
-$string['members/max'] = 'Usado / Capacidad';
-$string['members/'] = 'Usado';
+$string['members/max'] = 'Miembros / Capacidad';
+$string['members/'] = 'Miembros';
 $string['groupmembers'] = 'Miembros del grupo';
 $string['page-mod-choice-x'] = 'Cualquier página del módulo elección de grupo';
 $string['showdescription'] = 'Mostrar descripciones';
