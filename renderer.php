@@ -119,7 +119,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $group_members_names[] = $group_user->lastname . ', ' . $group_user->firstname;
             }
             sort($group_members_names);
-            if (!empty($option->attributes->disabled) || ($limitanswers && sizeof($group_members) >= $option->maxanswers)) {
+            if (!empty($option->attributes->disabled) || ($limitanswers && sizeof($group_members) >= $option->maxanswers) && empty($option->attributes->checked)) {
                 $labeltext .= ' ' . html_writer::tag('em', get_string('full', 'choicegroup'));
                 $option->attributes->disabled=true;
                 $availableoption--;
