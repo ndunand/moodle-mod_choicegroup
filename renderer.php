@@ -119,9 +119,11 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $group_members_names[] = $group_user->lastname . ', ' . $group_user->firstname;
             }
             sort($group_members_names);
-            if (!empty($option->attributes->disabled) || ($limitanswers && sizeof($group_members) >= $option->maxanswers) && empty($option->attributes->checked)) {
-                $labeltext .= ' ' . html_writer::tag('em', get_string('full', 'choicegroup'));
-                $option->attributes->disabled=true;
+            if (!empty($option->attributes->disabled) || ($limitanswers && $option->maxanswers > 0 && count($group_members) >= $option->maxanswers) && empty($option->attributes->checked)) {
+                if(($limitanswers && $option->maxanswers > 0 && count($group_members) >= $option->maxanswers) && empty($option->attributes->checked)) {
+                    $labeltext .= ' ' . html_writer::tag('em', get_string('full', 'choicegroup'));
+                }
+                $option->attributes->disabled = true;
                 $availableoption--;
             }
             $labeltext .= html_writer::tag('div', $group->description, array('class' => 'choicegroups-descriptions hidden'));
@@ -139,7 +141,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER and $current) or
             ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {
 
-                $maxanswers = ($limitanswers) ? (' / '.$option->maxanswers) : ('');
+                $maxanswers = ($limitanswers && $option->maxanswers > 0 ) ? (' / '.$option->maxanswers) : ('');
                 $html .= html_writer::tag('td', sizeof($group_members_names).$maxanswers, array('class' => 'center'));
                 if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
                     $group_members_html = html_writer::tag('div', implode('<br />', $group_members_names), array('class' => 'choicegroups-membersnames hidden', 'id' => 'choicegroup_'.$option->attributes->value));
