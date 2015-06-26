@@ -1,0 +1,17 @@
+{
+    "name": "ndunand/moodle-mod_choicegroup",
+    "description": "Allows students to enrol themselves in a group within a course.",
+    "type": "moodle-mod",
+ 	 "authors": [
+        {
+            "name": "Nicolas Dunand",
+            "email": "nico@kolya.ch"
+        }
+    ],
+    "require": {
+        "composer/installers": "~1.0"
+    },
+    "extra": {
+        "installer-name": "choicegroup"
+    }
+}
