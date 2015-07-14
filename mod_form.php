@@ -137,8 +137,10 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 			if (isset($grouping->linkedGroupsIDs) && count($grouping->linkedGroupsIDs) > 1) { // grouping has more than 2 items, thus we should display it (otherwise it would be clearer to display only that single group alone)
 				$mform->addElement('html', '<option value="'.$groupingID.'" style="font-weight: bold" class="grouping">'.get_string('char_bullet_expanded', 'choicegroup').$grouping->name.'</option>');
 				foreach ($grouping->linkedGroupsIDs as $linkedGroupID) {
-					$mform->addElement('html', '<option value="'.$linkedGroupID.'" class="group nested">&nbsp;&nbsp;&nbsp;&nbsp;'.$groups[$linkedGroupID]->name.'</option>');
-					$groups[$linkedGroupID]->mentioned = true;
+					if (isset($groups[$linkedGroupID])) {
+						$mform->addElement('html', '<option value="'.$linkedGroupID.'" class="group nested">&nbsp;&nbsp;&nbsp;&nbsp;'.$groups[$linkedGroupID]->name.'</option>');
+						$groups[$linkedGroupID]->mentioned = true;
+					}
 				}
 			}
 		}
