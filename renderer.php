@@ -39,15 +39,15 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * @return string
      */
     public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false, $showresults = false, $current = false, $choicegroupopen = false, $disabled = false, $multipleenrollmentspossible = false) {
-        global $DB, $PAGE, $course, $choicegroup_groups, $choicegroup_users;
+        global $DB, $PAGE, $choicegroup_groups, $choicegroup_users;
 
         $PAGE->requires->js('/mod/choicegroup/javascript.js');
 
-        $layoutclass = 'vertical';
         $target = new moodle_url('/mod/choicegroup/view.php');
-        $attributes = array('method'=>'POST', 'action'=>$target, 'class'=> $layoutclass);
+        $attributes = array('method'=>'POST', 'action'=>$target, 'class'=> 'tableform');
 
         $html = html_writer::start_tag('form', $attributes);
+        $html .= html_writer::start_tag('div', array('class'=>'tablecontainer'));
         $html .= html_writer::start_tag('table', array('class'=>'choicegroups' ));
 
         $html .= html_writer::start_tag('tr');
@@ -140,15 +140,16 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {
 
                 $maxanswers = ($limitanswers) ? (' / '.$option->maxanswers) : ('');
-                $html .= html_writer::tag('td', sizeof($group_members_names).$maxanswers, array('class' => 'center'));
+                $html .= html_writer::tag('td', sizeof($group_members_names).$maxanswers);
                 if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
                     $group_members_html = html_writer::tag('div', implode('<br />', $group_members_names), array('class' => 'choicegroups-membersnames hidden', 'id' => 'choicegroup_'.$option->attributes->value));
-                    $html .= html_writer::tag('td', $group_members_html, array('class' => 'center'));
+                    $html .= html_writer::tag('td', $group_members_html);
                 }
             }
             $html .= html_writer::end_tag('tr');
         }
         $html .= html_writer::end_tag('table');
+        $html .= html_writer::end_tag('div');
         if ($multipleenrollmentspossible == 1) {
             $html .= '<input type="hidden" name="number_of_groups" value="'.$i.'">' . $answer_to_groupid_mappings;
         }
@@ -226,6 +227,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $attributes = array('method'=>'POST');
         $attributes['action'] = new moodle_url($PAGE->url);
         $attributes['id'] = 'attemptsform';
+        $attributes['class'] = 'tableform';
 
         if ($choicegroups->viewresponsecapability) {
             $html .= html_writer::start_tag('form', $attributes);
@@ -299,7 +301,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         foreach ($columns as $d) {
             $table->colclasses[] = 'data';
         }
-        $html .= html_writer::tag('div', html_writer::table($table), array('class'=>'response'));
+        $html .= html_writer::tag('div', html_writer::table($table), array('class'=>'response tablecontainer'));
 
         $actiondata = '';
         if ($choicegroups->viewresponsecapability && $choicegroups->deleterepsonsecapability) {

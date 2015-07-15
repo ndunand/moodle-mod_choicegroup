@@ -3,7 +3,6 @@
 .path-mod-choicegroup .button {text-align:center;}
 .path-mod-choicegroup .attemptcell {width:5px;white-space: nowrap;}
 .path-mod-choicegroup .anonymous,
-.path-mod-choicegroup .names {margin-left:auto;margin-right:auto; width:80%;}
 .path-mod-choicegroup div.downloadreport ul {list-style: none; margin-left: 1em;}
 .path-mod-choicegroup .choicegroupresponse {width:100%;}
 .path-mod-choicegroup .choicegroupresponse .picture {width:10px;white-space: nowrap;}
@@ -14,7 +13,6 @@
 .path-mod-choicegroup .choicegroups .option input {vertical-align: middle;}
 
 .path-mod-choicegroup .horizontal,
-.path-mod-choicegroup .vertical {margin-left: 10%;margin-right: 10%;}
 .path-mod-choicegroup .horizontal .choicegroups .option {padding-right:20px;display:inline; white-space: normal;}
 .path-mod-choicegroup .horizontal .choicegroups .button {margin-top: 10px;}
 .path-mod-choicegroup ul.choicegroups li {list-style:none;}
@@ -34,7 +32,6 @@
 .path-mod-choicegroup .results .data.header {width: 10%;}
 .path-mod-choicegroup .responseaction {text-align: center;}
 .path-mod-choicegroup .results .option {white-space: normal;}
-.path-mod-choicegroup .response {overflow: auto;}
 .path-mod-choicegroup .results .option,
 .path-mod-choicegroup .results .numberofuser,
 .path-mod-choicegroup .results .percentage {font-weight: bold; font-size: 108%;}
@@ -58,8 +55,24 @@
 #page-mod-choice-report.dir-rtl .downloadreport ul li{float:right;}
 #page-mod-choice-view.dir-rtl .reportlink {text-align: left;}
 
-.path-mod-choicegroup table { border: 1px #666 solid; }
-.path-mod-choicegroup td { border-top: 1px #666 solid; }
+.path-mod-choicegroup div.tablecontainer {
+    overflow: auto;
+    border: 1px #ccc solid;
+    min-width: 80%;
+    max-width: 100%;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+.path-mod-choicegroup div.border {
+    border: 1px #ccc solid;
+}
+.path-mod-choicegroup div.tablecontainer table {
+    width: 100%;
+}
+
+.path-mod-choicegroup td { border-top: 1px #ccc solid; }
 .path-mod-choicegroup th, .path-mod-choicegroup td { padding:10px 15px; }
 .path-mod-choicegroup td.center { text-align:center; }
 
@@ -103,3 +116,5 @@
     margin-top: 5px;
     padding-top: 5px;
 }
+
+.path-mod-choicegroup .tableform {text-align: center}
