@@ -132,8 +132,8 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 				<div class="fcontainer clearfix">
 				<div id="fitem_id_option_0" class="fitem fitem_fselect ">
 				<div class="fitemtitle"><label for="id_option_0">'.get_string('groupsheader', 'choicegroup').'</label><span class="helptooltip"><a href="'. $CFG->wwwroot .'/help.php?component=choicegroup&amp;identifier=choicegroupoptions&amp;lang=en" title="Help with Choice options" aria-haspopup="true" target="_blank"><img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$PAGE->theme->name.'&component=core&image=help" alt="Help with Choice options" class="iconhelp"></a></span></div><div class="felement fselect">
-
-				<table><tr><td>'.get_string('available_groups', 'choicegroup').'</td><td>&nbsp;</td><td>'.get_string('selected_groups', 'choicegroup').'</td><td>&nbsp;</td></tr><tr><td style="vertical-align: top">');
+                <div class="tablecontainer">
+				<table><tr><th>'.get_string('available_groups', 'choicegroup').'</th><th>&nbsp;</th><th>'.get_string('selected_groups', 'choicegroup').'</th><th>&nbsp;</th></tr><tr><td style="vertical-align: top">');
 
 		$mform->addElement('html','<select id="availablegroups" name="availableGroups" multiple size=10 style="width:200px">');
 		foreach ($groupings as $groupingID => $grouping) {
@@ -165,7 +165,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 		$mform->addElement('html','<td style="vertical-align: top"><select id="id_selectedGroups" name="selectedGroups" multiple size=10 style="width:200px"></select></td>');
 
 		$mform->addElement('html','<td><div><div id="fitem_id_limit_0" class="fitem fitem_ftext" style="display:none"><div class=""><label for="id_limit_0" id="label_for_limit_ui">'.get_string('set_limit_for_group', 'choicegroup').'</label></div><div class="ftext">
-				<input class="mod-choicegroup-limit-input" type="text" value="0" id="ui_limit_input" disabled="disabled"></div></div></div></td></tr></table>
+				<input class="mod-choicegroup-limit-input" type="text" value="0" id="ui_limit_input" disabled="disabled"></div></div></div></td></tr></table></div>
 				</div></div>
 
 				</div>
