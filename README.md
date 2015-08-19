@@ -15,27 +15,25 @@ Installation
 2. visit administration page to install module
 3. use in any course as wished
 
+
 Operation
 ==========
 
 1. create groups within your course
 2. create a choicegroup activity and select groups which users can chose from
 
+
 See also
 =========
 
-Moodle plugins entry page :             http://moodle.org/plugins/view.php?plugin=mod_choicegroup
-
-Moodle.org forum discussion thread :    http://moodle.org/mod/forum/discuss.php?d=174424
-
-Moodlefairy's review :                  http://www.youtube.com/watch?v=JQFaDLtHZdY
-
-Another review by Gavin Henrick :       http://www.somerandomthoughts.com/blog/2011/10/13/review-activity-module-choice-group-for-moodle-2/
+ - [Moodle plugins entry page](http://moodle.org/plugins/view.php?plugin=mod_choicegroup)
+ - [Moodle.org forum discussion thread](http://moodle.org/mod/forum/discuss.php?d=174424)
+ - [Moodlefairy's review](http://www.youtube.com/watch?v=JQFaDLtHZdY)
+ - [Another review by Gavin Henrick](http://www.somerandomthoughts.com/blog/2011/10/13/review-activity-module-choice-group-for-moodle-2/)
 
 
 Thanks to
 ==========
 
-André Lausch : German translation
-
-Luiggi Sansonetti : French translation
+ - André Lausch : German translation
+ - Luiggi Sansonetti : French translation
