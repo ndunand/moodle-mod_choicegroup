@@ -45,9 +45,13 @@ $string['choicegroup:choose'] = 'Record a choice';
 $string['choicegroupname'] = 'Group choice name';
 $string['choicegroupopen'] = 'Open';
 $string['choicegroupoptions'] = 'Choice options';
-$string['choicegroupoptions_help'] = 'Here is where you specify the options that participants have to choose from.
+$string['choicegroupoptions_help'] = 'Here is where you specify which groups participants can choose from.
 
-You can fill in any number of these. If you leave some of the options blank, they will not be displayed. If you need more options, click the "Add 3 fields to form" button.';
+The list on the left displays all available groups and groupings. To add one or several groups, select these from the list and click "Add". To add all groups from a grouping, select the grouping and click "Add".
+
+The selected groups appear on the list on the right.
+
+To remove any groups from the selection, select them from the list on the right and click "Remove".';
 $string['limitanswers_help'] = 'This option allows you to limit the number of participants that can select each choice option. When the limit is reached then no-one else can select that option.
 
 If limits are disabled then any number of participants can select each of the options.';

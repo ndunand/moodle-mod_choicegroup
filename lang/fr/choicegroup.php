@@ -44,9 +44,13 @@ $string['choicegroup:choose'] = 'Enregistrer un choix';
 $string['choicegroupname'] = 'Nom du choix de groupe';
 $string['choicegroupopen'] = 'Ouvert';
 $string['choicegroupoptions'] = 'Options des choix';
-$string['choicegroupoptions_help'] = 'Spécifier les options que les participants ont à choisir.
+$string['choicegroupoptions_help'] = 'Spécifier ici les groupes que les participants peuvent choisir.
 
-Vous pouvez remplir un certain nombre d\'options. Si vous laissez quelques-unes des options vierges, elles ne seront pas affichées. Si vous avez besoin de plus d\'options, cliquez sur le bouton "Ajouter trois champs".';
+La liste de gauche liste les groupes et groupements disponbles. Pour ajouter un ou plusieurs groupes, sélectionnez ceux-ci puis cliquez sur "Ajouter". Pour ajouter tous les groupes d\'un groupement, sélectionnez le groupement puis cliquez sur "Ajouter".
+
+Les groupes sélectionés apparaissant dans la liste de droite.
+
+Pour retirer un ou plusieurs groupes des choix possibles, sélectionnez ceux-ci dans la liste de droite puis cliquez sur "Retirer".';
 $string['limitanswers_help'] = 'Cette option vous permet de limiter le nombre de participants dans un groupe. Lorsque la limite est atteinte, personne d\'autre ne peut sélectionner ce groupe.
 
 Si les limites sont désactivées, n\'importe quel nombre de participants peut s\'inscrire dans le groupe.';
