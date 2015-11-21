@@ -235,7 +235,7 @@ if (isguestuser()) {
     $courseshortname = format_string($course->shortname, true, array('context' => $coursecontext));
 
     echo $OUTPUT->box_start('generalbox', 'notice');
-    echo '<p align="center">'. get_string('notenrolledchoose', 'choicegroup') .'</p>';
+    echo '<p class="center">'. get_string('notenrolledchoose', 'choicegroup') .'</p>';
     echo $OUTPUT->container_start('continuebutton');
     echo $OUTPUT->single_button(new moodle_url('/enrol/index.php?', array('id'=>$course->id)), get_string('enrolme', 'core_enrol', $courseshortname));
     echo $OUTPUT->container_end();

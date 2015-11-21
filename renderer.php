@@ -51,26 +51,26 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $html .= html_writer::start_tag('table', array('class'=>'choicegroups' ));
 
         $html .= html_writer::start_tag('tr');
-        $html .= html_writer::tag('th', get_string('choice', 'choicegroup'));
+        $html .= html_writer::tag('th', get_string('choice', 'choicegroup'), array('class'=>'width10'));
 
-        $group = get_string('group');
+        $group = get_string('group').' ';
         $group .= html_writer::tag('a', get_string('showdescription', 'choicegroup'), array('class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow', 'href' => '#'));
         $group .= html_writer::tag('a', get_string('hidedescription', 'choicegroup'), array('class' => 'choicegroup-descriptiondisplay choicegroup-descriptionhide hidden', 'href' => '#'));
-        $html .= html_writer::tag('th', $group);
+        $html .= html_writer::tag('th', $group, array('class'=>'width40'));
 
         if ( $showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or
         ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER and $current) or
         ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {
             if ($limitanswers) {
-                $html .= html_writer::tag('th', get_string('members/max', 'choicegroup'));
+                $html .= html_writer::tag('th', get_string('members/max', 'choicegroup'), array('class'=>'width10'));
             }
             else {
-                $html .= html_writer::tag('th', get_string('members/', 'choicegroup'));
+                $html .= html_writer::tag('th', get_string('members/', 'choicegroup'), array('class'=>'width10'));
             }
             if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
                 $membersdisplay_html = html_writer::tag('a', get_string('show'), array('class' => 'choicegroup-memberdisplay choicegroup-membershow', 'href' => '#'));
                 $membersdisplay_html .= html_writer::tag('a', get_string('hide'), array('class' => 'choicegroup-memberdisplay choicegroup-memberhide hidden', 'href' => '#'));
-                $html .= html_writer::tag('th', get_string('groupmembers', 'choicegroup') . $membersdisplay_html);
+                $html .= html_writer::tag('th', get_string('groupmembers', 'choicegroup') .' '. $membersdisplay_html, array('class'=>'width40'));
             }
         }
         $html .= html_writer::end_tag('tr');
@@ -96,7 +96,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 break;
             }
             $html .= html_writer::start_tag('tr', array('class'=>'option'));
-            $html .= html_writer::start_tag('td', array());
+            $html .= html_writer::start_tag('td', array('class'=>'center'));
 
             if ($multipleenrollmentspossible == 1) {
                 $option->attributes->name = 'answer_'.$i;
@@ -132,7 +132,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $attributes['id'] = 'choiceid_' . $option->attributes->value;
             $html .= html_writer::empty_tag('input', $attributes);
             $html .= html_writer::end_tag('td');
-            $html .= html_writer::tag('td', $labeltext, array('for'=>$option->attributes->name));
+            $html .= html_writer::tag('td', $labeltext);
 
 
             if ( $showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or
@@ -140,10 +140,10 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {
 
                 $maxanswers = ($limitanswers) ? (' / '.$option->maxanswers) : ('');
-                $html .= html_writer::tag('td', sizeof($group_members_names).$maxanswers);
+                $html .= html_writer::tag('td', sizeof($group_members_names).$maxanswers, array('class' => 'center'));
                 if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
                     $group_members_html = html_writer::tag('div', implode('<br />', $group_members_names), array('class' => 'choicegroups-membersnames hidden', 'id' => 'choicegroup_'.$option->attributes->value));
-                    $html .= html_writer::tag('td', $group_members_html);
+                    $html .= html_writer::tag('td', $group_members_html, array('class' => 'center'));
                 }
             }
             $html .= html_writer::end_tag('tr');
@@ -159,7 +159,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
         if (!empty($options['hascapability']) && ($options['hascapability'])) {
             if ($availableoption < 1) {
-               $html .= html_writer::tag('td', get_string('choicegroupfull', 'choicegroup'));
+               $html .= html_writer::tag('p', get_string('choicegroupfull', 'choicegroup'));
             } else {
                 if (!$disabled) {
                     $html .= html_writer::empty_tag('input', array('type'=>'submit', 'value'=>get_string('savemychoicegroup','choicegroup'), 'class'=>'button', 'style' => $initiallyHideSubmitButton?'display: none':''));
@@ -170,11 +170,10 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $url = new moodle_url('view.php', array('id'=>$coursemoduleid, 'action'=>'delchoicegroup', 'sesskey'=>sesskey()));
                 $html .= ' ' . html_writer::link($url, get_string('removemychoicegroup','choicegroup'));
             }
-        } else {
-            $html .= html_writer::tag('td', get_string('havetologin', 'choicegroup'));
+        } elseif (!isloggedin() || isguestuser()) { // Only display message if user is not logged in or is a guest user.
+            $html .= ' '.html_writer::tag('p', get_string('havetologin', 'choicegroup'));
         }
 
-        $html .= html_writer::end_tag('table');
         $html .= html_writer::end_tag('form');
 
         return $html;
