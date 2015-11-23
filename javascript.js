@@ -33,6 +33,14 @@ var NDY = YUI().use("node", function(Y) {
         btnShowHide.toggleClass('hidden');
         names.toggleClass('hidden');
 
+        // Fix for Chrome where focus is not returned to the link after it is toggled.
+        if (document.getElementsByClassName) {
+            var elements = document.getElementsByClassName('choicegroup-membershow');
+            if (elements[0].classList.contains('hidden')) {
+                elements = document.getElementsByClassName('choicegroup-memberhide');
+            }
+            elements[0].focus();
+        }
         e.preventDefault();
 
     };
@@ -46,6 +54,14 @@ var NDY = YUI().use("node", function(Y) {
         btnShowHide.toggleClass('hidden');
         names.toggleClass('hidden');
 
+        // Fix for Chrome where focus is not returned to the link after it is toggled.
+        if (document.getElementsByClassName) {
+            var elements = document.getElementsByClassName('choicegroup-descriptionshow');
+            if (elements[0].classList.contains('hidden')) {
+                elements = document.getElementsByClassName('choicegroup-descriptionhide');
+            }
+            elements[0].focus();
+        }
         e.preventDefault();
 
     };

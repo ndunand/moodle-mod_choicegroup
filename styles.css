@@ -87,10 +87,6 @@
     margin:0px auto;
 }
 
-.path-mod-choicegroup table.results .header {
-    color:#000;
-}
-
 .path-mod-choicegroup table.choicegroups {
     margin: 20px 0;
 }
@@ -118,3 +114,7 @@
 }
 
 .path-mod-choicegroup .tableform {text-align: center}
+
+/* Styles to format the Choices table. */
+.path-mod-choicegroup .width10   {width: 10%;}
+.path-mod-choicegroup .width40   {width: 40%;}
