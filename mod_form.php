@@ -62,7 +62,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 		$db_groups = $DB->get_records('groups', array('courseid' => $COURSE->id));
 		foreach ($db_groups as $group) {
 			$groups[$group->id] = new stdClass();
-			$groups[$group->id]->name = $group->name;
+			$groups[$group->id]->name = format_string($group->name);
 			$groups[$group->id]->mentioned = false;
 			$groups[$group->id]->id = $group->id;
 		}
@@ -150,7 +150,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 		}
 		foreach ($groups as $group) {
 			if ($group->mentioned === false) {
-				$mform->addElement('html', '<option value="'.$group->id.'" class="group toplevel">'.$group->name.'</option>');
+				$mform->addElement('html', '<option value="'.$group->id.'" class="group toplevel">'.format_string($group->name).'</option>');
 			}
 		}
 		$mform->addElement('html','</select><br><button name="expandButton" type="button" disabled id="expandButton">'.get_string('expand_all_groupings', 'choicegroup').'</button><button name="collapseButton" type="button" disabled id="collapseButton">'.get_string('collapse_all_groupings', 'choicegroup').'</button><br>'.get_string('double_click_grouping_legend', 'choicegroup').'<br>'.get_string('double_click_group_legend', 'choicegroup'));

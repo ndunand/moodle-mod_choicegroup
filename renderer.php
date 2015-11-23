@@ -111,7 +111,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 }
             }
 
-            $labeltext = html_writer::tag('label', $group->name, array('for' => 'choiceid_' . $option->attributes->value));
+            $labeltext = html_writer::tag('label', format_string($group->name), array('for' => 'choiceid_' . $option->attributes->value));
             $group_members = $DB->get_records('groups_members', array('groupid' => $group->id));
             $group_members_names = array();
             foreach ($group_members as $group_member) {
@@ -124,7 +124,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $option->attributes->disabled=true;
                 $availableoption--;
             }
-            $labeltext .= html_writer::tag('div', $group->description, array('class' => 'choicegroups-descriptions hidden'));
+            $labeltext .= html_writer::tag('div', format_text($group->description), array('class' => 'choicegroups-descriptions hidden'));
             if ($disabled) {
                 $option->attributes->disabled=true;
             }

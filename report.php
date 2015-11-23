@@ -86,7 +86,7 @@ if (data_submitted() && $action == 'delete' && has_capability('mod/choicegroup:d
 if (!$download) {
     $PAGE->navbar->add($strresponses);
     $PAGE->set_title(format_string($choicegroup->name).": $strresponses");
-    $PAGE->set_heading($course->fullname);
+    $PAGE->set_heading(format_string($course->fullname));
     echo $OUTPUT->header();
     /// Check to see if groups are being used in this choicegroup
     $groupmode = groups_get_activity_groupmode($cm);
@@ -144,7 +144,7 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
                     foreach ($groups_ids as $gid) {
                         if (array_key_exists($gid, $usergrps)) {
-                            $ug2[] = $usergrps[$gid]->name;
+                            $ug2[] = format_string($usergrps[$gid]->name);
                         }
                     }
                 }
@@ -203,7 +203,7 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
                     foreach ($groups_ids as $gid) {
                         if (array_key_exists($gid, $usergrps)) {
-                            $ug2[] = $usergrps[$gid]->name;
+                            $ug2[] = format_string($usergrps[$gid]->name);
                         }
                     }
                 }
@@ -257,7 +257,7 @@ if ($download == "txt" && has_capability('mod/choicegroup:downloadresponses', $c
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
                     foreach ($groups_ids as $gid) {
                         if (array_key_exists($gid, $usergrps)) {
-                            $ug2[] = $usergrps[$gid]->name;
+                            $ug2[] = format_string($usergrps[$gid]->name);
                         }
                     }
                 }
