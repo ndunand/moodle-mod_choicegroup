@@ -131,7 +131,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 		$mform->addElement('html', '<fieldset class="clearfix">
 				<div class="fcontainer clearfix">
 				<div id="fitem_id_option_0" class="fitem fitem_fselect ">
-				<div class="fitemtitle"><label for="id_option_0">'.get_string('groupsheader', 'choicegroup').'</label><span class="helptooltip"><a href="'. $CFG->wwwroot .'/help.php?component=choicegroup&amp;identifier=choicegroupoptions&amp;lang=en" title="Help with Choice options" aria-haspopup="true" target="_blank"><img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$PAGE->theme->name.'&component=core&image=help" alt="Help with Choice options" class="iconhelp"></a></span></div><div class="felement fselect">
+				<div class="fitemtitle"><label for="id_option_0">'.get_string('groupsheader', 'choicegroup').'</label><span class="helptooltip"><a href="'. $CFG->wwwroot .'/help.php?component=choicegroup&amp;identifier=choicegroupoptions&amp;lang='.current_language().'" title="'.get_string('choicegroupoptions_help', 'choicegroup').'" aria-haspopup="true" target="_blank"><img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$PAGE->theme->name.'&component=core&image=help" alt="'.get_string('choicegroupoptions_help', 'choicegroup').'" class="iconhelp"></a></span></div><div class="felement fselect">
                 <div class="tablecontainer">
 				<table><tr><th>'.get_string('available_groups', 'choicegroup').'</th><th>&nbsp;</th><th>'.get_string('selected_groups', 'choicegroup').'</th><th>&nbsp;</th></tr><tr><td style="vertical-align: top">');
 
