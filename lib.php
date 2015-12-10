@@ -367,14 +367,19 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
     $selectedgroup = $DB->get_record('groups', array('id' => $selected_option->groupid), 'id,name', MUST_EXIST);
 
     $countanswers=0;
-    if($choicegroup->limitanswers) {
-        $groupmembers = $DB->get_records('groups_members', array('groupid' => $selected_option->groupid));
-        $countanswers = count($groupmembers);
+    groups_add_member($selected_option->groupid, $userid);
+    $groupmember_added = true;    
+    if ($choicegroup->limitanswers) {
+        $groupmember = $DB->get_record('groups_members', array('groupid' => $selected_option->groupid, 'userid'=>$userid));
+        $select_count = 'groupid='.$selected_option->groupid.' and id<='.$groupmember->id;
+        $countanswers = $DB->count_records_select('groups_members', $select_count);
         $maxans = $choicegroup->maxanswers[$formanswer];
+        if ($countanswers > $maxans) {    
+           groups_remove_member($selected_option->groupid, $userid);
+           $groupmember_added = false;
+      }
     }
-
-    if (!($choicegroup->limitanswers && ($countanswers >= $maxans) )) {
-        groups_add_member($selected_option->groupid, $userid);
+    if ($groupmember_added) {
         if ($current) {
             if (!($choicegroup->multipleenrollmentspossible == 1)) {
                 if ($selected_option->groupid != $current->id) {
