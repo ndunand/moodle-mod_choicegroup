@@ -867,7 +867,7 @@ function choicegroup_get_response_data($choicegroup, $cm) {
     if (count($allresponses)) {
         return $allresponses;
     }
-
+ 
     // First get all the users who have access here.
     // To start with we assume they are all "unanswered" then move them later.
     $ctx = \context_module::instance($cm->id);
@@ -880,19 +880,43 @@ function choicegroup_get_response_data($choicegroup, $cm) {
     }
 
     $allresponses[0] = $users;
-    foreach ($allresponses[0] as $user) {
-        $currentanswers = choicegroup_get_user_answer($choicegroup, $user, true);
-        if ($currentanswers != false) {
-            foreach ($currentanswers as $current) {
-                $allresponses[$current->id][$user->id] = clone $allresponses[0][$user->id];
-                $allresponses[$current->id][$user->id]->timemodified = $current->timeuseradded;
-            }
 
-            // Remove from unanswered column.
-            unset($allresponses[0][$user->id]);
-        }
+    $responses = choicegroup_get_responses($choicegroup, $ctx);
+    foreach ($responses as $response){
+        $allresponses[$response->groupid][$response->userid]= clone $users[$response->userid];
+        $allresponses[$response->groupid][$response->userid]->timemodified =$response->timeadded; 
+
+        unset($allresponses[0][$response->userid]);
     }
-    return $allresponses;
+   return $allresponses;
+}
+
+/* Return an array with the options selected of users of the $choicegroup 
+ * 
+ * @param object $choicegroup choicegroup record
+ * @param object $cm course module object
+ * @return array of selected options by all users 
+*/
+function choicegroup_get_responses($choicegroup, $cm){
+
+    global $DB;
+
+    if (is_numeric($choicegroup)) {
+        $choicegroupid = $choicegroup;
+    } else {
+        $choicegroupid = $choicegroup->id;
+    }
+
+    $params1 = array('choicegroupid'=>$choicegroupid);
+    list($esql, $params2) = get_enrolled_sql($cm, 'mod/choicegroup:choose', 0);
+    $params = array_merge($params1, $params2);
+
+    $sql = 'SELECT gm.* FROM {user} u JOIN ('.$esql.') je ON je.id = u.id
+        JOIN {groups_members} gm ON gm.userid = u.id AND groupid IN (
+        SELECT groupid FROM {choicegroup_options} WHERE choicegroupid=:choicegroupid)
+        WHERE u.deleted = 0 ORDER BY u.lastname ASC,u.firstname ASC';
+
+    return $DB->get_records_sql($sql, $params);
 }
 
 /**
