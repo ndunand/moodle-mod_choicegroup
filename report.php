@@ -32,7 +32,7 @@ $id         = required_param('id', PARAM_INT);   //moduleid
 $format     = optional_param('format', CHOICEGROUP_PUBLISH_NAMES, PARAM_INT);
 $download   = optional_param('download', '', PARAM_ALPHA);
 $action     = optional_param('action', '', PARAM_ALPHA);
-$userids = optional_param_array('userid', array(), PARAM_INT); //get array of responses to delete.
+$grpsmemberids = optional_param_array('grpsmemberid', array(), PARAM_INT); //get array of responses to delete.
 
 $url = new moodle_url('/mod/choicegroup/report.php', array('id'=>$id));
 if ($format !== CHOICEGROUP_PUBLISH_NAMES) {
@@ -79,7 +79,7 @@ $event->add_record_snapshot('choicegroup', $choicegroup);
 $event->trigger();
 
 if (data_submitted() && $action == 'delete' && has_capability('mod/choicegroup:deleteresponses',$context) && confirm_sesskey()) {
-    choicegroup_delete_responses($userids, $choicegroup, $cm, $course); //delete responses.
+    choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course); //delete responses.
     redirect("report.php?id=$cm->id");
 }
 
