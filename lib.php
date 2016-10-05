@@ -676,7 +676,8 @@ function choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course
             $event->trigger();
         }
         // Update completion state
-        if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
+        $current = choicegroup_get_user_answer($choicegroup, $userid, false, true);
+        if ($current === false && $completion->is_enabled($cm) && $choicegroup->completionsubmit) {
             $completion->update_state($cm, COMPLETION_INCOMPLETE, $userid);
         }
     }
