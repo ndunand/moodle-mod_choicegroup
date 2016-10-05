@@ -277,7 +277,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                         }
 
                         if ($choicegroups->viewresponsecapability && $choicegroups->deleterepsonsecapability  && $optionid > 0) {
-                            $attemptaction = html_writer::checkbox('userid[]', $user->id,'');
+                            $attemptaction = html_writer::checkbox('grpsmemberid[]', $user->grpsmemberid,'');
                             $data .= html_writer::tag('div', $attemptaction, array('class'=>'attemptaction'));
                         }
                         $userimage = $this->output->user_picture($user, array('courseid'=>$choicegroups->courseid));

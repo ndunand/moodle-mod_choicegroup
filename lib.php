@@ -471,6 +471,9 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
 
         if (array_key_exists($groupid, $allresponses)) {
             $display->options[$optionid]->user = $allresponses[$groupid];
+            foreach ($display->options[$optionid]->user as $user){
+                $user->grpsmemberid = array_search(array($groupid, $user->id), $choicegroup->grpmemberid);
+            }
             $totaluser += count($allresponses[$groupid]);
         }
     }
@@ -633,23 +636,23 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
 
 /**
  * @global object
- * @param array $userids
+ * @param array $grpsmemberids
  * @param object $choicegroup Choice main table row
  * @param object $cm Course-module object
  * @param object $course Course object
  * @return bool
  */
-function choicegroup_delete_responses($userids, $choicegroup, $cm, $course) {
+function choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course) {
     global $CFG, $DB, $context;
     require_once($CFG->libdir.'/completionlib.php');
 
-    if(!is_array($userids) || empty($userids)) {
+    if(!is_array($grpsmemberids) || empty($grpsmemberids)) {
         return false;
     }
 
-    foreach($userids as $num => $userid) {
-        if(empty($userid)) {
-            unset($userids[$num]);
+    foreach($grpsmemberids as $num => $grpsmemberid) {
+        if(empty($grpsmemberid)) {
+            unset($grpsmemberids[$num]);
         }
     }
 
@@ -659,21 +662,22 @@ function choicegroup_delete_responses($userids, $choicegroup, $cm, $course) {
         'objectid' => $choicegroup->id
     );
 
-    foreach($userids as $userid) {
-        if ($current = choicegroup_get_user_answer($choicegroup, $userid)) {
-            $currentgroup = $DB->get_record('groups', array('id' => $current->id), 'id,name', MUST_EXIST);
-            if (groups_is_member($current->id, $userid)) {
-                groups_remove_member($current->id, $userid);
-                $event = \mod_choicegroup\event\choice_removed::create($eventparams);
-                $event->add_record_snapshot('course_modules', $cm);
-                $event->add_record_snapshot('course', $course);
-                $event->add_record_snapshot('choicegroup', $choicegroup);
-                $event->trigger();
-            }
-            // Update completion state
-            if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
-                $completion->update_state($cm, COMPLETION_INCOMPLETE, $userid);
-            }
+    foreach($grpsmemberids as $grpsmemberid) {
+        $groupsmember = $DB->get_record('groups_members', array('id'=>$grpsmemberid), '*', MUST_EXIST);
+        $userid = $groupsmember->userid;
+        $groupid = $groupsmember->groupid;
+        $currentgroup = $DB->get_record('groups', array('id' => $groupid), 'id,name', MUST_EXIST);
+        if (groups_is_member($groupid, $userid)) {
+            groups_remove_member($groupid, $userid);
+            $event = \mod_choicegroup\event\choice_removed::create($eventparams);
+            $event->add_record_snapshot('course_modules', $cm);
+            $event->add_record_snapshot('course', $course);
+            $event->add_record_snapshot('choicegroup', $choicegroup);
+            $event->trigger();
+        }
+        // Update completion state
+        if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
+            $completion->update_state($cm, COMPLETION_INCOMPLETE, $userid);
         }
     }
     return true;
@@ -782,15 +786,19 @@ function choicegroup_get_choicegroup($choicegroupid) {
             $grpfilter = "AND grp_o.groupid = :groupid";
         }
 
-        $sql = "SELECT grp_o.id, grp_o.groupid, grp_o.maxanswers FROM {groups} grp
-            INNER JOIN {choicegroup_options} grp_o on grp.id = grp_o.groupid
-            WHERE grp_o.choicegroupid = :choicegroupid $grpfilter
-            ORDER BY $sortcolumn ASC";
+        $sql = "SELECT concat(IFNULL(grp_m.id, ''), grp_o.id) uniqueid,
+                    grp_m.id grpmemberid, grp_m.userid, grp_o.id, grp_o.groupid, grp_o.maxanswers
+                FROM {groups} grp
+                INNER JOIN {choicegroup_options} grp_o on grp.id = grp_o.groupid
+                LEFT JOIN {groups_members} grp_m on grp_m.groupid = grp_o.groupid
+                WHERE grp_o.choicegroupid = :choicegroupid $grpfilter
+                ORDER BY $sortcolumn ASC";
 
         $options = $DB->get_records_sql($sql, $params);
 
         foreach ($options as $option) {
             $choicegroup->option[$option->id] = $option->groupid;
+            $choicegroup->grpmemberid[$option->grpmemberid] = array($option->groupid, $option->userid);
             $choicegroup->maxanswers[$option->id] = $option->maxanswers;
         }
 
