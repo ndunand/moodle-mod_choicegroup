@@ -787,13 +787,13 @@ function choicegroup_get_choicegroup($choicegroupid) {
             $grpfilter = "AND grp_o.groupid = :groupid";
         }
 
-        $sql = "SELECT concat(IFNULL(grp_m.id, ''), grp_o.id) uniqueid,
-                    grp_m.id grpmemberid, grp_m.userid, grp_o.id, grp_o.groupid, grp_o.maxanswers
-                FROM {groups} grp
-                INNER JOIN {choicegroup_options} grp_o on grp.id = grp_o.groupid
-                LEFT JOIN {groups_members} grp_m on grp_m.groupid = grp_o.groupid
-                WHERE grp_o.choicegroupid = :choicegroupid $grpfilter
-                ORDER BY $sortcolumn ASC";
+        $sql = "SELECT concat(COALESCE (grp_m.id, 0), grp_o.id) uniqueid,
+                     grp_m.id grpmemberid, grp_m.userid, grp_o.id, grp_o.groupid, grp_o.maxanswers
+                 FROM {groups} grp
+                 INNER JOIN {choicegroup_options} grp_o on grp.id = grp_o.groupid
+                 LEFT JOIN {groups_members} grp_m on grp_m.groupid = grp_o.groupid
+                 WHERE grp_o.choicegroupid = :choicegroupid $grpfilter
+                 ORDER BY $sortcolumn ASC";
 
         $options = $DB->get_records_sql($sql, $params);
 
