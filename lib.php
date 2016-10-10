@@ -787,21 +787,22 @@ function choicegroup_get_choicegroup($choicegroupid) {
             $grpfilter = "AND grp_o.groupid = :groupid";
         }
 
-        $sql = "SELECT concat(COALESCE (grp_m.id, 0), grp_o.id) uniqueid,
-                     grp_m.id grpmemberid, grp_m.userid, grp_o.id, grp_o.groupid, grp_o.maxanswers
+        $sql = "SELECT grp_m.id grpmemberid, grp_m.userid, grp_o.id, grp_o.groupid, grp_o.maxanswers
                  FROM {groups} grp
                  INNER JOIN {choicegroup_options} grp_o on grp.id = grp_o.groupid
                  LEFT JOIN {groups_members} grp_m on grp_m.groupid = grp_o.groupid
                  WHERE grp_o.choicegroupid = :choicegroupid $grpfilter
                  ORDER BY $sortcolumn ASC";
 
-        $options = $DB->get_records_sql($sql, $params);
+        $rs = $DB->get_recordset_sql($sql, $params);
 
-        foreach ($options as $option) {
+        foreach ($rs as $option) {
             $choicegroup->option[$option->id] = $option->groupid;
             $choicegroup->grpmemberid[$option->grpmemberid] = array($option->groupid, $option->userid);
             $choicegroup->maxanswers[$option->id] = $option->maxanswers;
         }
+
+        $rs->close();
 
         return $choicegroup;
     }
