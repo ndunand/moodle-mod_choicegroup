@@ -893,10 +893,12 @@ function choicegroup_get_response_data($choicegroup, $cm) {
 
     $responses = choicegroup_get_responses($choicegroup, $ctx);
     foreach ($responses as $response){
-        $allresponses[$response->groupid][$response->userid]= clone $users[$response->userid];
-        $allresponses[$response->groupid][$response->userid]->timemodified =$response->timeadded; 
+        if (isset($users[$response->userid])) {
+            $allresponses[$response->groupid][$response->userid] = clone $users[$response->userid];
+            $allresponses[$response->groupid][$response->userid]->timemodified = $response->timeadded;
 
-        unset($allresponses[0][$response->userid]);
+            unset($allresponses[0][$response->userid]);
+        }
     }
    return $allresponses;
 }
