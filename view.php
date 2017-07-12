@@ -68,7 +68,7 @@ $eventparams = array(
 );
 
 $current = choicegroup_get_user_answer($choicegroup, $USER);
-if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, NULL, 'mod/choicegroup:choose') and $choicegroup->allowupdate) {
+if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, NULL, 'mod/choicegroup:choose') and $choicegroup->allowupdate and !($choicegroup->timeclose and (time() > $choicegroup->timeclose))) {
     // user wants to delete his own choice:
     if ($current !== false) {
         if (groups_is_member($current->id, $USER->id)) {
