@@ -169,7 +169,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                $html .= html_writer::tag('p', get_string('choicegroupfull', 'choicegroup'));
             } else {
                 if (!$disabled) {
-                    $html .= html_writer::empty_tag('input', array('type'=>'submit', 'value'=>get_string('savemychoicegroup','choicegroup'), 'class'=>'button', 'style' => $initiallyHideSubmitButton?'display: none':''));
+                    $html .= html_writer::empty_tag('input', array('type'=>'submit', 'value'=>get_string('savemychoicegroup','choicegroup'), 'class'=>'button modchoicegroupsumbit', 'style' => $initiallyHideSubmitButton?'display: none':''));
                 }
             }
 
