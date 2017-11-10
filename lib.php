@@ -210,7 +210,13 @@ function choicegroup_add_instance($choicegroup) {
             $DB->insert_record("choicegroup_options", $option);
         }	
     }
-    
+
+    if (class_exists('\core_completion\api')) {
+        $completiontimeexpected = !empty($choicegroup->completionexpected) ? $choicegroup->completionexpected : null;
+        \core_completion\api::update_completion_date_event($choicegroup->coursemodule, 'choicegroup', $choicegroup->id, $completiontimeexpected);
+    }
+
+
     return $choicegroup->id;
 }
 
@@ -282,6 +288,12 @@ function choicegroup_update_instance($choicegroup) {
     foreach ($preExistingGroups as $preExistingGroup) {
     	$DB->delete_records("choicegroup_options", array("id"=>$preExistingGroup->id));
     }
+
+    if (class_exists('\core_completion\api')) {
+        $completiontimeexpected = !empty($choicegroup->completionexpected) ? $choicegroup->completionexpected : null;
+        \core_completion\api::update_completion_date_event($choicegroup->coursemodule, 'choicegroup', $choicegroup->id, $completiontimeexpected);
+    }
+
 
     return $DB->update_record('choicegroup', $choicegroup);
 
@@ -1056,3 +1068,35 @@ function choicegroup_get_sort_options() {
         CHOICEGROUP_SORTGROUPS_NAME => get_string('name', 'choicegroup')
     );
 }
+
+
+/**
+ * This function receives a calendar event and returns the action associated with it, or null if there is none.
+ *
+ * This is used by block_myoverview in order to display the event appropriately. If null is returned then the event
+ * is not displayed on the block.
+ *
+ * @param calendar_event $event
+ * @param \core_calendar\action_factory $factory
+ * @return \core_calendar\local\event\entities\action_interface|null
+ */
+function mod_choicegroup_core_calendar_provide_event_action(calendar_event $event,
+                                                      \core_calendar\action_factory $factory) {
+    $cm = get_fast_modinfo($event->courseid)->instances['choicegroup'][$event->instance];
+
+    $completion = new \completion_info($cm->get_course());
+
+    $completiondata = $completion->get_data($cm, false);
+
+    if ($completiondata->completionstate != COMPLETION_INCOMPLETE) {
+        return null;
+    }
+
+    return $factory->create_instance(
+        get_string('view'),
+        new \moodle_url('/mod/choicegroup/view.php', ['id' => $cm->id]),
+        1,
+        true
+    );
+}
+
