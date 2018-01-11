@@ -67,8 +67,8 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 			$groups[$group->id]->id = $group->id;
 		}
 
-		if (count($db_groups) < 2) {
-			print_error('pleasesetgroups', 'choicegroup', new moodle_url('/course/view.php?id='.$COURSE->id));
+		if (count($db_groups) < 1) {
+			print_error('pleasesetonegroup', 'choicegroup', new moodle_url('/course/view.php?id='.$COURSE->id));
 		}
 
 		$db_groupings = $DB->get_records('groupings', array('courseid' => $COURSE->id));
