@@ -248,11 +248,11 @@ function data_preprocessing(&$default_values){
 
 		if (array_key_exists('multipleenrollmentspossible', $data) && $data['multipleenrollmentspossible'] === '1') {
 			if (count($groupIDs) < 1) {
-				$errors['serializedselectedgroups'] = get_string('fillinatleastoneoption', 'choicegroup');
+				$errors['groups'] = get_string('fillinatleastoneoption', 'choicegroup');
 			}
 		} else {
-			if (count($groupIDs) < 2) {
-				$errors['serializedselectedgroups'] = get_string('fillinatleasttwooptions', 'choicegroup');
+			if (count($groupIDs) < 1) {
+				$errors['groups'] = get_string('fillinatleastoneoption', 'choicegroup');
 			}
 		}
 
