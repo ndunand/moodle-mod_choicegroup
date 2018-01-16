@@ -169,7 +169,12 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                $html .= html_writer::tag('p', get_string('choicegroupfull', 'choicegroup'));
             } else {
                 if (!$disabled) {
-                    $html .= html_writer::empty_tag('input', array('type'=>'submit', 'value'=>get_string('savemychoicegroup','choicegroup'), 'class'=>'button modchoicegroupsumbit', 'style' => $initiallyHideSubmitButton?'display: none':''));
+                    $html .= html_writer::empty_tag('input', array(
+                        'type'=>'submit',
+                        'value'=>get_string('savemychoicegroup','choicegroup'),
+                        'class'=>'btn btn-primary',
+                        'style' => $initiallyHideSubmitButton?'display: none':''
+                    ));
                 }
             }
 
@@ -228,7 +233,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         }
 
         $html ='';
-        $html .= html_writer::tag('h2',format_string(get_string("responses", "choicegroup")), array('class'=>'main'));
+        $html .= html_writer::tag('h3',format_string(get_string("responses", "choicegroup")));
 
         $attributes = array('method'=>'POST');
         $attributes['action'] = new moodle_url($PAGE->url);
@@ -406,7 +411,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $table->data = $rows;
 
         $html = '';
-        $header = html_writer::tag('h2',format_string(get_string("responses", "choicegroup")));
+        $header = html_writer::tag('h3',format_string(get_string("responses", "choicegroup")));
         $html .= html_writer::tag('div', $header, array('class'=>'responseheader'));
         $html .= html_writer::table($table);
 
