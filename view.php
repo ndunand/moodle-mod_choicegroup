@@ -32,6 +32,7 @@ require_once($CFG->libdir . '/completionlib.php');
 $id         = required_param('id', PARAM_INT);                 // Course Module ID
 $action     = optional_param('action', '', PARAM_ALPHA);
 $userids    = optional_param_array('userid', array(), PARAM_INT); // array of attempt ids for delete action
+$notify     = optional_param('notify', '', PARAM_ALPHA);
 
 $url = new moodle_url('/mod/choicegroup/view.php', array('id'=>$id));
 if ($action !== '') {
@@ -134,15 +135,14 @@ if (data_submitted() && is_enrolled($context, NULL, 'mod/choicegroup:choose') &&
         $answer = optional_param('answer', '', PARAM_INT);
 
         if (empty($answer)) {
-            redirect("view.php?id=$cm->id", get_string('mustchooseone', 'choicegroup'));
+            redirect(new moodle_url('/mod/choicegroup/view.php',
+                array('id' => $cm->id, 'notify' => 'mustchooseone', 'sesskey' => sesskey())));
         } else {
             choicegroup_user_submit_response($answer, $choicegroup, $USER->id, $course, $cm);
+            redirect(new moodle_url('/mod/choicegroup/view.php',
+                array('id' => $cm->id, 'notify' => 'choicegroupsaved', 'sesskey' => sesskey())));
         }
     }
-
-    redirect("view.php?id=$cm->id", get_string('choicegroupsaved', 'choicegroup'));
-} else {
-    echo $OUTPUT->header();
 }
 
 
@@ -155,6 +155,16 @@ $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('choicegroup', $choicegroup);
 $event->trigger();
 
+echo $OUTPUT->header();
+echo $OUTPUT->heading(format_string($choicegroup->name));
+
+if ($notify and confirm_sesskey()) {
+    if ($notify === 'choicegroupsaved') {
+        echo $OUTPUT->notification(get_string('choicegroupsaved', 'choicegroup'), 'notifysuccess');
+    } else if ($notify === 'mustchooseone') {
+        echo $OUTPUT->notification(get_string('mustchooseone', 'choicegroup'), 'notifyproblem');
+    }
+}
 
 /// Check to see if groups are being used in this choicegroup
 $groupmode = groups_get_activity_groupmode($cm);

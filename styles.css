@@ -63,6 +63,7 @@
     display: inline-block;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 1rem;
     text-align: left;
 }
 .path-mod-choicegroup.dir-rtl div.tablecontainer {

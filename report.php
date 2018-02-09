@@ -88,6 +88,7 @@ if (!$download) {
     $PAGE->set_title(format_string($choicegroup->name).": $strresponses");
     $PAGE->set_heading(format_string($course->fullname));
     echo $OUTPUT->header();
+    echo $OUTPUT->heading(format_string($choicegroup->name));
     /// Check to see if groups are being used in this choicegroup
     $groupmode = groups_get_activity_groupmode($cm);
     if ($groupmode) {
