@@ -317,20 +317,17 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $actiondata = '';
         if ($choicegroups->viewresponsecapability && $choicegroups->deleterepsonsecapability) {
             $selecturl = new moodle_url('#');
+            $actiondata .= html_writer::start_div('selectallnone');
+            $actiondata .= html_writer::link($selecturl, get_string('selectall'), ['data-select-info' => true]) . ' / ';
 
-            $selectallactions = new component_action('click',"checkall");
-            $selectall = new action_link($selecturl, get_string('selectall'), $selectallactions);
-            $actiondata .= $this->output->render($selectall) . ' / ';
-
-            $deselectallactions = new component_action('click',"checknone");
-            $deselectall = new action_link($selecturl, get_string('deselectall'), $deselectallactions);
-            $actiondata .= $this->output->render($deselectall);
-
+            $actiondata .= html_writer::link($selecturl, get_string('deselectall'), ['data-select-info' => false]);
+            $actiondata .= html_writer::end_div();
             $actiondata .= html_writer::tag('label', ' ' . get_string('withselected', 'choice') . ' ', array('for'=>'menuaction'));
 
             $actionurl = new moodle_url($PAGE->url, array('sesskey'=>sesskey(), 'action'=>'delete_confirmation()'));
             $select = new single_select($actionurl, 'action', array('delete'=>get_string('delete')), null, array(''=>get_string('chooseaction', 'choicegroup')), 'attemptsform');
-
+            
+            $PAGE->requires->js_call_amd('mod_choicegroup/select_all_choices', 'init');
             $actiondata .= $this->output->render($select);
         }
         $html .= html_writer::tag('div', $actiondata, array('class'=>'responseaction'));
@@ -419,4 +416,3 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
     }
 
 }
-
