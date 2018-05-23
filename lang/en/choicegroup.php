@@ -152,5 +152,6 @@ $string['expand_all_groupings'] = 'Expand All Groupings';
 $string['collapse_all_groupings'] = 'Collapse All Groupings';
 $string['double_click_grouping_legend'] = 'Double click on a grouping to expand/collapse individually.';
 $string['double_click_group_legend'] = 'Double click on a group to add it.';
+$string['privacy:metadata'] = 'The Group Choice plugin does not store any personal data. All user data is stored by the group component of Moodle core (core_group).';
 
 
