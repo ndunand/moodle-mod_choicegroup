@@ -655,7 +655,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
  * @return bool
  */
 function choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course) {
-    global $CFG, $DB, $context;
+    global $CFG, $DB;
     require_once($CFG->libdir.'/completionlib.php');
 
     if(!is_array($grpsmemberids) || empty($grpsmemberids)) {
@@ -668,6 +668,7 @@ function choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course
         }
     }
 
+    $context = context_module::instance($cm->id);
     $completion = new completion_info($course);
     $eventparams = array(
         'context' => $context,
