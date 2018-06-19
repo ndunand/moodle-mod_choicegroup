@@ -48,7 +48,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
     public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false, $showresults = false, $current = false, $choicegroupopen = false, $disabled = false, $multipleenrollmentspossible = false) {
         global $DB, $PAGE, $choicegroup_groups, $choicegroup_users;
 
-        $PAGE->requires->js('/mod/choicegroup/javascript.js');
+        //$PAGE->requires->js('/mod/choicegroup/javascript.js');
 
         $target = new moodle_url('/mod/choicegroup/view.php');
         $attributes = array('method'=>'POST', 'action'=>$target, 'class'=> 'tableform');
@@ -61,8 +61,8 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $html .= html_writer::tag('th', get_string('choice', 'choicegroup'), array('class'=>'width10'));
 
         $group = get_string('group').' ';
-        $group .= html_writer::tag('a', get_string('showdescription', 'choicegroup'), array('class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow', 'href' => '#'));
-        $group .= html_writer::tag('a', get_string('hidedescription', 'choicegroup'), array('class' => 'choicegroup-descriptiondisplay choicegroup-descriptionhide hidden', 'href' => '#'));
+        $group .= html_writer::tag('a', get_string('showdescription', 'choicegroup'), array("role"=>"button",'class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow btn btn-primary', 'href' => '#'));
+       // $group .= html_writer::tag('a', get_string('hidedescription', 'choicegroup'), array('class' => 'choicegroup-descriptiondisplay choicegroup-descriptionhide hidden', 'href' => '#'));
         $html .= html_writer::tag('th', $group, array('class'=>'width40'));
 
         if ( $showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or
@@ -75,8 +75,8 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $html .= html_writer::tag('th', get_string('members/', 'choicegroup'), array('class'=>'width10'));
             }
             if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
-                $membersdisplay_html = html_writer::tag('a', get_string('show'), array('class' => 'choicegroup-memberdisplay choicegroup-membershow', 'href' => '#'));
-                $membersdisplay_html .= html_writer::tag('a', get_string('hide'), array('class' => 'choicegroup-memberdisplay choicegroup-memberhide hidden', 'href' => '#'));
+                $membersdisplay_html = html_writer::tag('a', get_string('showgroupmembers','mod_choicegroup'), array("role"=>"button",'class' => 'choicegroup-memberdisplay choicegroup-membershow btn btn-primary', 'href' => '#'));
+                //$membersdisplay_html .= html_writer::tag('a', get_string('hidegroupmembers','mod_choicegroup'), array('class' => 'choicegroup-memberdisplay choicegroup-memberhide btn hidden', 'href' => '#'));
                 $html .= html_writer::tag('th', get_string('groupmembers', 'choicegroup') .' '. $membersdisplay_html, array('class'=>'width40'));
             }
         }
@@ -131,7 +131,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $option->attributes->disabled=true;
                 $availableoption--;
             }
-            $labeltext .= html_writer::tag('div', format_text($group->description), array('class' => 'choicegroups-descriptions hidden'));
+            $labeltext .= html_writer::tag('div', format_text($group->description), array('style'=>'display:none;','class' => 'choicegroups-descriptions'));
             if ($disabled) {
                 $option->attributes->disabled=true;
             }
@@ -149,7 +149,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $maxanswers = ($limitanswers) ? (' / '.$option->maxanswers) : ('');
                 $html .= html_writer::tag('td', sizeof($group_members_names).$maxanswers, array('class' => 'center'));
                 if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
-                    $group_members_html = html_writer::tag('div', implode('<br />', $group_members_names), array('class' => 'choicegroups-membersnames hidden', 'id' => 'choicegroup_'.$option->attributes->value));
+                    $group_members_html = html_writer::tag('div', implode('<br />', $group_members_names), array('style'=>'display:none;','class' => 'choicegroups-membersnames', 'id' => 'choicegroup_'.$option->attributes->value));
                     $html .= html_writer::tag('td', $group_members_html, array('class' => 'center'));
                 }
             }
