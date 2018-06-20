@@ -3,7 +3,7 @@ define(['jquery', 'core/str'], function ($, str) {
         init: function () {
             $('.choicegroup-memberdisplay').click( function (e) {
                 e.preventDefault();
-                $('.choicegroups-membersnames').toggle();
+                $('.choicegroups-membersnames').toggleClass('hidden');
                 var showusersstring = str.get_string('showgroupmembers', 'mod_choicegroup');
                 var hideusersstring = str.get_string('hidegroupmembers', 'mod_choicegroup');
                 if ($('.choicegroups-membersnames').is(":visible")) {
@@ -21,7 +21,7 @@ define(['jquery', 'core/str'], function ($, str) {
 
             $('.choicegroup-descriptiondisplay').click( function (e) {
                 e.preventDefault();
-                $('.choicegroups-descriptions').toggle();
+                $('.choicegroups-descriptions').toggleClass('hidden');
                 var hidedescriptionstring = str.get_string('hidedescription', 'mod_choicegroup');
                 var showdescriptionstring = str.get_string('showdescription', 'mod_choicegroup');
                 if ($('.choicegroups-descriptions').is(":visible")) {
