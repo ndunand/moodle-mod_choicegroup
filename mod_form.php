@@ -67,11 +67,16 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 			$groups[$group->id]->id = $group->id;
 		}
 
-		if (count($db_groups) < 1) {
-			print_error('pleasesetonegroup', 'choicegroup', new moodle_url('/course/view.php?id='.$COURSE->id));
-		}
+        if (count($db_groups) < 1) {
+            $a = new stdClass();
+            $a->linkgroups = $CFG->wwwroot . '/group/index.php?id=' . $COURSE->id;
+            $a->linkcourse = $CFG->wwwroot . '//course/view.php?id=' . $COURSE->id;
+            $message = get_string('pleasesetonegroupor', 'choicegroup', $a);
+            \core\notification::add($message, \core\notification::WARNING);
+            print_error('nogroupincourse', 'choicegroup', new moodle_url('/course/view.php?id=' . $COURSE->id), $a);
+        }
 
-		$db_groupings = $DB->get_records('groupings', array('courseid' => $COURSE->id));
+        $db_groupings = $DB->get_records('groupings', array('courseid' => $COURSE->id));
         $groupings = array();
         if ($db_groupings) {
             foreach ($db_groupings as $grouping) {

@@ -49,7 +49,7 @@ if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
 }
 
 require_login($course, false, $cm);
-
+$PAGE->requires->js_call_amd('mod_choicegroup/choicegroupdatadisplay', 'init');
 if (!$choicegroup = choicegroup_get_choicegroup($cm->instance)) {
     print_error('invalidcoursemodule');
 }
