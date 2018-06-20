@@ -119,8 +119,13 @@ $string['showdescription'] = 'Show descriptions';
 $string['hidedescription'] = 'Hide descriptions';
 $string['generallimitation'] = 'General limitation';
 $string['applytoallgroups'] = 'Apply to all groups';
-$string['pleasesetgroups'] = 'Please create at least two groups in this course.';
-$string['pleasesetonegroup'] = 'Please create at least one group in this course.';
+$string['pleasesetgroups'] = 'Please create at least one group in this course.';
+$string['nogroupincourse'] = 'No groups defined in course.';
+$string['pleasesetonegroupor'] = 'Please create at least one group in this course.<br /><br />
+<ul>
+<li><a href="{$a->linkgroups}">manage course groups</a></li>
+<li><a href="{$a->linkcourse}">get back to the course</a></li>
+</ul>';
 $string['pleaseselectonegroup'] = 'Please select at least one group to chose from.';
 
 $string['multipleenrollmentspossible'] = 'Allow enrollment to multiple groups';
