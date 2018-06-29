@@ -114,9 +114,9 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE, 
     } else {
         $user_answers = array();
     }
+    if(!is_array($choicegroup_groups) || !count($choicegroup_groups)){
+            $choicegroup_groups = choicegroup_get_groups($choicegroup);
 
-    if (!count($choicegroup_groups)) {
-        $choicegroup_groups = choicegroup_get_groups($choicegroup);
     }
 
     $groupids = array();
