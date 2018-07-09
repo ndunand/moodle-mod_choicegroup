@@ -26,10 +26,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2018062000;
+$plugin->version  = 2018070900;
 $plugin->requires  = 2014050800; // Moodle 2.7
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release = '1.14 for Moodle 2.7-3.5 (Build: 2018062000)';
+$plugin->release = '1.15 for Moodle 2.7-3.5 (Build: 2018070900)';
 
 $plugin->component = 'mod_choicegroup';
 $plugin->cron = 0;
