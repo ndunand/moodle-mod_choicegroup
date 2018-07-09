@@ -193,8 +193,10 @@ if (isloggedin() && ($current !== false) ) {
         $currents = choicegroup_get_user_answer($choicegroup, $USER, TRUE, true);
 
         $names = array();
-        foreach ($currents as $current) {
-            $names[] = format_string($current->name);
+        if (is_array($currents)) {
+            foreach ($currents as $current) {
+                $names[] = format_string($current->name);
+            }
         }
         $formatted_names = join(' '.get_string("and", "choicegroup").' ', array_filter(array_merge(array(join(', ', array_slice($names, 0, -1))), array_slice($names, -1))));
         echo $OUTPUT->box(get_string("yourselection", "choicegroup", userdate($choicegroup->timeopen)).": ".$formatted_names, 'generalbox', 'yourselection');
