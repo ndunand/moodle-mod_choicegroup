@@ -190,7 +190,7 @@ if ($choicegroup->intro) {
 //if user has already made a selection, and they are not allowed to update it, show their selected answer.
 if (isloggedin() && ($current !== false) ) {
     if ($choicegroup->multipleenrollmentspossible == 1) {
-        $currents = choicegroup_get_user_answer($choicegroup, $USER, TRUE);
+        $currents = choicegroup_get_user_answer($choicegroup, $USER, TRUE, true);
 
         $names = array();
         foreach ($currents as $current) {
