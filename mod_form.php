@@ -158,15 +158,18 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 				$mform->addElement('html', '<option value="'.$group->id.'" class="group toplevel">'.format_string($group->name).'</option>');
 			}
 		}
-		$mform->addElement('html','</select><br><button name="expandButton" type="button" disabled id="expandButton">'.get_string('expand_all_groupings', 'choicegroup').'</button><button name="collapseButton" type="button" disabled id="collapseButton">'.get_string('collapse_all_groupings', 'choicegroup').'</button><br>'.get_string('double_click_grouping_legend', 'choicegroup').'<br>'.get_string('double_click_group_legend', 'choicegroup'));
+		$mform->addElement('html', '</select><br><button name="expandButton" type="button" disabled id="expandButton" class="btn btn-secondary">' . get_string('expand_all_groupings', 'choicegroup') .
+                    '</button><button name="collapseButton" type="button" disabled id="collapseButton" class="btn btn-secondary">' . get_string('collapse_all_groupings', 'choicegroup') .
+                    '</button><br>' . get_string('double_click_grouping_legend', 'choicegroup') . '<br>' . get_string('double_click_group_legend', 'choicegroup'));
 
 
 
 
 
 
-		$mform->addElement('html','
-				</td><td><button id="addGroupButton" name="add" type="button" disabled>'.get_string('add', 'choicegroup').'</button><div><button name="remove" type="button" disabled id="removeGroupButton">'.get_string('del', 'choicegroup').'</button></div></td>');
+		$mform->addElement('html' ,'
+				</td><td><button id="addGroupButton" name="add" type="button" disabled class="btn btn-secondary">' . get_string('add', 'choicegroup') .
+                                '</button><div><button name="remove" type="button" disabled id="removeGroupButton" class="btn btn-secondary">' . get_string('del', 'choicegroup') . '</button></div></td>');
 		$mform->addElement('html','<td style="vertical-align: top"><select id="id_selectedGroups" name="selectedGroups" multiple size=10 style="width:200px"></select></td>');
 
 		$mform->addElement('html','<td><div><div id="fitem_id_limit_0" class="fitem fitem_ftext" style="display:none"><div class=""><label for="id_limit_0" id="label_for_limit_ui">'.get_string('set_limit_for_group', 'choicegroup').'</label></div><div class="ftext">
