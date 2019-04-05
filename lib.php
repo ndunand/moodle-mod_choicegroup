@@ -87,13 +87,13 @@ function choicegroup_user_outline($course, $user, $mod, $choicegroup) {
         $result->time = $groupmembership->timeuseradded;
         return $result;
     }
-    return NULL;
+    return null;
 }
 
 /**
  *
  */
-function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE, $refresh = FALSE) {
+function choicegroup_get_user_answer($choicegroup, $user, $returnArray = false, $refresh = false) {
     global $DB, $choicegroup_groups;
 
     static $user_answers = array();
@@ -106,7 +106,7 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE, 
     }
 
     if (!$refresh and isset($user_answers[$userid])) {
-        if ($returnArray === TRUE) {
+        if ($returnArray === true) {
             return $user_answers[$userid];
         } else {
             return $user_answers[$userid][0];
@@ -138,7 +138,7 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnArray = FALSE, 
         }
         if (count($groups) > 0) {
             $user_answers[$userid] = $groups;
-            if ($returnArray === TRUE) {
+            if ($returnArray === true) {
                 return $groups;
             } else {
                 return $groups[0];
@@ -313,7 +313,7 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
 
     $cdisplay['limitanswers'] = true;
     $context = context_module::instance($coursemodule->id);
-    $answers = choicegroup_get_user_answer($choicegroup, $user, TRUE, true);
+    $answers = choicegroup_get_user_answer($choicegroup, $user, true, true);
 
     foreach ($choicegroup->option as $optionid => $text) {
         if (isset($text)) { //make sure there are no dud entries in the db with blank text values.
@@ -343,7 +343,7 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
         }
     }
 
-    $cdisplay['hascapability'] = is_enrolled($context, NULL, 'mod/choicegroup:choose'); //only enrolled users are allowed to make a choicegroup
+    $cdisplay['hascapability'] = is_enrolled($context, null, 'mod/choicegroup:choose'); //only enrolled users are allowed to make a choicegroup
 
     if ($choicegroup->allowupdate && is_array($answers)) {
         $cdisplay['allowupdate'] = true;
