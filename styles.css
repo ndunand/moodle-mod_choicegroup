@@ -232,7 +232,7 @@
 
 .path-mod-choicegroup a.choicegroup-memberdisplay,
 .path-mod-choicegroup a.choicegroup-descriptiondisplay {
-    display: block;
+    display: inline-block;
 }
 
 .path-mod-choicegroup div.choicegroups-membersnames.hidden,
