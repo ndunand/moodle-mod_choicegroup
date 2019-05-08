@@ -59,7 +59,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $html .= html_writer::tag('th', get_string('choice', 'choicegroup'), array('class'=>'width10'));
 
         $group = get_string('group').' ';
-        $group .= html_writer::tag('a', get_string('showdescription', 'choicegroup'), array('role' => 'button','class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow btn', 'href' => '#'));
+        $group .= html_writer::tag('a', get_string('showdescription', 'choicegroup'), array('role' => 'button','class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow btn btn-secondary ml-1', 'href' => '#'));
         $html .= html_writer::tag('th', $group, array('class'=>'width40'));
 
         if ( $showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or
@@ -72,7 +72,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $html .= html_writer::tag('th', get_string('members/', 'choicegroup'), array('class'=>'width10'));
             }
             if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
-                $membersdisplay_html = html_writer::tag('a', get_string('showgroupmembers','mod_choicegroup'), array('role' => 'button','class' => 'choicegroup-memberdisplay choicegroup-membershow btn', 'href' => '#'));
+                $membersdisplay_html = html_writer::tag('a', get_string('showgroupmembers','mod_choicegroup'), array('role' => 'button','class' => 'choicegroup-memberdisplay choicegroup-membershow btn btn-secondary ml-1', 'href' => '#'));
                 $html .= html_writer::tag('th', get_string('groupmembers', 'choicegroup') .' '. $membersdisplay_html, array('class'=>'width40'));
             }
         }
