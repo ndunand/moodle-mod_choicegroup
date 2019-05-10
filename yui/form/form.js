@@ -15,7 +15,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 			SELECTED_GRPS_SELECT: '#id_selectedGroups',
 			ADD_GRP_BTN: '#addGroupButton',
 			DEL_GRP_BTN: '#removeGroupButton',
-			FORM: '#mform1',
+			FORM: 'form.mform',
 			LIMIT_UI_INPUT: '#ui_limit_input',
 			LIMIT_UI_DIV: '#fitem_id_limit_0',
 			LIMIT_UI_LABEL: '#label_for_limit_ui',
