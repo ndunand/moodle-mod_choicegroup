@@ -66,6 +66,7 @@ $string['limit'] = 'Limit';
 $string['limitanswers'] = 'Limit the number of responses allowed';
 $string['modulename'] = 'Group choice';
 $string['modulename_help'] = 'The Group Choice module allows students to enrol themselves in a group within a course. The teacher can select which groups students can choose from and the maximum number of students allowed in each group.';
+$string['modulename_link'] = 'mod/choicegroup/view';
 $string['modulenameplural'] = 'Group choices';
 $string['mustchooseone'] = 'You must choose an answer before saving.  Nothing was saved.';
 $string['noguestchoose'] = 'Sorry, guests are not allowed to make choices.';
