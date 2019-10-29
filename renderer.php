@@ -127,7 +127,14 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $option->attributes->disabled=true;
                 $availableoption--;
             }
-            $labeltext .= html_writer::tag('div', format_text($group->description), array('class' => 'choicegroups-descriptions hidden'));
+            $context = \context_course::instance($group->courseid);
+            $labeltext .= html_writer::tag('div', format_text(file_rewrite_pluginfile_urls($group->description,
+            'pluginfile.php',
+                $context->id,
+                'group',
+                'description',
+                $group->id)),
+                array('class' => 'choicegroups-descriptions hidden'));
             if ($disabled) {
                 $option->attributes->disabled=true;
             }
@@ -322,7 +329,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
             $actionurl = new moodle_url($PAGE->url, array('sesskey'=>sesskey(), 'action'=>'delete_confirmation()'));
             $select = new single_select($actionurl, 'action', array('delete'=>get_string('delete')), null, array(''=>get_string('chooseaction', 'choicegroup')), 'attemptsform');
-            
+
             $PAGE->requires->js_call_amd('mod_choicegroup/select_all_choices', 'init');
             $actiondata .= $this->output->render($select);
         }
