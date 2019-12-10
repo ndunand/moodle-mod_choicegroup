@@ -303,7 +303,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 
 				formNode.on('submit', function(e) {
 					var selectedOptionsNodes = Y.all(SELECTORS.SELECTED_GRPS_SELECT + " option");
-					if (selectedOptionsNodes.size() < 1) {
+					if (selectedOptionsNodes.size() < 1 && !window.skipClientValidation) {
 						alert(M.util.get_string('pleaseselectonegroup', 'choicegroup'));
 				        e.preventDefault();
 				        e.stopPropagation();
