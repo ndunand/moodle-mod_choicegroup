@@ -39,6 +39,21 @@ use completion_info;
 class mobile {
 
     /**
+     * Returns the javascript needed to initialize choice group in the app.
+     *
+     * @param  array $args Arguments from tool_mobile_get_content WS
+     * @return array javascript
+     */
+    public static function mobile_init($args) {
+        global $CFG;
+
+        return [
+            'templates' => [],
+            'javascript' => file_get_contents($CFG->dirroot . '/mod/choicegroup/mobile/js/init.js'),
+        ];
+    }
+
+    /**
      * Returns the choice group course view for the mobile app.
      * @param  array $args Arguments from tool_mobile_get_content WS
      *

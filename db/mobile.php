@@ -33,6 +33,7 @@ $addons = array(
                 ),
                 'delegate' => 'CoreCourseModuleDelegate', // Delegate (where to display the link to the add-on)
                 'method' => 'mobile_course_view', // Main function in \mod_choicegroup\output\mobile
+                'init' => 'mobile_init',
                 'offlinefunctions' => array(
                     'mobile_course_view' => array(),
                 ), // Function needs caching for offline.
