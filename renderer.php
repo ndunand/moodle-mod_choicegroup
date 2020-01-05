@@ -325,7 +325,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
             $actiondata .= html_writer::link($selecturl, get_string('deselectall'), ['data-select-info' => false]);
             $actiondata .= html_writer::end_div();
-            $actiondata .= html_writer::tag('label', ' ' . get_string('withselected', 'choice') . ' ', array('for'=>'menuaction'));
+            $actiondata .= html_writer::tag('label', ' ' . get_string('withselected', 'choice') . ' ', array('for'=>'menuaction', 'class' => 'mr-1'));
 
             $actionurl = new moodle_url($PAGE->url, array('sesskey'=>sesskey(), 'action'=>'delete_confirmation()'));
             $select = new single_select($actionurl, 'action', array('delete'=>get_string('delete')), null, array(''=>get_string('chooseaction', 'choicegroup')), 'attemptsform');
