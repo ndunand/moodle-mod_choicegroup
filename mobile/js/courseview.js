@@ -51,8 +51,15 @@ this.submitResponses = function() {
         var modal = that.CoreDomUtilsProvider.showModalLoading('core.sending', true);
         var data = that.CoreUtilsProvider.objectToArrayOfObjects(that.CONTENT_OTHERDATA.data, 'name', 'value');
 
-        that.choiceGroupProvider.submitResponses(that.module.instance, that.module.name, that.courseId, data, allowOffline)
-                .then(function(online) {
+        if (multipleEnrol) {
+            // In multiple enrol, the WS expects to receive 'true' as a string instead of 1 or 0.
+            data.forEach(function(entry) {
+                entry.value = String(entry.value);
+            });
+        }
+
+        that.choiceGroupProvider.submitResponses(that.module.instance, that.module.name, that.courseId, that.module.id, data,
+                allowOffline).then(function(online) {
 
             // Responses have been sent to server or stored to be sent later.
             that.CoreDomUtilsProvider.showToast(that.TranslateService.instant('plugin.mod_choicegroup.choicegroupsaved'));
@@ -84,7 +91,7 @@ this.submitResponses = function() {
 this.deleteResponses = function() {
     var modal = that.CoreDomUtilsProvider.showModalLoading('core.sending', true);
 
-    that.choiceGroupProvider.deleteResponses(that.module.instance, that.module.name, that.courseId, allowOffline)
+    that.choiceGroupProvider.deleteResponses(that.module.instance, that.module.name, that.courseId, that.module.id, allowOffline)
             .then(function(online) {
 
         // Responses have been sent to server or stored to be sent later.
@@ -137,9 +144,97 @@ this.loadOfflineData = function() {
     });
 }
 
-this.moduleName = this.TranslateService.instant('plugin.mod_choicegroup.modulename');
+/**
+ * Tries to synchronize the activity.
+ *
+ * @param showErrors If show errors to the user of hide them.
+ * @param done Function to call when done.
+ * @return Promise resolved with true if sync succeed, or false if failed.
+ */
+this.synchronize = function(showErrors, done) {
+    that.refreshIcon = 'spinner';
+    that.syncIcon = 'spinner';
 
-// Check if the group choice has offline data.
-this.loadOfflineData().finally(function() {
-    that.loaded = true;
+    // Try to synchronize the group choice.
+    return that.choiceGroupSync.syncChoiceGroup(that.module.instance).then(function(result) {
+        if (result.warnings && result.warnings.length) {
+            that.CoreDomUtilsProvider.showErrorModal(result.warnings[0]);
+        }
+
+        return result.updated;
+    }).catch(function(error) {
+        if (showErrors) {
+            that.CoreDomUtilsProvider.showErrorModalDefault(error, 'core.errorsync', true);
+        }
+
+        return false;
+    }).then(function(updated) {
+        if (updated) {
+            // Data has been sent, fetch the content (WS data has already been updated in the sync process).
+            return that.fetchContent(false);
+        }
+
+        // Check if the group choice has offline data.
+        return that.loadOfflineData();
+    }).finally(function() {
+        done && done();
+        that.refreshIcon = 'refresh';
+        that.syncIcon = 'sync';
+    });
+};
+
+/**
+ * Refresh data.
+ *
+ * @param done Function to call when done.
+ * @return Promise resolved when done.
+ */
+this.doRefresh = function(done) {
+    that.refreshIcon = 'spinner';
+    that.syncIcon = 'spinner';
+
+    return that.refreshContent(false).finally(function() {
+        done && done();
+        that.refreshIcon = 'refresh';
+        that.syncIcon = 'sync';
+    });
+};
+
+this.moduleName = this.TranslateService.instant('plugin.mod_choicegroup.modulename');
+this.isOnline = this.CoreAppProvider.isOnline();
+
+// Refresh online status when changes.
+var onlineObserver = this.Network.onchange().subscribe(function() {
+    that.isOnline = that.CoreAppProvider.isOnline();
 });
+
+var syncObserver;
+
+if (allowOffline) {
+    // Try to synchronize the choice.
+    this.synchronize(false).finally(function() {
+        that.loaded = true;
+    });
+
+    // Update the view if the group choice is synchronized automatically.
+    syncObserver = this.CoreEventsProvider.on(this.choiceGroupSync.AUTO_SYNCED, function(data) {
+        if (data.choiceGroupId == that.module.instance) {
+            // This group choice has been synchronized, fetch the content (WS data has already been updated in the sync process).
+            return that.fetchContent(false);
+        }
+    }, this.CoreSitesProvider.getCurrentSiteId());
+} else {
+    // No offline allowed, just display the data.
+    this.loaded = true;
+    that.refreshIcon = 'refresh';
+    that.hasOffline = false;
+    that.showDelete = that.CONTENT_OTHERDATA.answergiven;
+}
+
+/**
+ * Component being destroyed.
+ */
+this.ngOnDestroy = function() {
+    onlineObserver && onlineObserver.unsubscribe();
+    syncObserver && syncObserver.off();
+};

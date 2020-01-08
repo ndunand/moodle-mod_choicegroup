@@ -52,6 +52,10 @@ var siteSchema = {
                     type: 'INTEGER'
                 },
                 {
+                    name: 'cmid',
+                    type: 'INTEGER'
+                },
+                {
                     name: 'data',
                     type: 'TEXT'
                 },
@@ -133,7 +137,7 @@ AddonModChoiceGroupOfflineProvider.prototype.hasResponse = function(id, siteId) 
  * @return Promise resolved with the stored data.
  */
 AddonModChoiceGroupOfflineProvider.prototype.getResponse = function(id, siteId) {
-    return that.CoreSitesProvider.getSite(siteId).then((site) => {
+    return that.CoreSitesProvider.getSite(siteId).then(function(site) {
 
         return site.getDb().getRecord(CHOICEGROUP_TABLE, {choicegroupid: id}).then(function(record) {
             // Parse the data.
@@ -150,12 +154,13 @@ AddonModChoiceGroupOfflineProvider.prototype.getResponse = function(id, siteId) 
  * @param id Group choice ID.
  * @param name Group choice name.
  * @param courseId Course ID the group choice belongs to.
+ * @param cmId Course module ID.
  * @param data List of selected options.
  * @param deleting If true, the user is deleting responses, if false, submitting.
  * @param siteId Site ID. If not defined, current site.
  * @return Promise resolved when data is successfully stored.
  */
-AddonModChoiceGroupOfflineProvider.prototype.saveResponses = function(id, name, courseId, data, deleting, siteId) {
+AddonModChoiceGroupOfflineProvider.prototype.saveResponses = function(id, name, courseId, cmId, data, deleting, siteId) {
     data = data || [];
 
     return that.CoreSitesProvider.getSite(siteId).then(function(site) {
@@ -163,6 +168,7 @@ AddonModChoiceGroupOfflineProvider.prototype.saveResponses = function(id, name, 
             choicegroupid: id,
             name: name,
             courseid: courseId,
+            cmid: cmId,
             data: JSON.stringify(data),
             deleting: deleting ? 1 : 0,
             timecreated: Date.now()
@@ -181,10 +187,7 @@ var choiceGroupOffline = new AddonModChoiceGroupOfflineProvider();
 /**
  * Class to handle group choices.
  */
-function AddonModChoiceGroupProvider() {
-    // Register the schema so the tables are created.
-    that.CoreSitesProvider.registerSiteSchema(siteSchema);
-}
+function AddonModChoiceGroupProvider() { }
 
 /**
  * Delete responses from a group choice.
@@ -192,18 +195,19 @@ function AddonModChoiceGroupProvider() {
  * @param id Group choice ID to remove.
  * @param name The group choice name.
  * @param courseId Course ID the group choice belongs to.
+ * @param cmId Course module ID.
  * @param allowOffline Whether to allow storing the data in offline.
  * @param siteId Site ID. If not defined, current site.
  * @return Promise resolved with boolean: true if deleted in server, false if stored in offline. Rejected if failure.
  */
-AddonModChoiceGroupProvider.prototype.deleteResponses = function(id, name, courseId, allowOffline, siteId) {
+AddonModChoiceGroupProvider.prototype.deleteResponses = function(id, name, courseId, cmId, allowOffline, siteId) {
     siteId = siteId || that.CoreSitesProvider.getCurrentSiteId();
 
-    var thisProvider = this;
+    var self = this;
 
     // Convenience function to store the delete to be synchronized later.
     var storeOffline = function() {
-        return choiceGroupOffline.saveResponses(id, name, courseId, undefined, true, siteId).then(function() {
+        return choiceGroupOffline.saveResponses(id, name, courseId, cmId, undefined, true, siteId).then(function() {
             return false;
         });
     };
@@ -218,7 +222,7 @@ AddonModChoiceGroupProvider.prototype.deleteResponses = function(id, name, cours
         // Nothing was stored already.
     }).then(function() {
         // Now try to delete the responses in the server.
-        return thisProvider.deleteResponsesOnline(id, siteId).then(function() {
+        return self.deleteResponsesOnline(id, siteId).then(function() {
             return true;
         }).catch(function(error) {
             if (!allowOffline || that.CoreUtilsProvider.isWebServiceError(error)) {
@@ -264,19 +268,20 @@ AddonModChoiceGroupProvider.prototype.deleteResponsesOnline = function(id, siteI
  * @param id Group choice ID to submit.
  * @param name The group choice name.
  * @param courseId Course ID the group choice belongs to.
+ * @param cmId Course module ID.
  * @param data The responses to send.
  * @param allowOffline Whether to allow storing the data in offline.
  * @param siteId Site ID. If not defined, current site.
  * @return Promise resolved with boolean: true if responses sent to server, false if stored in offline. Rejected if failure.
  */
-AddonModChoiceGroupProvider.prototype.submitResponses = function(id, name, courseId, data, allowOffline, siteId) {
+AddonModChoiceGroupProvider.prototype.submitResponses = function(id, name, courseId, cmId, data, allowOffline, siteId) {
     siteId = siteId || that.CoreSitesProvider.getCurrentSiteId();
 
-    var thisProvider = this;
+    var self = this;
 
     // Convenience function to store the delete to be synchronized later.
     var storeOffline = function() {
-        return choiceGroupOffline.saveResponses(id, name, courseId, data, false, siteId).then(function() {
+        return choiceGroupOffline.saveResponses(id, name, courseId, cmId, data, false, siteId).then(function() {
             return false;
         });
     };
@@ -291,7 +296,7 @@ AddonModChoiceGroupProvider.prototype.submitResponses = function(id, name, cours
         // Nothing was stored already.
     }).then(function() {
         // Now try to delete the responses in the server.
-        return thisProvider.submitResponsesOnline(id, data, siteId).then(function() {
+        return self.submitResponsesOnline(id, data, siteId).then(function() {
             return true;
         }).catch(function(error) {
             if (!allowOffline || that.CoreUtilsProvider.isWebServiceError(error)) {
@@ -333,9 +338,245 @@ AddonModChoiceGroupProvider.prototype.submitResponsesOnline = function(id, data,
     });
 };
 
-var result = {
-    choiceGroupProvider: new AddonModChoiceGroupProvider(),
-    choiceGroupOffline: choiceGroupOffline
+var choiceGroupProvider = new AddonModChoiceGroupProvider();
+
+/**
+ * Group choice sync provider.
+ */
+
+/**
+ * Class to handle group choice sync.
+ */
+function AddonModChoiceGroupSyncProvider() {
+    // Inherit from sync base provider.
+    that.CoreSyncBaseProvider.call(this, 'AddonModChoiceGroupSyncProvider', that.CoreLoggerProvider, that.CoreSitesProvider,
+            that.CoreAppProvider, that.CoreSyncProvider, that.CoreTextUtilsProvider, that.TranslateService,
+            that.CoreTimeUtilsProvider);
+
+    this.AUTO_SYNCED = 'addon_mod_choicegroup_autom_synced';
+}
+
+AddonModChoiceGroupSyncProvider.prototype = Object.create(this.CoreSyncBaseProvider.prototype);
+AddonModChoiceGroupSyncProvider.prototype.constructor = AddonModChoiceGroupSyncProvider;
+
+/**
+ * Try to synchronize all the group choices in a certain site or in all sites.
+ *
+ * @param force Wether to force sync not depending on last execution.
+ * @return Promise resolved if sync is successful, rejected if sync fails.
+ */
+AddonModChoiceGroupSyncProvider.prototype.syncAllChoiceGroups = function(force) {
+    return this.syncOnSites('group choices', this.syncAllChoiceGroupsFunc.bind(this), [force],
+            that.CoreSitesProvider.getCurrentSiteId());
 };
+
+/**
+ * Sync all pending group choices on a site.
+ *
+ * @param siteId Site ID to sync.
+ * @param force Wether to force sync not depending on last execution.
+ * @return Promise resolved if sync is successful, rejected if sync fails.
+ */
+AddonModChoiceGroupSyncProvider.prototype.syncAllChoiceGroupsFunc = function(siteId, force) {
+    var self = this;
+
+    return choiceGroupOffline.getResponses(siteId).then(function(responses) {
+        // Sync all responses.
+        var promises = responses.map(function(response) {
+            var promise = force ? self.syncChoiceGroup(response.choicegroupid, siteId) :
+                    self.syncChoiceGroupIfNeeded(response.choicegroupid, siteId);
+
+            return promise.then(function(result) {
+                if (result && result.updated) {
+                    // Sync successful, send event.
+                    that.CoreEventsProvider.trigger(self.AUTO_SYNCED, {
+                        choiceGroupId: response.choicegroupid,
+                        warnings: result.warnings
+                    }, siteId);
+                }
+            });
+        });
+
+        return Promise.all(promises);
+    });
+};
+
+/**
+ * Sync a group choice only if a certain time has passed since the last time.
+ *
+ * @param id Group choice ID to be synced.
+ * @param siteId Site ID. If not defined, current site.
+ * @return Promise resolved when the group choice is synced or it doesn't need to be synced.
+ */
+AddonModChoiceGroupSyncProvider.prototype.syncChoiceGroupIfNeeded = function(id, siteId) {
+    var self = this;
+
+    return this.isSyncNeeded(id, siteId).then(function(needed) {
+        if (needed) {
+            return self.syncChoiceGroup(id, siteId);
+        }
+    });
+};
+
+/**
+ * Synchronize a group choice.
+ *
+ * @param id Group choice ID to be synced.
+ * @param siteId Site ID. If not defined, current site.
+ * @return Promise resolved if sync is successful, rejected otherwise.
+ */
+AddonModChoiceGroupSyncProvider.prototype.syncChoiceGroup = function(id, siteId) {
+    var self = this;
+
+    return that.CoreSitesProvider.getSite(siteId).then(function(site) {
+        siteId = site.getId();
+
+        if (self.isSyncing(id, siteId)) {
+            // There's already a sync ongoing for this group choice, return the promise.
+            return self.getOngoingSync(id, siteId);
+        }
+
+        self.logger.debug('Try to sync group choice ' + id);
+
+        var courseId;
+        var cmId;
+        var result = {
+            warnings: [],
+            updated: false
+        };
+
+        // Get the data to synchronize.
+        return choiceGroupOffline.getResponse(id, siteId).catch(function() {
+            // No offline data found, return empty object.
+            return {};
+        }).then(function(data) {
+            if (!data.choicegroupid) {
+                // Nothing to sync.
+                return;
+            }
+
+            if (!that.CoreAppProvider.isOnline()) {
+                // Cannot sync in offline.
+                return Promise.reject(null);
+            }
+
+            courseId = data.courseid;
+            cmId = data.cmid;
+
+            // Send the responses.
+            var promise;
+
+            if (data.deleting) {
+                // The user has deleted his responses.
+                promise = choiceGroupProvider.deleteResponsesOnline(id, siteId);
+            } else {
+                // The user has added a response.
+                promise = choiceGroupProvider.submitResponsesOnline(id, data.data, siteId);
+            }
+
+            return promise.then(function() {
+                // Success sending the data. Delete the data stored.
+                result.updated = true;
+
+                return choiceGroupOffline.deleteResponse(id, siteId);
+            }).catch(function(error) {
+                if (that.CoreUtilsProvider.isWebServiceError(error)) {
+                    // The WebService has thrown an error, this means that responses cannot be submitted. Delete them.
+                    result.updated = true;
+
+                    return choiceGroupOffline.deleteResponse(id, siteId).then(function() {
+                        // Responses deleted, add a warning.
+                        result.warnings.push(that.TranslateService.instant('core.warningofflinedatadeleted', {
+                            component: that.TranslateService.instant('plugin.mod_choicegroup.modulename'),
+                            name: data.name,
+                            error: that.CoreTextUtilsProvider.getErrorMessageFromError(error)
+                        }));
+                    });
+                }
+
+                // Couldn't connect to server, reject.
+                return Promise.reject(error);
+            });
+        }).then(function() {
+            if (result.updated) {
+                // Data has been sent to server, refresh the data.
+                var args = {
+                    courseid: courseId,
+                    cmid: cmId
+                };
+                var preSets = {
+                    getFromCache: false,
+                    emergencyCache: false
+                };
+
+                return that.CoreSitePluginsProvider.getContent('mod_choicegroup', 'mobile_course_view', args, preSets)
+                        .catch(function() {
+                    // Ignore errors.
+                });
+            }
+        }).then(function() {
+            // Sync finished, set sync time.
+            return self.setSyncTime(id, siteId);
+        }).then(function() {
+            // All done, return the result.
+            return result;
+        });
+
+        return self.addOngoingSync(id, syncPromise, siteId);
+    });
+};
+
+var choiceGroupSync = new AddonModChoiceGroupSyncProvider();
+
+/**
+ * Group choice sync handler. It will be registered in the cron delegate.
+ */
+
+/**
+ * Handler to trigger group choice sync.
+ */
+function AddonModChoiceGroupSyncCronHandler() {
+    this.name = 'AddonModChoiceGroupSyncCronHandler';
+}
+
+/**
+ * Execute the process.
+ *
+ * @param siteId ID of the site affected, undefined for all sites.
+ * @param force Wether the execution is forced (manual sync).
+ * @return Promise resolved when done, rejected if failure.
+ */
+AddonModChoiceGroupSyncCronHandler.prototype.execute = function(siteId, force) {
+    // Only allow synchronizing current site.
+    if (!siteId || siteId == that.CoreSitesProvider.getCurrentSiteId()) {
+        return choiceGroupSync.syncAllChoiceGroups(force);
+    }
+};
+
+/**
+ * Get the time between consecutive executions.
+ *
+ * @return Time between consecutive executions (in ms).
+ */
+AddonModChoiceGroupSyncCronHandler.prototype.getInterval = function() {
+    return choiceGroupSync.syncInterval;
+};
+
+// Register the handler. Wait a bit to make sure the DB tables are created.
+setTimeout(function() {
+    that.CoreCronDelegate.register(new AddonModChoiceGroupSyncCronHandler());
+}, 500);
+
+
+var result = {
+    choiceGroupProvider: choiceGroupProvider,
+    choiceGroupOffline: choiceGroupOffline,
+};
+
+if (this.CoreConfigConstants.versioncode > 3800) {
+    // 3.8.0 and older versions of the app have a bug when returning classes with Angular dependencies.
+    // Only return the sync provider if the version is newer.
+    result.choiceGroupSync = choiceGroupSync;
+}
 
 result;

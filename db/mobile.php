@@ -41,6 +41,7 @@ $addons = array(
                     'url' => $CFG->wwwroot . '/mod/choicegroup/styles_app.css',
                     'version' => '0.2'
                 ),
+                'displayrefresh' => false, // Hide default refresh button, a custom one will be used.
             )
         ),
         'lang' => array(

@@ -108,6 +108,15 @@
     }
 }}
 {{=<% %>=}}
+<!-- Add options to the context menu. -->
+<core-navbar-buttons end>
+    <core-context-menu>
+        <core-context-menu-item *ngIf="loaded && !hasOffline && isOnline" [priority]="700" [content]="'core.refresh' | translate" (action)="doRefresh($event)" [iconAction]="refreshIcon" [closeOnClick]="false"></core-context-menu-item>
+
+        <core-context-menu-item *ngIf="loaded && hasOffline && isOnline"  [priority]="650" [content]="'core.settings.synchronizenow' | translate" (action)="synchronize(true, $event)" [iconAction]="syncIcon" [closeOnClick]="false"></core-context-menu-item>
+    </core-context-menu>
+</core-navbar-buttons>
+
 <core-loading [hideUntil]="loaded">
     <core-course-module-description description="<% choicegroup.intro %>" component="mod_choicegroup" componentId="<% cmid %>"></core-course-module-description>
 
