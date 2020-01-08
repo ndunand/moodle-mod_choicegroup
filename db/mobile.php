@@ -49,6 +49,7 @@ $addons = array(
             array('choicegroupsaved', 'choicegroup'),
             array('members/', 'choicegroup'),
             array('members/max', 'choicegroup'),
+            array('modulename', 'choicegroup'),
             array('pluginname', 'choicegroup'),
             array('removemychoicegroup', 'choicegroup'),
             array('savemychoicegroup', 'choicegroup')

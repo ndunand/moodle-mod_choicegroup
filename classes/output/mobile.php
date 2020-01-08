@@ -60,7 +60,7 @@ class mobile {
      * @return array HTML, javascript and otherdata
      */
     public static function mobile_course_view($args) {
-        global $OUTPUT, $USER, $DB;
+        global $OUTPUT, $USER, $DB, $CFG;
 
         $args = (object) $args;
 
@@ -142,8 +142,13 @@ class mobile {
                     'html' => $OUTPUT->render_from_template('mod_choicegroup/mobile_view_page', $data),
                 ),
             ),
-            'javascript' => '',
-            'otherdata' => array('data' => json_encode($responses))
+            'javascript' => file_get_contents($CFG->dirroot . '/mod/choicegroup/mobile/js/courseview.js'),
+            'otherdata' => array(
+                'data' => json_encode($responses),
+                'allowupdate' => $choicegroup->allowupdate ? 1 : 0,
+                'multipleenrollmentspossible' => $choicegroup->multipleenrollmentspossible ? 1 : 0,
+                'answergiven' => $choicegroup->answergiven ? 1 : 0,
+            )
         );
     }
 }

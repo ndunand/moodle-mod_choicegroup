@@ -33,6 +33,7 @@ var CHOICEGROUP_TABLE = 'addon_mod_choicegroup_responses';
 var siteSchema = {
     name: 'AddonModChoiceGroupOfflineProvider',
     version: 1,
+    onlyCurrentSite: true,
     tables: [
         {
             name: CHOICEGROUP_TABLE,
