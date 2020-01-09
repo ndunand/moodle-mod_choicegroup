@@ -562,11 +562,29 @@ AddonModChoiceGroupSyncCronHandler.prototype.getInterval = function() {
     return choiceGroupSync.syncInterval;
 };
 
-// Register the handler. Wait a bit to make sure the DB tables are created.
+/**
+ * Link handler to treat links to a group choice.
+ */
+
+/**
+ * Handler to treat links to the index page.
+ */
+function AddonModChoiceGroupLinkHandler() {
+    that.CoreContentLinksModuleIndexHandler.call(this, that.CoreCourseHelperProvider, 'AddonModChoiceGroup', 'choicegroup');
+
+    this.name = "AddonModChoiceGroupLinkHandler";
+}
+
+AddonModChoiceGroupLinkHandler.prototype = Object.create(this.CoreContentLinksModuleIndexHandler.prototype);
+AddonModChoiceGroupLinkHandler.prototype.constructor = AddonModChoiceGroupLinkHandler;
+
+// Register the sync handler. Wait a bit to make sure the DB tables are created.
 setTimeout(function() {
     that.CoreCronDelegate.register(new AddonModChoiceGroupSyncCronHandler());
 }, 500);
 
+// Register the link handler.
+this.CoreContentLinksDelegate.registerHandler(new AddonModChoiceGroupLinkHandler());
 
 var result = {
     choiceGroupProvider: choiceGroupProvider,
