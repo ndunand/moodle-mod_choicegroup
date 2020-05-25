@@ -108,8 +108,22 @@
     }
 }}
 {{=<% %>=}}
-<div>
+<!-- Add options to the context menu. -->
+<core-navbar-buttons end>
+    <core-context-menu>
+        <core-context-menu-item *ngIf="loaded && !hasOffline && isOnline" [priority]="700" [content]="'core.refresh' | translate" (action)="doRefresh($event)" [iconAction]="refreshIcon" [closeOnClick]="false"></core-context-menu-item>
+
+        <core-context-menu-item *ngIf="loaded && hasOffline && isOnline"  [priority]="650" [content]="'core.settings.synchronizenow' | translate" (action)="synchronize(true, $event)" [iconAction]="syncIcon" [closeOnClick]="false"></core-context-menu-item>
+    </core-context-menu>
+</core-navbar-buttons>
+
+<core-loading [hideUntil]="loaded">
     <core-course-module-description description="<% choicegroup.intro %>" component="mod_choicegroup" componentId="<% cmid %>"></core-course-module-description>
+
+    <!-- Choice done in offline but not synchronized -->
+    <ion-card class="core-warning-card" icon-start *ngIf="hasOffline">
+        <ion-icon name="warning"></ion-icon> {{ 'core.hasdatatosync' | translate:{$a: moduleName} }}
+    </ion-card>
 
     <%# choicegroup.message %>
     <ion-list>
@@ -175,32 +189,20 @@
             <%^ choicegroup.alloptionsdisabled %>
                 <ion-list>
                     <ion-item>
-                        <button ion-button block type="submit" core-site-plugins-call-ws name="mod_choicegroup_submit_choicegroup_response"
-                        [params]="{choicegroupid: <% choicegroup.id %>,
-                            data: CoreUtilsProvider.objectToArrayOfObjects(CONTENT_OTHERDATA.data, 'name', 'value')}"
-                        [preSets]="{getFromCache: 0, saveToCache: 0}"
-                        <%^ choicegroup.allowupdate %>confirmMessage<%/ choicegroup.allowupdate %>
-                        successMessage="{{ 'plugin.mod_choicegroup.choicegroupsaved' | translate }}"
-                        refreshOnSuccess="true">
+                        <button ion-button block type="submit" (click)="submitResponses()">
                             {{ 'plugin.mod_choicegroup.savemychoicegroup' | translate }}
                         </button>
                     </ion-item>
 
                     <%^ choicegroup.multipleenrollmentspossible %>
-                    <%# choicegroup.answergiven %>
                     <%# choicegroup.allowupdate %>
-                    <ion-item>
-                        <button ion-button block outline color="danger" type="button" core-site-plugins-call-ws name="mod_choicegroup_delete_choicegroup_responses"
-                        [params]="{choicegroupid: <% choicegroup.id %>}"
-                        [preSets]="{getFromCache: 0, saveToCache: 0}"
-                        successMessage="{{ 'plugin.mod_choicegroup.choicegroupsaved' | translate }}"
-                        refreshOnSuccess="true">
+                    <ion-item *ngIf="showDelete">
+                        <button ion-button block outline color="danger" type="button" (click)="deleteResponses()">
                             <ion-icon name="trash"></ion-icon>&nbsp;
                             {{ 'plugin.mod_choicegroup.removemychoicegroup' | translate }}
                         </button>
                     </ion-item>
                     <%/ choicegroup.allowupdate %>
-                    <%/ choicegroup.answergiven %>
                     <%/ choicegroup.multipleenrollmentspossible %>
                 </ion-list>
             <%/ choicegroup.alloptionsdisabled %>
@@ -210,4 +212,4 @@
         <!-- Call log WS when the template is loaded. -->
         <span core-site-plugins-call-ws-on-load name="mod_choicegroup_view_choicegroup" [params]="{choicegroupid: <% choicegroup.id %>}" [preSets]="{getFromCache: 0, saveToCache: 0}"></span>
     <%/ choicegroup.open %>
-</div>
+</core-loading>

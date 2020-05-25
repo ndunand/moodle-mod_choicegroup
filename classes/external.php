@@ -413,12 +413,17 @@ class mod_choicegroup_external extends external_api {
         }
 
         $answergiven = choicegroup_get_user_answer($choicegroup, $USER, TRUE);
-        if (!empty($answergiven) && $choicegroup->allowupdate && !$choicegroup->multipleenrollmentspossible) {
-            $params = array('groupid' => reset($answergiven)->id, 'userid' => $USER->id);
-            $groupmember = $DB->get_record('groups_members', $params, 'id', MUST_EXIST);
-            $status = choicegroup_delete_responses([$groupmember->id], $choicegroup, $cm, $course);
+        if (!empty($answergiven)) {
+            if ($choicegroup->allowupdate && !$choicegroup->multipleenrollmentspossible) {
+                $params = array('groupid' => reset($answergiven)->id, 'userid' => $USER->id);
+                $groupmember = $DB->get_record('groups_members', $params, 'id', MUST_EXIST);
+                $status = choicegroup_delete_responses([$groupmember->id], $choicegroup, $cm, $course);
+            } else {
+                throw new moodle_exception('missingrequiredcapability', 'webservice', '', 'allowupdate');
+            }
         } else {
-            throw new moodle_exception('missingrequiredcapability', 'webservice', '', 'allowupdate');
+            // User didn't give any answer, so there's no need to delete anything.
+            $status = true;
         }
 
         $result = array(
