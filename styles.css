@@ -125,11 +125,23 @@
     font-size: 108%;
 }
 
-#page-mod-choice-report .downloadreport ul li {
+#page-mod-choicegroup-report .downloadreport {
+    text-align: center;
+}
+
+#page-mod-choicegroup-report .downloadreport ul {
+    overflow: auto;
+    min-width: 80%;
+    max-width: 100%;
+    display: inline-block;
+    margin-left: 0;
+    margin-right: auto;
+    padding-left: 0;
+    text-align: left;
+}
+
+#page-mod-choicegroup-report .downloadreport ul li {
     list-style: none;
-    padding: 0 20px;
-    display: inline;
-    float: left;
 }
 
 .path-mod-choicegroup .clearfloat {
@@ -168,14 +180,10 @@
 
 .path-mod-choicegroup.dir-rtl .downloadreport {
     margin-left: 0;
-    margin-right: 25%;
+    text-align: center;
 }
 
-#page-mod-choice-report.dir-rtl .downloadreport ul li {
-    float: right;
-}
-
-#page-mod-choice-view.dir-rtl .reportlink {
+#page-mod-choicegroup-view.dir-rtl .reportlink {
     text-align: left;
 }
 

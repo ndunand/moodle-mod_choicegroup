@@ -286,15 +286,15 @@ if (!empty($users) && has_capability('mod/choicegroup:downloadresponses',$contex
     $options["id"] = "$cm->id";
     $options["download"] = "ods";
     $button =  $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadods"));
-    $downloadoptions[] = html_writer::tag('li', $button, array('class'=>'reportoption'));
+    $downloadoptions[] = html_writer::tag('li', $button, array('class'=>'reportoption mt-1'));
 
     $options["download"] = "xls";
     $button = $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadexcel"));
-    $downloadoptions[] = html_writer::tag('li', $button, array('class'=>'reportoption'));
+    $downloadoptions[] = html_writer::tag('li', $button, array('class'=>'reportoption mt-1'));
 
     $options["download"] = "txt";
     $button = $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadtext"));
-    $downloadoptions[] = html_writer::tag('li', $button, array('class'=>'reportoption'));
+    $downloadoptions[] = html_writer::tag('li', $button, array('class'=>'reportoption mt-1'));
 
     $downloadlist = html_writer::tag('ul', implode('', $downloadoptions));
     $downloadlist .= html_writer::tag('div', '', array('class'=>'clearfloat'));
