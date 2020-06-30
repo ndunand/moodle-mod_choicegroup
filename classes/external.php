@@ -136,12 +136,13 @@ class mod_choicegroup_external extends external_api {
                     new external_single_structure(
                         array(
                             'id' => new external_value(PARAM_INT, 'Option id'),
-                            'text' => new external_value(PARAM_RAW, 'Group choice name'),
+                            'groupid' => new external_value(PARAM_INT, 'Group id'),
+                            'name' => new external_value(PARAM_RAW, 'Group choice name'),
                             'maxanswers' => new external_value(PARAM_INT, 'Maximum number of accepted answers', VALUE_OPTIONAL),
                             'displaylayout' => new external_value(PARAM_INT, 'Display layout', VALUE_OPTIONAL),
                             'countanswers' => new external_value(PARAM_INT, 'Current number of answers', VALUE_OPTIONAL),
-                            'checked' => new external_value(PARAM_INT, 'Checked', VALUE_OPTIONAL),
-                            'disabled' => new external_value(PARAM_INT, 'Disabled', VALUE_OPTIONAL),
+                            'checked' => new external_value(PARAM_BOOL, 'Checked', VALUE_OPTIONAL),
+                            'disabled' => new external_value(PARAM_BOOL, 'Disabled', VALUE_OPTIONAL),
                         )
                     )
                 ),
