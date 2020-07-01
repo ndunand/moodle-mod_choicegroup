@@ -69,7 +69,7 @@ $eventparams = array(
 );
 
 $current = choicegroup_get_user_answer($choicegroup, $USER);
-if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, NULL, 'mod/choicegroup:choose') and $choicegroup->allowupdate and !($choicegroup->timeclose and (time() > $choicegroup->timeclose))) {
+if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, null, 'mod/choicegroup:choose') and $choicegroup->allowupdate and !($choicegroup->timeclose and (time() > $choicegroup->timeclose))) {
     // user wants to delete his own choice:
     if ($current !== false) {
         if (groups_is_member($current->id, $USER->id)) {
@@ -81,7 +81,7 @@ if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, 
             $event->add_record_snapshot('choicegroup', $choicegroup);
             $event->trigger();
         }
-        $current = choicegroup_get_user_answer($choicegroup, $USER, FALSE, TRUE);
+        $current = choicegroup_get_user_answer($choicegroup, $USER, false, true);
         // Update completion state
         $completion = new completion_info($course);
         if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
@@ -98,7 +98,7 @@ $completion=new completion_info($course);
 $completion->set_module_viewed($cm);
 
 /// Submit any new data if there is any
-if (data_submitted() && is_enrolled($context, NULL, 'mod/choicegroup:choose') && confirm_sesskey()) {
+if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') && confirm_sesskey()) {
 
     if ($choicegroup->multipleenrollmentspossible == 1) {
         $number_of_groups = optional_param('number_of_groups', '', PARAM_INT);
@@ -190,7 +190,7 @@ if ($choicegroup->intro) {
 //if user has already made a selection, and they are not allowed to update it, show their selected answer.
 if (isloggedin() && ($current !== false) ) {
     if ($choicegroup->multipleenrollmentspossible == 1) {
-        $currents = choicegroup_get_user_answer($choicegroup, $USER, TRUE, true);
+        $currents = choicegroup_get_user_answer($choicegroup, $USER, true, true);
 
         $names = array();
         if (is_array($currents)) {
@@ -222,7 +222,7 @@ if ($choicegroup->timeclose !=0) {
 
 $options = choicegroup_prepare_options($choicegroup, $USER, $cm, $allresponses);
 $renderer = $PAGE->get_renderer('mod_choicegroup');
-if ( (!$current or $choicegroup->allowupdate) and $choicegroupopen and is_enrolled($context, NULL, 'mod/choicegroup:choose')) {
+if ( (!$current or $choicegroup->allowupdate) and $choicegroupopen and is_enrolled($context, null, 'mod/choicegroup:choose')) {
 // They haven't made their choicegroup yet or updates allowed and choicegroup is open
 
     echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, false, $choicegroup->multipleenrollmentspossible);
