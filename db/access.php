@@ -27,6 +27,7 @@
 //
 // The variable name for the capability definitions array is $capabilities
 
+defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
 

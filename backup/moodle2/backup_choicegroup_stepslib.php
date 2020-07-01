@@ -29,6 +29,9 @@
 /**
  * Define the complete choicegroup structure for backup, with file and id annotations
  */
+
+defined('MOODLE_INTERNAL') || die();
+
 class backup_choicegroup_activity_structure_step extends backup_activity_structure_step {
 
     protected function define_structure() {
