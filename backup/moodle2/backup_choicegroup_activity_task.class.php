@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot . '/mod/choicegroup/backup/moodle2/backup_choicegroup_stepslib.php'); // Because it exists (must)
 require_once($CFG->dirroot . '/mod/choicegroup/backup/moodle2/backup_choicegroup_settingslib.php'); // Because it exists (optional)
 
