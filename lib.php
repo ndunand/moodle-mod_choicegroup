@@ -315,6 +315,9 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
     $context = context_module::instance($coursemodule->id);
     $answers = choicegroup_get_user_answer($choicegroup, $user, TRUE, true);
 
+    if (!isset($choicegroup->option)) {
+        $choicegroup->option = [];
+    }
     foreach ($choicegroup->option as $optionid => $text) {
         if (isset($text)) { //make sure there are no dud entries in the db with blank text values.
             $option = new stdClass;
