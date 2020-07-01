@@ -79,7 +79,7 @@ class mod_choicegroup_external extends external_api {
         require_capability('mod/choicegroup:choose', $context);
 
         $allresponses = choicegroup_get_response_data($choicegroup, $cm);   // Big function, approx 6 SQL calls per user
-        $answers = choicegroup_get_user_answer($choicegroup, $userid, TRUE);
+        $answers = choicegroup_get_user_answer($choicegroup, $userid, true);
 
         foreach ($choicegroup->option as $optionid => $text) {
             if (isset($text)) {
@@ -413,7 +413,7 @@ class mod_choicegroup_external extends external_api {
             throw new moodle_exception('expired', 'choicegroup', '', userdate($choice->timeclose));
         }
 
-        $answergiven = choicegroup_get_user_answer($choicegroup, $USER, TRUE);
+        $answergiven = choicegroup_get_user_answer($choicegroup, $USER, true);
         if (!empty($answergiven)) {
             if ($choicegroup->allowupdate && !$choicegroup->multipleenrollmentspossible) {
                 $params = array('groupid' => reset($answergiven)->id, 'userid' => $USER->id);
