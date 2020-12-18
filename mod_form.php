@@ -293,7 +293,8 @@ function data_preprocessing(&$default_values){
 
 	public function js_call() {
 		global $PAGE;
-		$PAGE->requires->yui_module('moodle-mod_choicegroup-form', 'Y.Moodle.mod_choicegroup.form.init');
+		$params = [$this->_form->getAttribute('id')];
+		$PAGE->requires->yui_module('moodle-mod_choicegroup-form', 'Y.Moodle.mod_choicegroup.form.init', $params);
 		foreach (array_keys(get_string_manager()->load_component_strings('choicegroup', current_language())) as $string) {
 			$PAGE->requires->string_for_js($string, 'choicegroup');
 		}
