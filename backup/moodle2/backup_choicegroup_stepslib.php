@@ -39,7 +39,8 @@ class backup_choicegroup_activity_structure_step extends backup_activity_structu
         // Define each element separated
         $choicegroup = new backup_nested_element('choicegroup', array('id'), array(
             'name', 'intro', 'introformat', 'publish',
-            'showresults', 'display', 'allowupdate', 'allowunanswered',
+            'multipleenrollmentspossible',
+            'showresults', 'display', 'allowupdate', 'showunanswered',
             'limitanswers', 'timeopen', 'timeclose', 'timemodified',
             'completionsubmit', 'sortgroupsby'));
 
