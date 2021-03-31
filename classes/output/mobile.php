@@ -144,7 +144,7 @@ class mobile {
             'templates' => array(
                 array(
                     'id' => 'main',
-                    'html' => $OUTPUT->render_from_template('mod_choicegroup/mobile_view_page', $data),
+                    'html' => $OUTPUT->render_from_template("mod_choicegroup/mobile_view_page_$foldername", $data),
                 ),
             ),
             'javascript' => file_get_contents($CFG->dirroot . "/mod/choicegroup/mobile/js/$foldername/courseview.js"),
