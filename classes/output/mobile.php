@@ -47,9 +47,13 @@ class mobile {
     public static function mobile_init($args) {
         global $CFG;
 
+        $args = (object) $args;
+
+        $foldername = $args->appversioncode >= 3950 ? 'latest' : 'ionic3';
+
         return [
             'templates' => [],
-            'javascript' => file_get_contents($CFG->dirroot . '/mod/choicegroup/mobile/js/init.js'),
+            'javascript' => file_get_contents($CFG->dirroot . "/mod/choicegroup/mobile/js/$foldername/init.js"),
         ];
     }
 
@@ -64,6 +68,7 @@ class mobile {
 
         $args = (object) $args;
 
+        $foldername = $args->appversioncode >= 3950 ? 'latest' : 'ionic3';
         $cm = get_coursemodule_from_id('choicegroup', $args->cmid);
         $course = $DB->get_record('course', array('id' => $cm->course));
 
@@ -139,10 +144,10 @@ class mobile {
             'templates' => array(
                 array(
                     'id' => 'main',
-                    'html' => $OUTPUT->render_from_template('mod_choicegroup/mobile_view_page', $data),
+                    'html' => $OUTPUT->render_from_template("mod_choicegroup/mobile_view_page_$foldername", $data),
                 ),
             ),
-            'javascript' => file_get_contents($CFG->dirroot . '/mod/choicegroup/mobile/js/courseview.js'),
+            'javascript' => file_get_contents($CFG->dirroot . "/mod/choicegroup/mobile/js/$foldername/courseview.js"),
             'otherdata' => array(
                 'data' => json_encode($responses),
                 'allowupdate' => $choicegroup->allowupdate ? 1 : 0,
