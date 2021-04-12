@@ -34,19 +34,22 @@ const originalData = this.CoreUtilsProvider.clone(this.CONTENT_OTHERDATA.data);
 /**
  * Send responses to the site.
  */
-this.submitResponses = async () => {
-    let modal;
+this.submitResponses = () => {
+    let promise;
 
-    try {
-        if (!this.CONTENT_OTHERDATA.allowupdate) {
-            // Ask the user to confirm.
-            await this.CoreDomUtilsProvider.showConfirm(this.TranslateService.instant('core.areyousure'));
-        }
+    if (!this.CONTENT_OTHERDATA.allowupdate) {
+        // Ask the user to confirm.
+        promise = this.CoreDomUtilsProvider.showConfirm(this.TranslateService.instant('core.areyousure'));
+    } else {
+        // No need to confirm.
+        promise = Promise.resolve();
+    }
 
+    promise.then(() => {
         // Submit the responses now.
-        modal = await this.CoreDomUtilsProvider.showModalLoading('core.sending', true);
-
-        const data = this.CoreUtilsProvider.objectToArrayOfObjects(this.CONTENT_OTHERDATA.data, 'name', 'value');
+        return this.CoreDomUtilsProvider.showModalLoading('core.sending', true);
+    }).then((modal) => {
+        var data = this.CoreUtilsProvider.objectToArrayOfObjects(this.CONTENT_OTHERDATA.data, 'name', 'value');
 
         if (multipleEnrol) {
             // In multiple enrol, the WS expects to receive 'true' as a string instead of 1 or 0.
@@ -55,66 +58,58 @@ this.submitResponses = async () => {
             });
         }
 
-        const online = await this.choiceGroupProvider.submitResponses(
-            this.module.instance,
-            this.module.name,
-            this.courseId,
-            this.module.id,
-            data,
-            allowOffline,
-        );
+        return this.choiceGroupProvider.submitResponses(this.module.instance, this.module.name, this.courseId, this.module.id, data,
+                allowOffline).then((online) => {
 
-        // Responses have been sent to server or stored to be sent later.
-        this.CoreDomUtilsProvider.showToast(this.TranslateService.instant('plugin.mod_choicegroup.choicegroupsaved'));
+            // Responses have been sent to server or stored to be sent later.
+            this.CoreDomUtilsProvider.showToast(this.TranslateService.instant('plugin.mod_choicegroup.choicegroupsaved'));
 
-        if (online) {
-            // Check completion since it could be configured to complete once the user answers the choice.
-            this.CoreCourseProvider.checkModuleCompletion(this.courseId, this.module.completiondata);
+            if (online) {
+                // Check completion since it could be configured to complete once the user answers the choice.
+                this.CoreCourseProvider.checkModuleCompletion(this.courseId, this.module.completiondata);
 
-            // Data has been sent, refresh the content.
-            await this.refreshContent(true);
-        } else {
-            // Data stored in offline.
-            await this.loadOfflineData();
-        }
-    } catch (error) {
-        this.CoreDomUtilsProvider.showErrorModalDefault(error, 'Error submitting responses.', true);
-    } finally {
-        modal.dismiss();
-    }
+                // Data has been sent, refresh the content.
+                return this.refreshContent(true);
+            } else {
+                // Data stored in offline.
+                return this.loadOfflineData();
+            }
+
+        }).catch((message) => {
+            this.CoreDomUtilsProvider.showErrorModalDefault(message, 'Error submitting responses.', true);
+        }).finally(() => {
+            modal.dismiss();
+        });
+    }).catch(() => {
+        // User cancelled, ignore.
+    });
 };
 
 /**
  * Delete the responses. Only if multiple enrol is not allowed.
  */
-this.deleteResponses = async () => {
-    const modal = await this.CoreDomUtilsProvider.showModalLoading('core.sending', true);
+this.deleteResponses = () => {
+    return this.CoreDomUtilsProvider.showModalLoading('core.sending', true).then((modal) => {
+        return this.choiceGroupProvider.deleteResponses(this.module.instance, this.module.name, this.courseId, this.module.id,
+                allowOffline).then((online) => {
 
-    try {
-        const online = await this.choiceGroupProvider.deleteResponses(
-            this.module.instance,
-            this.module.name,
-            this.courseId,
-            this.module.id,
-            allowOffline,
-        );
+            // Responses have been sent to server or stored to be sent later.
+            this.CoreDomUtilsProvider.showToast(this.TranslateService.instant('plugin.mod_choicegroup.choicegroupsaved'));
 
-        // Responses have been sent to server or stored to be sent later.
-        this.CoreDomUtilsProvider.showToast(this.TranslateService.instant('plugin.mod_choicegroup.choicegroupsaved'));
+            if (online) {
+                // Data has been sent, refresh the content.
+                return this.refreshContent(true);
+            } else {
+                // Data stored in offline.
+                return this.loadOfflineData();
+            }
 
-        if (online) {
-            // Data has been sent, refresh the content.
-            await this.refreshContent(true);
-        } else {
-            // Data stored in offline.
-            await this.loadOfflineData();
-        }
-
-    } catch (error) {
-        this.CoreDomUtilsProvider.showErrorModalDefault(error, 'Error deleting responses.', true);
-    } finally {
-        modal.dismiss();
-    }
+        }).catch((message) => {
+            this.CoreDomUtilsProvider.showErrorModalDefault(message, 'Error deleting responses.', true);
+        }).finally(() => {
+            modal.dismiss();
+        });
+    });
 };
 
 /**
@@ -122,11 +117,9 @@ this.deleteResponses = async () => {
  *
  * @return Promise resolved when done.
  */
-this.loadOfflineData = async () => {
-    try {
-        // Get the offline response if it exists.
-        const response = await this.choiceGroupOffline.getResponse(this.module.instance);
-
+this.loadOfflineData = () => {
+    // Get the offline response if it exists.
+    return this.choiceGroupOffline.getResponse(this.module.instance).then((response) => {
         this.hasOffline = true;
 
         if (response.deleting) {
@@ -143,12 +136,12 @@ this.loadOfflineData = async () => {
 
             this.showDelete = !multipleEnrol; // Show delete if there is offline data and is not multiple enrol.
         }
-    } catch {
+    }).catch(() => {
         // Offline data not found. Use the original data.
         this.hasOffline = false;
         this.showDelete = this.CONTENT_OTHERDATA.answergiven;
         this.CONTENT_OTHERDATA.data = this.CoreUtilsProvider.clone(originalData);
-    }
+    });
 };
 
 /**
@@ -158,37 +151,36 @@ this.loadOfflineData = async () => {
  * @param done Function to call when done.
  * @return Promise resolved with true if sync succeed, or false if failed.
  */
-this.synchronize = async (showErrors, done) => {
+this.synchronize = (showErrors, done) => {
     this.refreshIcon = this.CoreConstants.ICON_LOADING;
     this.syncIcon = this.CoreConstants.ICON_LOADING;
 
-    try {
-        // Try to synchronize the group choice.
-        const result = await this.choiceGroupSync.syncChoiceGroup(this.module.instance);
-
+    // Try to synchronize the group choice.
+    return this.choiceGroupSync.syncChoiceGroup(this.module.instance).then((result) => {
         if (result.warnings && result.warnings.length) {
             this.CoreDomUtilsProvider.showErrorModal(result.warnings[0]);
         }
 
-        if (result.updated) {
-            // Data has been sent, fetch the content (WS data has already been updated in the sync process).
-            await this.fetchContent(false);
-        } else {
-            // Check if the group choice has offline data.
-            await this.loadOfflineData();
-        }
-    } catch (error) {
+        return result.updated;
+    }).catch((error) => {
         if (showErrors) {
             this.CoreDomUtilsProvider.showErrorModalDefault(error, 'core.errorsync', true);
         }
 
+        return false;
+    }).then((updated) => {
+        if (updated) {
+            // Data has been sent, fetch the content (WS data has already been updated in the sync process).
+            return this.fetchContent(false);
+        }
+
         // Check if the group choice has offline data.
-        await this.loadOfflineData();
-    } finally {
+        return this.loadOfflineData();
+    }).finally(() => {
         done && done();
         this.refreshIcon = this.CoreConstants.ICON_REFRESH;
         this.syncIcon = this.CoreConstants.ICON_SYNC;
-    }
+    });
 };
 
 /**
