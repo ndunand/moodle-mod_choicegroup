@@ -199,7 +199,8 @@ if ($groupmode) {
     groups_print_activity_menu($cm, $CFG->wwwroot . '/mod/choicegroup/view.php?id='.$id);
 }
 
-$allresponses = choicegroup_get_response_data($choicegroup, $cm);   // Big function, approx 6 SQL calls per user
+// Big function, approx 6 SQL calls per user.
+$allresponses = choicegroup_get_response_data($choicegroup, $cm, $groupmode, $choicegroup->onlyactive);
 
 
 if (has_capability('mod/choicegroup:readresponses', $context)) {

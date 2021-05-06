@@ -121,6 +121,9 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
         $mform->addElement('selectyesno', 'showunanswered', get_string("showunanswered", "choicegroup"));
 
+        $mform->addElement('selectyesno', 'onlyactive', get_string('onlyactive', 'choicegroup'));
+        $mform->setDefault('onlyactive', 0);
+
         $menuoptions = array();
         $menuoptions[0] = get_string('disable');
         $menuoptions[1] = get_string('enable');
@@ -328,4 +331,3 @@ class mod_choicegroup_mod_form extends moodleform_mod
     }
 
 }
-

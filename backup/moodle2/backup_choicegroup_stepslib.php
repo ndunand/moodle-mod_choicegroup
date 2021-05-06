@@ -42,7 +42,7 @@ class backup_choicegroup_activity_structure_step extends backup_activity_structu
             'multipleenrollmentspossible',
             'showresults', 'display', 'allowupdate', 'showunanswered',
             'limitanswers', 'timeopen', 'timeclose', 'timemodified',
-            'completionsubmit', 'sortgroupsby'));
+            'completionsubmit', 'sortgroupsby', 'onlyactive'));
 
         $options = new backup_nested_element('options');
 

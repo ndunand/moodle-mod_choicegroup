@@ -102,7 +102,7 @@ if (!$download) {
         $groups_ids[] = $group->id;
     }
 }
-$users = choicegroup_get_response_data($choicegroup, $cm, $groupmode);
+$users = choicegroup_get_response_data($choicegroup, $cm, $groupmode, $choicegroup->onlyactive);
 
 if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $context)) {
     require_once("$CFG->libdir/odslib.class.php");

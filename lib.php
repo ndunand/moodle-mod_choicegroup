@@ -884,20 +884,29 @@ function choicegroup_reset_course_form_defaults($course) {
  * @uses CONTEXT_MODULE
  * @param object $choicegroup
  * @param object $cm
+ * @param int $groupmode
+ * @param bool $onlyactive Whether to get response data for active users only
  * @return array
  */
-function choicegroup_get_response_data($choicegroup, $cm) {
+function choicegroup_get_response_data($choicegroup, $cm, $groupmode, $onlyactive) {
     // Initialise the returned array, which is a matrix:  $allresponses[responseid][userid] = responseobject.
     static $allresponses = array();
 
     if (count($allresponses)) {
         return $allresponses;
     }
- 
+
+    // Get the current group.
+    if ($groupmode > 0) {
+        $currentgroup = groups_get_activity_group($cm);
+    } else {
+        $currentgroup = 0;
+    }
+
     // First get all the users who have access here.
     // To start with we assume they are all "unanswered" then move them later.
     $ctx = \context_module::instance($cm->id);
-    $users = get_enrolled_users($ctx, 'mod/choicegroup:choose', 0, 'u.*', 'u.lastname ASC,u.firstname ASC');
+    $users = get_enrolled_users($ctx, 'mod/choicegroup:choose', $currentgroup, 'u.*', 'u.lastname, u.firstname', 0, 0, $onlyactive);
     if ($users) {
         $modinfo = get_fast_modinfo($cm->course);
         $cminfo = $modinfo->get_cm($cm->id);
@@ -1003,7 +1012,9 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
             print_error('invalidcoursemodule');
             return false;
         }
-        $allresponses = choicegroup_get_response_data($choicegroup, $PAGE->cm, $groupmode);   // Big function, approx 6 SQL calls per user
+
+        // Big function, approx 6 SQL calls per user.
+        $allresponses = choicegroup_get_response_data($choicegroup, $PAGE->cm, $groupmode, $choicegroup->onlyactive);
 
         $responsecount = 0;
         $respondents = array();

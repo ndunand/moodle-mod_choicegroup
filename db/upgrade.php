@@ -82,7 +82,20 @@ function xmldb_choicegroup_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2021071400, 'choicegroup');
     }
 
+    if ($oldversion < 2021080500) {
+
+        // Define field onlyactive to be added to choicegroup.
+        $table = new xmldb_table('choicegroup');
+        $field = new xmldb_field('onlyactive', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'sortgroupsby');
+
+        // Conditionally launch add field onlyactive.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Group choice savepoint reached.
+        upgrade_mod_savepoint(true, 2021080500, 'choicegroup');
+    }
+
     return true;
 }
-
-
