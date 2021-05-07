@@ -884,7 +884,7 @@ function choicegroup_reset_course_form_defaults($course) {
  * @uses CONTEXT_MODULE
  * @param object $choicegroup
  * @param object $cm
- * @param int $groupmode
+ * @param int $groupmode Group mode
  * @param bool $onlyactive Whether to get response data for active users only
  * @return array
  */
@@ -916,7 +916,7 @@ function choicegroup_get_response_data($choicegroup, $cm, $groupmode, $onlyactiv
 
     $allresponses[0] = $users;
 
-    $responses = choicegroup_get_responses($choicegroup, $ctx);
+    $responses = choicegroup_get_responses($choicegroup, $ctx, $currentgroup, $onlyactive);
     foreach ($responses as $response){
         if (isset($users[$response->userid])) {
             $allresponses[$response->groupid][$response->userid] = clone $users[$response->userid];
@@ -931,10 +931,12 @@ function choicegroup_get_response_data($choicegroup, $cm, $groupmode, $onlyactiv
 /* Return an array with the options selected of users of the $choicegroup 
  * 
  * @param object $choicegroup choicegroup record
- * @param object $cm course module object
+ * @param context_module $ctx Context instance
+ * @param int $currentgroup Current group
+ * @param bool $onlyactive Whether to get responses for active users only
  * @return array of selected options by all users 
 */
-function choicegroup_get_responses($choicegroup, $cm){
+function choicegroup_get_responses($choicegroup, $ctx, $currentgroup, $onlyactive) {
 
     global $DB;
 
@@ -945,7 +947,7 @@ function choicegroup_get_responses($choicegroup, $cm){
     }
 
     $params1 = array('choicegroupid'=>$choicegroupid);
-    list($esql, $params2) = get_enrolled_sql($cm, 'mod/choicegroup:choose', 0);
+    list($esql, $params2) = get_enrolled_sql($ctx, 'mod/choicegroup:choose', $currentgroup, $onlyactive);
     $params = array_merge($params1, $params2);
 
     $sql = 'SELECT gm.* FROM {user} u JOIN ('.$esql.') je ON je.id = u.id

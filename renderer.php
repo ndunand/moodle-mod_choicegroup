@@ -42,10 +42,11 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * @param bool $choicegroupopen
      * @param bool $disabled
      * @param bool $multipleenrollmentspossible
+     * @param bool $onlyactive
      *
      * @return string
      */
-    public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false, $showresults = false, $current = false, $choicegroupopen = false, $disabled = false, $multipleenrollmentspossible = false) {
+    public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false, $showresults = false, $current = false, $choicegroupopen = false, $disabled = false, $multipleenrollmentspossible = false, $onlyactive = false) {
         global $DB, $PAGE, $choicegroup_groups, $choicegroup_users;
 
         $target = new moodle_url('/mod/choicegroup/view.php');
@@ -114,10 +115,14 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 }
             }
 
+            $context = \context_course::instance($group->courseid);
             $labeltext = html_writer::tag('label', format_string($group->name), array('for' => 'choiceid_' . $option->attributes->value));
             $group_members = $DB->get_records('groups_members', array('groupid' => $group->id));
             $group_members_names = array();
             foreach ($group_members as $group_member) {
+                if (!is_enrolled($context, $group_member->userid, '', $onlyactive)) {
+                    continue;
+                }
                 $group_user = (isset($choicegroup_users[$group_member->userid])) ? ($choicegroup_users[$group_member->userid]) : ($DB->get_record('user', array('id' => $group_member->userid)));
                 $group_members_names[] = $group_user->lastname . ', ' . $group_user->firstname;
             }
@@ -127,7 +132,6 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $option->attributes->disabled=true;
                 $availableoption--;
             }
-            $context = \context_course::instance($group->courseid);
             $labeltext .= html_writer::tag('div', format_text(file_rewrite_pluginfile_urls($group->description,
             'pluginfile.php',
                 $context->id,
