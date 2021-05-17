@@ -109,7 +109,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             } else {
                 $option->attributes->name = 'answer';
                 $option->attributes->type = 'radio';
-                if (array_key_exists('attributes', $option) && array_key_exists('checked', $option->attributes) && $option->attributes->checked == true) {
+                if (property_exists($option, 'attributes') && property_exists($option->attributes, 'checked') && $option->attributes->checked == true) {
                     $initiallyHideSubmitButton = true;
                 }
             }

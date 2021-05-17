@@ -897,7 +897,7 @@ function choicegroup_get_response_data($choicegroup, $cm) {
     // First get all the users who have access here.
     // To start with we assume they are all "unanswered" then move them later.
     $ctx = \context_module::instance($cm->id);
-    $users = get_enrolled_users($ctx, 'mod/choicegroup:choose', 0, user_picture::fields('u', array('idnumber')), 'u.lastname ASC,u.firstname ASC');
+    $users = get_enrolled_users($ctx, 'mod/choicegroup:choose', 0, 'u.*', 'u.lastname ASC,u.firstname ASC');
     if ($users) {
         $modinfo = get_fast_modinfo($cm->course);
         $cminfo = $modinfo->get_cm($cm->id);
