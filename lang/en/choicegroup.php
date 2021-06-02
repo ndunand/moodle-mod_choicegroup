@@ -161,5 +161,7 @@ $string['double_click_group_legend'] = 'Double click on a group to add it.';
 $string['privacy:metadata'] = 'The Group Choice plugin does not store any personal data. All user data is stored by the group component of Moodle core (core_group).';
 $string['showgroupmembers'] = 'Show Group Members';
 $string['hidegroupmembers'] = 'Hide Group Members';
-
+$string['activitydate:willopen'] = 'Opens:';
+$string['activitydate:hasopened'] = 'Opened:';
+$string['activitydate:willclose'] = 'Closes:';
 
