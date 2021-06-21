@@ -78,7 +78,8 @@ class mod_choicegroup_external extends external_api {
         self::validate_context($context);
         require_capability('mod/choicegroup:choose', $context);
 
-        $allresponses = choicegroup_get_response_data($choicegroup, $cm);   // Big function, approx 6 SQL calls per user
+        $groupmode = groups_get_activity_groupmode($cm);
+        $allresponses = choicegroup_get_response_data($choicegroup, $cm, $groupmode, $choicegroup->onlyactive);
         $answers = choicegroup_get_user_answer($choicegroup, $userid, true);
 
         foreach ($choicegroup->option as $optionid => $text) {
