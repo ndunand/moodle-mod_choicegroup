@@ -28,11 +28,11 @@
 require_once("../../config.php");
 require_once("lib.php");
 
-$id = required_param('id',PARAM_INT);   // course
+$id = required_param('id', PARAM_INT);   // course
 
-$PAGE->set_url('/mod/choicegroup/index.php', array('id'=>$id));
+$PAGE->set_url('/mod/choicegroup/index.php', array('id' => $id));
 
-if (!$course = $DB->get_record('course', array('id'=>$id))) {
+if (!$course = $DB->get_record('course', array('id' => $id))) {
     print_error('invalidcourseid');
 }
 
@@ -48,13 +48,13 @@ $event->trigger();
 
 $strchoicegroup = get_string("modulename", "choicegroup");
 $strchoicegroups = get_string("modulenameplural", "choicegroup");
-$strsectionname  = get_string('sectionname', 'format_'.$course->format);
+$strsectionname = get_string('sectionname', 'format_' . $course->format);
 $PAGE->set_title($strchoicegroups);
 $PAGE->set_heading($course->fullname);
 $PAGE->navbar->add($strchoicegroups);
 echo $OUTPUT->header();
 
-if (! $choicegroups = get_all_instances_in_course("choicegroup", $course)) {
+if (!$choicegroups = get_all_instances_in_course("choicegroup", $course)) {
     notice(get_string('thereareno', 'moodle', $strchoicegroups), "../../course/view.php?id=$course->id");
 }
 
@@ -67,20 +67,27 @@ if ($usesections) {
 $table = new html_table();
 
 if ($usesections) {
-    $table->head  = array ($strsectionname, get_string("question"), get_string("answer"));
-    $table->align = array ("center", "left", "left");
+    $table->head = array($strsectionname, get_string("question"), get_string("answer"));
+    $table->align = array("center", "left", "left");
 } else {
-    $table->head  = array (get_string("question"), get_string("answer"));
-    $table->align = array ("left", "left");
+    $table->head = array(get_string("question"), get_string("answer"));
+    $table->align = array("left", "left");
 }
 
 $currentsection = "";
 
 foreach ($choicegroups as $choicegroup) {
     $choicegroup_groups = choicegroup_get_groups($choicegroup);
-    $answer = choicegroup_get_user_answer($choicegroup, $USER->id);
-    if (!empty($answer->id)) {
-        $aa = $answer->name;
+
+    $answers = choicegroup_get_user_answer($choicegroup, $USER->id, true);
+    if (!empty($answers)) {
+        $aa = [];
+
+        foreach ($answers as $answer) {
+            $aa[] = $answer->name;
+        }
+
+        $aa = implode(', ', $aa);
     } else {
         $aa = "";
     }
@@ -100,15 +107,15 @@ foreach ($choicegroups as $choicegroup) {
     //Calculate the href
     if (!$choicegroup->visible) {
         //Show dimmed if the mod is hidden
-        $tt_href = "<a class=\"dimmed\" href=\"view.php?id=$choicegroup->coursemodule\">".format_string($choicegroup->name,true)."</a>";
+        $tt_href = "<a class=\"dimmed\" href=\"view.php?id=$choicegroup->coursemodule\">" . format_string($choicegroup->name, true) . "</a>";
     } else {
         //Show normal if the mod is visible
-        $tt_href = "<a href=\"view.php?id=$choicegroup->coursemodule\">".format_string($choicegroup->name,true)."</a>";
+        $tt_href = "<a href=\"view.php?id=$choicegroup->coursemodule\">" . format_string($choicegroup->name, true) . "</a>";
     }
     if ($usesections) {
-        $table->data[] = array ($printsection, $tt_href, $aa);
+        $table->data[] = array($printsection, $tt_href, $aa);
     } else {
-        $table->data[] = array ($tt_href, $aa);
+        $table->data[] = array($tt_href, $aa);
     }
 }
 echo "<br />";
