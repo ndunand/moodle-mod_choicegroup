@@ -374,7 +374,7 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 						removeGroupButtonNode.set('disabled', false);
 						uiInputLimitNode.set('disabled', false);
 						uiInputLimitNode.set('value', getInputLimitNodeOfSelectedGroupNode(selectedOptionsNodes.item(0)).get('value'));
-						Y.one(SELECTORS.LIMIT_UI_LABEL).set('text', M.util.get_string('set_limit_for_group', 'choicegroup') + getGroupNameWithoutLimitText(selectedOptionsNodes.item(0)) + ":");
+						Y.one(SELECTORS.LIMIT_UI_LABEL).set('text', M.util.get_string('set_limit_for_group', 'choicegroup') + ' ' + getGroupNameWithoutLimitText(selectedOptionsNodes.item(0)) + ":");
 						if (limitAnswersSelectNode.get('value') == '1') { // limiting is enabled, show limit box
 							limitInputUIDIVNode.show();
 						}
