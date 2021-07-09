@@ -141,11 +141,11 @@ class mod_choicegroup_mod_form extends moodleform_mod
 				<div class="fitemtitle"><label for="id_option_0">' . get_string('groupsheader', 'choicegroup') . '</label><span class="helptooltip"><a href="' . $CFG->wwwroot . '/help.php?component=choicegroup&amp;identifier=choicegroupoptions&amp;lang=' . current_language() . '" title="' . get_string('choicegroupoptions_help', 'choicegroup') . '" aria-haspopup="true" target="_blank"><img src="' . $CFG->wwwroot . '/theme/image.php?theme=' . $PAGE->theme->name . '&component=core&image=help" alt="' . get_string('choicegroupoptions_help', 'choicegroup') . '" class="iconhelp"></a></span></div><div class="felement fselect">
                 <div class="tablecontainer">
 				<table>
-				    <tr style="display: flex;flex-wrap: wrap;">
+				    <tr class="row">
 				        <th class="col-lg-6">' . get_string('available_groups', 'choicegroup') . '</th>
 				        <th class="col-lg-6">' . get_string('selected_groups', 'choicegroup') . '</th>
                     </tr>
-                    <tr style="display: flex;flex-wrap: wrap;">
+                    <tr class="row">
                         <td style="vertical-align: top" class="col-5">');
 
         $mform->addElement('html', '<select class="col-12" id="availablegroups" name="availableGroups" multiple size=10>');
@@ -172,15 +172,25 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
 
         $mform->addElement('html', '
-				</td><td><button id="addGroupButton" name="add" type="button" disabled class="btn btn-secondary">' . get_string('add', 'choicegroup') .
+				</td><td class="col-2"><button id="addGroupButton" name="add" type="button" disabled class="btn btn-secondary">' . get_string('add', 'choicegroup') .
             '</button><div><button name="remove" type="button" disabled id="removeGroupButton" class="btn btn-secondary">' . get_string('del', 'choicegroup') . '</button></div></td>');
-        $mform->addElement('html', '<td style="vertical-align: top" class="col-5"><select class="col-12" id="id_selectedGroups" name="selectedGroups" multiple size=10></select></td>');
+        $mform->addElement('html', '<td style="vertical-align: top" class="col-5">
+    <select class="col-12" id="id_selectedGroups" name="selectedGroups" multiple size=10></select>
+    <div id="fitem_id_limit_0" class="fitem fitem_ftext" style="display:none">
+        <div>
+            <label for="id_limit_0" id="label_for_limit_ui">' . get_string('set_limit_for_group', 'choicegroup') . ' </label>
+        </div>
+        <div class="ftext">
+            <input class="mod-choicegroup-limit-input" type="text" value="0" id="ui_limit_input" disabled="disabled">
+        </div>
+    </div>
+</td>');
 
-        $mform->addElement('html', '<td><div><div id="fitem_id_limit_0" class="fitem fitem_ftext" style="display:none"><div class=""><label for="id_limit_0" id="label_for_limit_ui">' . get_string('set_limit_for_group', 'choicegroup') . '</label></div><div class="ftext">
-				<input class="mod-choicegroup-limit-input" type="text" value="0" id="ui_limit_input" disabled="disabled"></div></div></div></td></tr></table></div>
-				</div></div>
-
-				</div>
+        $mform->addElement('html', '</tr></table>
+            </div>
+        </div>
+    </div>
+</div>
 				</fieldset>');
 
         $mform->setExpanded('groups');

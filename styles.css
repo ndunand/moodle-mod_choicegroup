@@ -188,8 +188,6 @@
 }
 
 .path-mod-choicegroup div.tablecontainer {
-    overflow: auto;
-    border: 1px #ccc solid;
     min-width: 80%;
     max-width: 100%;
     display: inline-block;
