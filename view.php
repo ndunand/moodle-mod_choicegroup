@@ -33,6 +33,7 @@ $id         = required_param('id', PARAM_INT);                 // Course Module 
 $action     = optional_param('action', '', PARAM_ALPHA);
 $userids    = optional_param_array('userid', array(), PARAM_INT); // array of attempt ids for delete action
 $notify     = optional_param('notify', '', PARAM_ALPHA);
+$maxenrollments     = optional_param('maxenrollments', '', PARAM_INT);
 
 $url = new moodle_url('/mod/choicegroup/view.php', array('id'=>$id));
 if ($action !== '') {
@@ -102,6 +103,21 @@ if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
 
     if ($choicegroup->multipleenrollmentspossible == 1) {
         $number_of_groups = optional_param('number_of_groups', '', PARAM_INT);
+        $enrollmentscount = 0;
+        $maxenrollments = $choicegroup->maxenrollments;
+
+        if($maxenrollments > 0){
+            for ($i = 0; $i < $number_of_groups; $i++) {
+                $answer_value = optional_param('answer_' . $i, '', PARAM_INT);
+                if ($answer_value != '') {
+                    $enrollmentscount++;
+                }
+            }
+            if ($enrollmentscount > $maxenrollments) {
+                redirect(new moodle_url('/mod/choicegroup/view.php',
+                    array('id' => $cm->id, 'notify' => 'mustchoosemax', 'sesskey' => sesskey(), 'maxenrollments' => $maxenrollments)));
+            }
+        }        
 
         for ($i = 0; $i < $number_of_groups; $i++) {
             $answer_value = optional_param('answer_' . $i, '', PARAM_INT);
@@ -163,6 +179,8 @@ if ($notify and confirm_sesskey()) {
         echo $OUTPUT->notification(get_string('choicegroupsaved', 'choicegroup'), 'notifysuccess');
     } else if ($notify === 'mustchooseone') {
         echo $OUTPUT->notification(get_string('mustchooseone', 'choicegroup'), 'notifyproblem');
+    } else if ($notify === 'mustchoosemax') {
+        echo $OUTPUT->notification(get_string('mustchoosemax', 'choicegroup', $maxenrollments), 'notifyproblem');
     }
 }
 
