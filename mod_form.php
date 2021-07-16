@@ -103,6 +103,13 @@ class mod_choicegroup_mod_form extends moodleform_mod
         $mform->setExpanded('miscellaneoussettingshdr');
         $mform->addElement('checkbox', 'multipleenrollmentspossible', get_string('multipleenrollmentspossible', 'choicegroup'));
 
+        $mform->addElement('text', 'maxenrollments', get_string('maxenrollments', 'choicegroup'), array('size' => '6'));
+        $mform->addHelpButton('maxenrollments', 'maxenrollments', 'choicegroup');
+        $mform->setType('maxenrollments', PARAM_INT);
+        $mform->hideIf('maxenrollments', 'multipleenrollmentspossible');
+        $mform->addRule('maxenrollments', get_string('error'), 'numeric', 'extraruledata', 'client', false, false);
+        $mform->setDefault('maxenrollments', 0);
+
         $mform->addElement('select', 'showresults', get_string("publish", "choicegroup"), $CHOICEGROUP_SHOWRESULTS);
         $mform->setDefault('showresults', CHOICEGROUP_SHOWRESULTS_DEFAULT);
 

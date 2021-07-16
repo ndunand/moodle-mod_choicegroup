@@ -164,4 +164,7 @@ $string['hidegroupmembers'] = 'Hide Group Members';
 $string['activitydate:willopen'] = 'Opens:';
 $string['activitydate:hasopened'] = 'Opened:';
 $string['activitydate:willclose'] = 'Closes:';
+$string['mustchoosemax'] = 'You must choose a maximum of {$a} groups. Nothing was saved.';
+$string['maxenrollments'] = 'Max. enrollments';
+$string['maxenrollments_help'] = 'This option allows to limit the number of group enrollments for a participant. Use default value **0** if there is no limit.';
 
