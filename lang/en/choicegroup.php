@@ -78,6 +78,7 @@ $string['notyetresultsviewable'] = 'The results will be visible after this activ
 $string['notanswered'] = 'Not answered yet';
 $string['notenrolledchoose'] = 'Sorry, only enrolled users are allowed to make choices.';
 $string['notopenyet'] = 'Sorry, this activity is not available until {$a}';
+$string['onlyactive'] = 'Filter out response data for users with expired or suspended enrolments';
 $string['option'] = 'Group';
 $string['pluginadministration'] = 'Choice administration';
 $string['pluginname'] = 'Group choice';
