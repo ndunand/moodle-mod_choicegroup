@@ -1040,6 +1040,31 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
     }
 }
 
+/**
+ * Obtains the automatic completion state for this choicegroup based on any conditions
+ * in forum settings.
+ *
+ * @param object $course Course
+ * @param object $cm Course-module
+ * @param int $userid User ID
+ * @param bool $type Type of comparison (or/and; can be used as return value if no conditions)
+ * @return bool True if completed, false if not, $type if conditions not set.
+ */
+function choicegroup_get_completion_state($course, $cm, $userid, $type) {
+    global $DB;
+
+    // Get choicegroup details
+    $choicegroup = $DB->get_record('choicegroup', array('id'=>$cm->instance), '*', MUST_EXIST);
+
+    // If completion option is enabled, evaluate it and return true/false
+    if($choicegroup->completionsubmit) {
+        $useranswer = choicegroup_get_user_answer($choicegroup, $userid);
+        return $useranswer !== false;
+    } else {
+        // Completion option is not enabled so just return $type
+        return $type;
+    }
+}
 
 /**
  * Return a list of page types
