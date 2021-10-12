@@ -139,6 +139,10 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             }
             $attributes = (array) $option->attributes;
             $attributes['id'] = 'choiceid_' . $option->attributes->value;
+            // Disable updates until the choice is reset
+            if (!$multipleenrollmentspossible && !empty($options['allowupdate']) && ($options['allowupdate'])) {
+                $attributes['disabled'] = true;
+            }
             $html .= html_writer::empty_tag('input', $attributes);
             $html .= html_writer::end_tag('td');
             $html .= html_writer::tag('td', $labeltext);
