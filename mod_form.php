@@ -321,7 +321,7 @@ class mod_choicegroup_mod_form extends moodleform_mod
     {
         $mform =& $this->_form;
 
-        $mform->addElement('checkbox', 'completionsubmit', '', get_string('completionsubmit', 'choicegroup'));
+        $mform->addElement('advcheckbox', 'completionsubmit', '', get_string('completionsubmit', 'choicegroup'));
         return array('completionsubmit');
     }
 

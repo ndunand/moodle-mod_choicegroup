@@ -27,6 +27,7 @@ $string['addmorechoices'] = 'Add more choices';
 $string['allowupdate'] = 'Allow choice to be updated';
 $string['answered'] = 'Answered';
 $string['completionsubmit'] = 'Show as complete when user makes a choice';
+$string['completiondetail:submit'] = 'Make a choice';
 $string['defaultsettings'] = 'Default settings';
 $string['displayhorizontal'] = 'Display horizontally';
 $string['displaymode'] = 'Display mode';
