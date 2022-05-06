@@ -304,10 +304,10 @@ function choicegroup_update_instance($choicegroup) {
  * @param object $choicegroup
  * @param object $user
  * @param object $coursemodule
- * @param array $allresponses
+ * @param int $groupmode
  * @return array
  */
-function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allresponses) {
+function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $groupmode) {
 
     $cdisplay = array('options'=>array());
 
@@ -315,9 +315,13 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
     $context = context_module::instance($coursemodule->id);
     $answers = choicegroup_get_user_answer($choicegroup, $user, true, true);
 
+    $currentgroup = $groupmode > 0 ? groups_get_activity_group($coursemodule) : 0;
+    $options_count = choicegroup_get_options_count($choicegroup, $context, $currentgroup, $choicegroup->onlyactive);
+
     if (!isset($choicegroup->option)) {
         $choicegroup->option = [];
     }
+
     foreach ($choicegroup->option as $optionid => $text) {
         if (isset($text)) { //make sure there are no dud entries in the db with blank text values.
             $option = new stdClass;
@@ -327,8 +331,8 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
             $option->maxanswers = $choicegroup->maxanswers[$optionid];
             $option->displaylayout = $choicegroup->display;
 
-            if (isset($allresponses[$text])) {
-                $option->countanswers = count($allresponses[$text]);
+            if (isset($options_count[$text])) {
+                $option->countanswers = $options_count[$text];
             } else {
                 $option->countanswers = 0;
             }
@@ -431,28 +435,18 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
 
 /**
  * @param object $choicegroup
- * @param array $allresponses
  * @param object $cm
+ * @param int $groupmode
  * @return void Output is echo'd
  */
-function choicegroup_show_reportlink($choicegroup, $allresponses, $cm) {
-    $responsecount = 0;
-    $respondents = array();
-    foreach($allresponses as $optionid => $userlist) {
-        if ($optionid) {
-            $responsecount += count($userlist);
-            if ($choicegroup->multipleenrollmentspossible) {
-                foreach ($userlist as $user) {
-                    if (!in_array($user->id, $respondents)) {
-                        $respondents[] = $user->id;
-                    }
-                }
-            }
-        }
-    }
-    echo '<div class="reportlink"><a href="report.php?id='.$cm->id.'">'.get_string("viewallresponses", "choicegroup", $responsecount);
-    if ($choicegroup->multipleenrollmentspossible == 1) {
-        echo ' ' . get_string("byparticipants", "choicegroup", count($respondents));
+function choicegroup_show_reportlink($choicegroup, $cm, $groupmode) {
+    // Get the current group.
+    $currentgroup = $groupmode > 0 ? groups_get_activity_group($cm) : 0;
+    $responses = choicegroup_get_responses_count($choicegroup, $cm, $currentgroup, $choicegroup->onlyactive);
+
+    echo '<div class="reportlink"><a href="report.php?id='.$cm->id.'">'.get_string("viewallresponses", "choicegroup", $responses['responses']);
+    if ($choicegroup->multipleenrollmentspossible) {
+        echo ' ' . get_string("byparticipants", "choicegroup", $responses['respondants']);
     }
     echo '</a></div>';
 }
@@ -878,17 +872,16 @@ function choicegroup_reset_course_form_defaults($course) {
 }
 
 /**
- * @global object
- * @global object
- * @global object
  * @uses CONTEXT_MODULE
  * @param object $choicegroup
  * @param object $cm
  * @param int $groupmode Group mode
  * @param bool $onlyactive Whether to get response data for active users only
+ * @param int $from
+ * @param int $limit
  * @return array
  */
-function choicegroup_get_response_data($choicegroup, $cm, $groupmode, $onlyactive) {
+function choicegroup_get_response_data($choicegroup, $cm, $groupmode, $onlyactive, $from, $limit) {
     // Initialise the returned array, which is a matrix:  $allresponses[responseid][userid] = responseobject.
     static $allresponses = array();
 
@@ -903,41 +896,35 @@ function choicegroup_get_response_data($choicegroup, $cm, $groupmode, $onlyactiv
         $currentgroup = 0;
     }
 
-    // First get all the users who have access here.
-    // To start with we assume they are all "unanswered" then move them later.
     $ctx = \context_module::instance($cm->id);
-    $users = get_enrolled_users($ctx, 'mod/choicegroup:choose', $currentgroup, 'u.*', 'u.lastname, u.firstname', 0, 0, $onlyactive);
-    if ($users) {
-        $modinfo = get_fast_modinfo($cm->course);
-        $cminfo = $modinfo->get_cm($cm->id);
-        $availability = new \core_availability\info_module($cminfo);
-        $users = $availability->filter_user_list($users);
-    }
-
-    $allresponses[0] = $users;
-
-    $responses = choicegroup_get_responses($choicegroup, $ctx, $currentgroup, $onlyactive);
-    foreach ($responses as $response){
-        if (isset($users[$response->userid])) {
-            $allresponses[$response->groupid][$response->userid] = clone $users[$response->userid];
-            $allresponses[$response->groupid][$response->userid]->timemodified = $response->timeadded;
-
-            unset($allresponses[0][$response->userid]);
+    $responses = choicegroup_get_responses($choicegroup, $ctx, $currentgroup, $onlyactive, $from, $limit);
+    if ($responses->valid()) {
+        foreach ($responses as $response) {
+            $allresponses[$response->groupid][$response->userid] = (object) [
+                'id' => $response->userid,
+                'firstname' => $response->firstname,
+                'lastname' => $response->lastname,
+                'idnumber' => $response->idnumber,
+                'email' => $response->email,
+                'timemodified' => $response->timemodified,
+            ];
         }
     }
-   return $allresponses;
+
+    $responses->close();
+
+    return $allresponses;
 }
 
-/* Return an array with the options selected of users of the $choicegroup 
- * 
+/**
+ * Return an array with the options selected of users of the $choicegroup.
  * @param object $choicegroup choicegroup record
- * @param context_module $ctx Context instance
+ * @param object $ctx context module
  * @param int $currentgroup Current group
  * @param bool $onlyactive Whether to get responses for active users only
- * @return array of selected options by all users 
+ * @return \moodle_recordset of selected options by all users.
 */
-function choicegroup_get_responses($choicegroup, $ctx, $currentgroup, $onlyactive) {
-
+function choicegroup_get_responses($choicegroup, $ctx, $currentgroup, $onlyactive, $from, $limit){
     global $DB;
 
     if (is_numeric($choicegroup)) {
@@ -950,12 +937,87 @@ function choicegroup_get_responses($choicegroup, $ctx, $currentgroup, $onlyactiv
     list($esql, $params2) = get_enrolled_sql($ctx, 'mod/choicegroup:choose', $currentgroup, $onlyactive);
     $params = array_merge($params1, $params2);
 
-    $sql = 'SELECT gm.* FROM {user} u JOIN ('.$esql.') je ON je.id = u.id
+    // Add user fields to the result, so we do not have to query twice to display.
+    $sql = 'SELECT gm.*, u.firstname, u.lastname, u.idnumber, u.email FROM {user} u JOIN ('.$esql.') je ON je.id = u.id
         JOIN {groups_members} gm ON gm.userid = u.id AND groupid IN (
         SELECT groupid FROM {choicegroup_options} WHERE choicegroupid=:choicegroupid)
         WHERE u.deleted = 0 ORDER BY u.lastname ASC,u.firstname ASC';
 
-    return $DB->get_records_sql($sql, $params);
+    return $DB->get_recordset_sql($sql, $params, $from, $limit);
+}
+
+/**
+ * @param object $choicegroup   Choicegroup record.
+ * @param object $cm            Course module.
+ * @param int    $groupmode     Group mode.
+ * @param bool   $onlyactive    Whether to get response data for active users only.
+ * @return array An array of the form `['responses' => [], 'respondants' => []]` containing the count of each.
+ */
+function choicegroup_get_responses_count($choicegroup, $cm, $currentgroup, $onlyactive) {
+    global $DB;
+
+    $responses = 0;
+    $respondants = 0;
+
+    $choicegroupid = is_numeric($choicegroup) ? $choicegroup : $choicegroup->id;
+
+    list($insql, $params) = get_enrolled_sql(\context_module::instance($cm->id), 'mod/choicegroup:choose', $currentgroup, $onlyactive);
+
+    // When grouped, will return a row for each user, with the column being the number of responses the user had submitted.
+    // This is useful for multipleenrollmentspossible, and allows us to use two variants of the same query.
+    $sql = "
+        SELECT COUNT('x') as responses FROM {user} u
+            JOIN ($insql) je ON je.id = u.id
+            JOIN {groups_members} gm ON gm.userid = u.id AND groupid IN (
+                SELECT groupid FROM {choicegroup_options} WHERE choicegroupid = :choicegroupid
+            )
+        WHERE u.deleted = 0
+    " . ($choicegroup->multipleenrollmentspossible ? ' GROUP BY u.id' : '');
+
+    $params = array_merge($params, ['choicegroupid' => $choicegroupid]);
+
+    if ($choicegroup->multipleenrollmentspossible) {
+        $rs = $DB->get_recordset_sql($sql, $params);
+
+        if ($rs->valid()) {
+            foreach ($rs as $record) {
+                $respondants++;
+                $responses += $record->responses;
+            }
+        }
+
+        $rs->close();
+    } else {
+        $responses = $DB->count_records_sql($sql, $params);
+    }
+
+    return ['responses' => $responses, 'respondants' => $respondants];
+}
+
+/**
+ * @param object $choicegroup Choicegroup record
+ * @param object $ctx    The course module context.
+ * @return array An array where each entry is of the form `['<groupid>' => <num_responses>]`
+ */
+function choicegroup_get_options_count($choicegroup, $ctx, $currentgroup, $onlyactive) {
+    global $DB;
+
+    list($insql, $params) = get_enrolled_sql($ctx, 'mod/choicegroup:choose', $currentgroup, $onlyactive);
+
+    $sql = "
+        SELECT gm.groupid, SUM(1) as count FROM {user} u
+            JOIN ($insql) je ON je.id = u.id
+            JOIN {groups_members} gm ON gm.userid = u.id AND groupid IN (
+                SELECT groupid FROM {choicegroup_options} WHERE choicegroupid = :choicegroupid
+            )
+        WHERE u.deleted = 0
+        GROUP BY gm.groupid";
+
+    $params = array_merge($params, ['choicegroupid' => $choicegroup->id]);
+
+    $result = $DB->get_records_sql($sql, $params);
+
+    return array_map(function ($record) { return $record->count; }, $result);
 }
 
 /**
@@ -1015,26 +1077,12 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
             return false;
         }
 
-        // Big function, approx 6 SQL calls per user.
-        $allresponses = choicegroup_get_response_data($choicegroup, $PAGE->cm, $groupmode, $choicegroup->onlyactive);
+        $currentgroup = $groupmode > 0 ? groups_get_activity_group($PAGE->cm) : 0;
+        $responses = choicegroup_get_responses_count($choicegroup, $PAGE->cm, $currentgroup, $choicegroup->onlyactive);
 
-        $responsecount = 0;
-        $respondents = array();
-        foreach($allresponses as $optionid => $userlist) {
-            if ($optionid) {
-                $responsecount += count($userlist);
-                if ($choicegroup->multipleenrollmentspossible) {
-                    foreach ($userlist as $user) {
-                        if (!in_array($user->id, $respondents)) {
-                            $respondents[] = $user->id;
-                        }
-                    }
-                }
-            }
-        }
-        $viewallresponsestext = get_string("viewallresponses", "choicegroup", $responsecount);
+        $viewallresponsestext = get_string("viewallresponses", "choicegroup", $responses['responses']);
         if ($choicegroup->multipleenrollmentspossible == 1) {
-            $viewallresponsestext .= ' ' . get_string("byparticipants", "choicegroup", count($respondents));
+            $viewallresponsestext .= ' ' . get_string("byparticipants", "choicegroup", $responses['respondants']);
         }
         $choicegroupnode->add($viewallresponsestext, new moodle_url('/mod/choicegroup/report.php', array('id'=>$PAGE->cm->id)));
     }

@@ -31,14 +31,19 @@ $id         = required_param('id', PARAM_INT);   //moduleid
 $format     = optional_param('format', CHOICEGROUP_PUBLISH_NAMES, PARAM_INT);
 $download   = optional_param('download', '', PARAM_ALPHA);
 $action     = optional_param('action', '', PARAM_ALPHA);
+$limit      = optional_param('limit', 50, PARAM_INT);
+$page       = optional_param('page', 0, PARAM_INT);
 $grpsmemberids = optional_param_array('grpsmemberid', array(), PARAM_INT); //get array of responses to delete.
 
-$url = new moodle_url('/mod/choicegroup/report.php', array('id'=>$id));
+$url = new moodle_url('/mod/choicegroup/report.php', array('id' => $id, 'page' => $page, 'limit' => $limit));
 if ($format !== CHOICEGROUP_PUBLISH_NAMES) {
     $url->param('format', $format);
 }
 if ($download !== '') {
     $url->param('download', $download);
+
+    // If a download action has been sent, do not enforce a limit.
+    $limit = $page = 0;
 }
 if ($action !== '') {
     $url->param('action', $action);
@@ -102,7 +107,8 @@ if (!$download) {
         $groups_ids[] = $group->id;
     }
 }
-$users = choicegroup_get_response_data($choicegroup, $cm, $groupmode, $choicegroup->onlyactive);
+
+$users = choicegroup_get_response_data($choicegroup, $cm, $groupmode, $choicegroup->onlyactive, $page * $limit, $limit);
 
 if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $context)) {
     require_once("$CFG->libdir/odslib.class.php");
@@ -274,9 +280,13 @@ if (!empty($choicegroup->showunanswered)) {
     $choicegroup->maxanswers[0] = 0;
 }
 
+$currentgroup = $groupmode > 0 ? groups_get_activity_group($cm) : 0;
 $results = prepare_choicegroup_show_results($choicegroup, $course, $cm, $users);
+$count = choicegroup_get_responses_count($choicegroup, $cm, $currentgroup, $choicegroup->onlyactive);
+
 $renderer = $PAGE->get_renderer('mod_choicegroup');
 echo $renderer->display_result($results, has_capability('mod/choicegroup:readresponses', $context));
+echo $OUTPUT->paging_bar($count['responses'], $page, $limit, $url);
 
 //now give links for downloading spreadsheets.
 if (!empty($users) && has_capability('mod/choicegroup:downloadresponses',$context)) {

@@ -199,12 +199,8 @@ if ($groupmode) {
     groups_print_activity_menu($cm, $CFG->wwwroot . '/mod/choicegroup/view.php?id='.$id);
 }
 
-// Big function, approx 6 SQL calls per user.
-$allresponses = choicegroup_get_response_data($choicegroup, $cm, $groupmode, $choicegroup->onlyactive);
-
-
 if (has_capability('mod/choicegroup:readresponses', $context)) {
-    choicegroup_show_reportlink($choicegroup, $allresponses, $cm);
+    choicegroup_show_reportlink($choicegroup, $cm, $groupmode);
 }
 
 echo '<div class="clearer"></div>';
@@ -246,7 +242,7 @@ if ($choicegroup->timeclose !=0) {
     }
 }
 
-$options = choicegroup_prepare_options($choicegroup, $USER, $cm, $allresponses);
+$options = choicegroup_prepare_options($choicegroup, $USER, $cm, $groupmode);
 $renderer = $PAGE->get_renderer('mod_choicegroup');
 if ( (!$current or $choicegroup->allowupdate) and $choicegroupopen and is_enrolled($context, null, 'mod/choicegroup:choose')) {
 // They haven't made their choicegroup yet or updates allowed and choicegroup is open

@@ -260,6 +260,8 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         ksort($choicegroups->options);
 
         $columns = array();
+        $response_count = choicegroup_get_options_count($choicegroups, \context_module::instance($PAGE->cm->id), 0, $choicegroups->onlyactive);
+
         foreach ($choicegroups->options as $optionid => $options) {
             $coldata = '';
             if ($choicegroups->showunanswered && $optionid == 0) {
@@ -268,8 +270,8 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $coldata .= html_writer::tag('div', format_string(choicegroup_get_option_text($choicegroups, $choicegroups->options[$optionid]->groupid)), array('class'=>'option'));
             }
             $numberofuser = 0;
-            if (!empty($options->user) && count($options->user) > 0) {
-                $numberofuser = count($options->user);
+            if ($response_count[$choicegroups->options[$optionid]->groupid] > 0) {
+                $numberofuser = $response_count[$choicegroups->options[$optionid]->groupid];
             }
 
             $coldata .= html_writer::tag('div', ' ('.$numberofuser. ')', array('class'=>'numberofuser', 'title' => get_string('numberofuser', 'choicegroup')));
