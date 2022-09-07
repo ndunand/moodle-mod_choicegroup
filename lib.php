@@ -51,6 +51,14 @@ define('CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT',    '0');
 define('CHOICEGROUP_SORTGROUPS_CREATEDATE',    '1');
 define('CHOICEGROUP_SORTGROUPS_NAME',    '2');
 
+// Ugly hack to make 3.11 and 4.0 work seamlessly.
+if (!defined('FEATURE_MOD_PURPOSE')) {
+    define('FEATURE_MOD_PURPOSE', 'mod_purpose');
+}
+if (!defined('MOD_PURPOSE_COLLABORATION')) {
+    define('MOD_PURPOSE_COLLABORATION', 'collaboration');
+}
+
 /** @global array $CHOICEGROUP_PUBLISH */
 global $CHOICEGROUP_PUBLISH;
 $CHOICEGROUP_PUBLISH = array (CHOICEGROUP_PUBLISH_ANONYMOUS  => get_string('publishanonymous', 'choicegroup'),
@@ -990,7 +998,7 @@ function choicegroup_supports($feature) {
         case FEATURE_GRADE_OUTCOMES:          return false;
         case FEATURE_BACKUP_MOODLE2:          return true;
         case FEATURE_SHOW_DESCRIPTION:        return true;
-        case FEATURE_MOD_PURPOSE:             return MOD_PURPOSE_OTHER;
+        case FEATURE_MOD_PURPOSE:             return MOD_PURPOSE_COLLABORATION;
 
         default: return null;
     }
