@@ -1125,3 +1125,95 @@ function mod_choicegroup_core_calendar_provide_event_action(calendar_event $even
     );
 }
 
+/**
+ * Mark the activity completed (if required) and trigger the course_module_viewed event.
+ *
+ * @param  stdClass $choicegroup     choicegroup object
+ * @param  stdClass $course          course object
+ * @param  stdClass $cm              course module object
+ * @param  stdClass $context         context object
+ * @since Moodle 3.0
+ */
+function choicegroup_view($choicegroup, $course, $cm, $context) {
+
+    // TODO: Trigger course_module_viewed event.
+    $params = array(
+        'context' => $context,
+        'objectid' => $choicegroup->id
+    );
+
+    // Completion.
+    $completion = new completion_info($course);
+    $completion->set_module_viewed($cm);
+}
+
+/**
+ * Add a get_coursemodule_info function in case any choicegroup type wants to add 'extra' information
+ * for the course (see resource).
+ *
+ * Given a course_module object, this function returns any "extra" information that may be needed
+ * when printing this activity in a course listing.  See get_array_of_activities() in course/lib.php.
+ *
+ * @param stdClass $coursemodule The coursemodule object (record).
+ * @return cached_cm_info An object on information that the courses
+ *                        will know about (most noticeably, an icon).
+ */
+function choicegroup_get_coursemodule_info($coursemodule) {
+    global $DB;
+
+    $dbparams = ['id' => $coursemodule->instance];
+    $fields = 'id, name, intro, introformat, completionsubmit, timeopen, timeclose';
+    if (!$choicegroup = $DB->get_record('choicegroup', $dbparams, $fields)) {
+        return false;
+    }
+
+    $result = new cached_cm_info();
+    $result->name = $choicegroup->name;
+
+    if ($coursemodule->showdescription) {
+        // Convert intro to html. Do not filter cached version, filters run at display time.
+        $result->content = format_module_intro('choicegroup', $choicegroup, $coursemodule->id, false);
+    }
+
+    // Populate the custom completion rules as key => value pairs, but only if the completion mode is 'automatic'.
+    if ($coursemodule->completion == COMPLETION_TRACKING_AUTOMATIC) {
+        $result->customdata['customcompletionrules']['completionsubmit'] = $choicegroup->completionsubmit;
+    }
+    // Populate some other values that can be used in calendar or on dashboard.
+    if ($choicegroup->timeopen) {
+        $result->customdata['timeopen'] = $choicegroup->timeopen;
+    }
+    if ($choicegroup->timeclose) {
+        $result->customdata['timeclose'] = $choicegroup->timeclose;
+    }
+
+    return $result;
+}
+
+/**
+ * Callback which returns human-readable strings describing the active completion custom rules for the module instance.
+ *
+ * @param cm_info|stdClass $cm object with fields ->completion and ->customdata['customcompletionrules']
+ * @return array $descriptions the array of descriptions for the custom rules.
+ */
+function mod_choicegroup_get_completion_active_rule_descriptions($cm) {
+    // Values will be present in cm_info, and we assume these are up to date.
+    if (empty($cm->customdata['customcompletionrules'])
+        || $cm->completion != COMPLETION_TRACKING_AUTOMATIC) {
+        return [];
+    }
+
+    $descriptions = [];
+    foreach ($cm->customdata['customcompletionrules'] as $key => $val) {
+        switch ($key) {
+            case 'completionsubmit':
+                if (!empty($val)) {
+                    $descriptions[] = get_string('completionsubmit', 'choicegroup');
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    return $descriptions;
+}

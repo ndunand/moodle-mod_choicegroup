@@ -27,6 +27,7 @@ $string['addmorechoices'] = 'Add more choices';
 $string['allowupdate'] = 'Allow choice to be updated';
 $string['answered'] = 'Answered';
 $string['completionsubmit'] = 'Show as complete when user makes a choice';
+$string['completiondetail:submit'] = 'Choose a group';
 $string['defaultsettings'] = 'Default settings';
 $string['displayhorizontal'] = 'Display horizontally';
 $string['displaymode'] = 'Display mode';
@@ -128,7 +129,7 @@ $string['pleasesetonegroupor'] = 'Please create at least one group in this cours
 <li><a href="{$a->linkgroups}">manage course groups</a></li>
 <li><a href="{$a->linkcourse}">get back to the course</a></li>
 </ul>';
-$string['pleaseselectonegroup'] = 'Please select at least one group to chose from.';
+$string['pleaseselectonegroup'] = 'Please select at least one group to choose from.';
 
 $string['multipleenrollmentspossible'] = 'Allow enrollment to multiple groups';
 $string['and'] = 'and';
