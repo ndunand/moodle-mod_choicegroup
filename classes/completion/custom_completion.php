@@ -21,12 +21,12 @@ namespace mod_choicegroup\completion;
 use core_completion\activity_custom_completion;
 
 /**
- * Activity custom completion subclass for the choice activity.
+ * Activity custom completion subclass for the choicegroup activity.
  *
- * Class for defining mod_choice's custom completion rules and fetching the completion statuses
- * of the custom completion rules for a given choice instance and a user.
+ * Class for defining mod_choicegroup's custom completion rules and fetching the completion statuses
+ * of the custom completion rules for a given choicegroup instance and a user.
  *
- * @package mod_choice
+ * @package mod_choicegroup
  * @copyright 2021 Jun Pataleta <jun@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
