@@ -183,13 +183,15 @@ if ($notify and confirm_sesskey()) {
     }
 }
 
-if (class_exists('\core_completion\cm_completion_details') && class_exists('\core\activity_dates')) {
-    // Show the activity dates and completion details.
-    $modinfo = get_fast_modinfo($course);
-    $cminfo = $modinfo->get_cm($cm->id);
-    $cmcompletion = \core_completion\cm_completion_details::get_instance($cminfo, $USER->id);
-    $activitydates = \core\activity_dates::get_dates_for_module($cminfo, $USER->id);
-    echo $OUTPUT->activity_information($cminfo, $cmcompletion, $activitydates);
+if ($CFG->branch < 400) {
+    if (class_exists('\core_completion\cm_completion_details') && class_exists('\core\activity_dates')) {
+        // Show the activity dates and completion details.
+        $modinfo = get_fast_modinfo($course);
+        $cminfo = $modinfo->get_cm($cm->id);
+        $cmcompletion = \core_completion\cm_completion_details::get_instance($cminfo, $USER->id);
+        $activitydates = \core\activity_dates::get_dates_for_module($cminfo, $USER->id);
+        echo $OUTPUT->activity_information($cminfo, $cmcompletion, $activitydates);
+    }
 }
 
 /// Check to see if groups are being used in this choicegroup
