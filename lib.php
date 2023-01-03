@@ -364,12 +364,35 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
 }
 
 /**
- * @global object
+ * @throws \moodle_exception
+ */
+function check_restrictions($choicegroup, $userid) {
+    check_date_restrictions($choicegroup);
+    //TODO check other restrictions
+}
+
+
+/**
+ * @throws \moodle_exception
+ */
+function check_date_restrictions($choicegroup) {
+    if($choicegroup->timeopen !== '0' && time() < $choicegroup->timeopen) {
+        throw new moodle_exception(get_string('activitydate:notavailableyet', 'mod_choicegroup'));
+    }
+
+    if($choicegroup->timeclose !== '0' && time() > $choicegroup->timeclose) {
+        throw new moodle_exception(get_string('activitydate:exceeded', 'mod_choicegroup'));
+    }
+}
+
+/**
  * @param int $formanswer
  * @param object $choicegroup
  * @param int $userid
  * @param object $course Course object
  * @param object $cm
+ * @throws \moodle_exception
+ * @global object
  */
 function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $course, $cm) {
     global $DB, $CFG;
@@ -380,6 +403,8 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
         'context' => $context,
         'objectid' => $choicegroup->id
     );
+
+    check_restrictions($choicegroup, $userid);
 
     $selected_option = $DB->get_record('choicegroup_options', array('id' => $formanswer));
 
