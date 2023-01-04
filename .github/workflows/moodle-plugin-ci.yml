@@ -96,7 +96,7 @@ jobs:
 
       - name: Grunt
         if: ${{ always() }}
-        run: moodle-plugin-ci grunt || true
+        run: moodle-plugin-ci grunt
 
       - name: PHPUnit tests
         if: ${{ always() }}
