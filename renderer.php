@@ -46,8 +46,8 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      *
      * @return string
      */
-    public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false, $showresults = false, $current = false, $choicegroupopen = false, $disabled = false, $multipleenrollmentspossible = false, $onlyactive = false) {
-        global $DB, $PAGE, $choicegroup_groups;
+    public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false, $showresults = false, $current = false, $choicegroupopen = false, $disabled = false, $multipleenrollmentspossible = false, $onlyactive = false, $restrictchoicesbehaviour = 0) {
+        global $DB, $PAGE, $OUTPUT, $choicegroup_groups;
 
         $target = new moodle_url('/mod/choicegroup/view.php');
         $attributes = array('method'=>'POST', 'action'=>$target, 'class'=> 'tableform');
@@ -85,6 +85,13 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $answer_to_groupid_mappings = '';
         }
         $initiallyHideSubmitButton = false;
+        // If we have a conflict do not show the form.
+        foreach ($options['options'] as $option) {
+            if (isset($option->groupavailable) && $option->groupavailable == 2) {
+                return html_writer::div($OUTPUT->notification(get_string('conflictinggroupassignment', 'choicegroup'),
+                    'notifyproblem', false), 'choicegrouprestrictionerror');
+            }
+        }
         foreach ($options['options'] as $option) {
             $group = (isset($choicegroup_groups[$option->groupid])) ? ($choicegroup_groups[$option->groupid]) : (false);
             if (!$group) {
@@ -98,6 +105,13 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $cell = html_writer::tag('td', get_string('groupdoesntexist', 'choicegroup'), array('colspan' => $colspan));
                 $html .= html_writer::tag('tr', $cell);
                 break;
+            }
+            $context = \context_course::instance($group->courseid);
+
+            // Shows users with readcapability also "hidden" choices.
+            if (isset($option->groupavailable) && $option->groupavailable == 0 && $restrictchoicesbehaviour == 0 &&
+                !(has_capability('mod/choicegroup:readresponses', $context))) {
+                continue;
             }
             $html .= html_writer::start_tag('tr', array('class'=>'option'));
             $html .= html_writer::start_tag('td', array('class'=>'center'));
@@ -115,7 +129,6 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 }
             }
 
-            $context = \context_course::instance($group->courseid);
             $labeltext = html_writer::tag('label', format_string($group->name), array('for' => 'choiceid_' . $option->attributes->value));
             $group_members = get_enrolled_users($context, '', $group->id, 'u.*', 'u.lastname, u.firstname', 0, 0, $onlyactive);
             $group_members_names = array();
@@ -125,6 +138,33 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             if (!empty($option->attributes->disabled) || ($limitanswers && sizeof($group_members) >= $option->maxanswers) && empty($option->attributes->checked)) {
                 $labeltext .= ' ' . html_writer::tag('em', get_string('full', 'choicegroup'));
                 $option->attributes->disabled=true;
+                $availableoption--;
+            }
+            // In case the group is not available due to grouping restrictions,
+            // we need to change the depiction of the choice.
+            if (isset($option->groupavailable) && $option->groupavailable == 0) {
+                // Show general info.
+                if ($restrictchoicesbehaviour == 2) {
+                    $labeltext .= '<br>' . html_writer::tag('em', get_string('assignedtogrouping', 'choicegroup'));
+                } else if ($restrictchoicesbehaviour == 3) {
+                    // Show which groups conflict.
+                    if (count($option->conflictinggroups) > 1) {
+                        $labeltext .= '<br>' . html_writer::tag('em', get_string('reasongrouplimitationplural',
+                                'choicegroup',  implode(', ', $option->conflictinggroups)));
+                    } else if (count($option->conflictinggroups) == 1){
+                        $labeltext .= '<br>' . html_writer::tag('em', get_string('reasongrouplimitationsingular',
+                                'choicegroup',  implode('', $option->conflictinggroups)));
+                    } else {
+                        // Should not happen no conflicting group found.
+                        $labeltext .= '<br>' . html_writer::tag('em', get_string('reasongrouplimitationempty',
+                                'choicegroup',  implode('', $option->conflictinggroups)));
+                    }
+                } else if (has_capability('mod/choicegroup:readresponses', $context) && $restrictchoicesbehaviour == 0) {
+                    // In case we have a "managing" person, he/she still gets to see the choices...
+                    // but with additional information.
+                    $labeltext .= '<br>' . html_writer::tag('em', get_string('hidechoicetostudents', 'choicegroup'));
+                }
+                $option->attributes->disabled = true;
                 $availableoption--;
             }
             $labeltext .= html_writer::tag('div', format_text(file_rewrite_pluginfile_urls($group->description,

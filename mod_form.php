@@ -254,6 +254,38 @@ class mod_choicegroup_mod_form extends moodleform_mod
         $mform->addElement('date_time_selector', 'timeclose', get_string("choicegroupclose", "choicegroup"));
         $mform->disabledIf('timeclose', 'timerestrict');
 
+        // -------------------------
+        // Enable restrictions by grouping over multiple mod_choicegroup instances.
+        // -------------------------
+
+        $mform->addElement('header', 'restrictbygroupinghdr', get_string('groupingrestrict', 'choicegroup'));
+        $mform->addElement('checkbox', 'restrictbygrouping', get_string('groupingrestrict', 'choicegroup'));
+
+        $arrayofgroupings = array();
+        foreach ($db_groupings as $dbgrouping) {
+            $arrayofgroupings[$dbgrouping->id] = $dbgrouping->name;
+        }
+        $groupingdefault = array();
+        if (isset($this->current->id) && $this->current->id != '') {
+            $selectedgropings = $DB->get_records('choicegroup_groupings', array('choicegroupid' => $this->current->id));
+            foreach ($selectedgropings as $selectedgrouping) {
+                array_push($groupingdefault, $selectedgrouping->groupingid);
+            }
+        }
+        $select = $mform->addElement('select', 'selectedgroupings', get_string('grouping', 'group'),
+            $arrayofgroupings);
+        $mform->setDefault('selectedgroupings', $groupingdefault);
+        $mform->disabledIf('selectedgroupings', 'restrictbygrouping');
+        $mform->addHelpButton('selectedgroupings', 'selectedgroupings', 'mod_choicegroup');
+        $select->setMultiple(true);
+
+        $behaviouroptions = array(get_string('hidegroup', 'mod_choicegroup'),
+            get_string('dimmgroup', 'mod_choicegroup'),
+            get_string('informlimit', 'mod_choicegroup'),
+            get_string('informlimitgroup', 'mod_choicegroup'));
+        $mform->addElement('select', 'restrictchoicesbehaviour', get_string('limitationbehaviour', 'mod_choicegroup'), $behaviouroptions);
+        $mform->disabledIf('restrictchoicesbehaviour', 'restrictbygrouping');
+        $mform->addHelpButton('restrictchoicesbehaviour', 'restrictchoicesbehaviour', 'mod_choicegroup');
         //-------------------------------------------------------------------------------
         $this->standard_coursemodule_elements();
         //-------------------------------------------------------------------------------
