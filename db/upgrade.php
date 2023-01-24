@@ -48,7 +48,7 @@ function xmldb_choicegroup_upgrade($oldversion) {
 
         // Adding fields to table choicegroup
         $newField = $table->add_field('multipleenrollmentspossible', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0');
-        $dbman->add_field($table, $newField); 
+        $dbman->add_field($table, $newField);
 
 
         upgrade_mod_savepoint(true, 2013070900, 'choicegroup');
@@ -95,6 +95,39 @@ function xmldb_choicegroup_upgrade($oldversion) {
 
         // Group choice savepoint reached.
         upgrade_mod_savepoint(true, 2021080500, 'choicegroup');
+    }
+    if ($oldversion < 2023011600) {
+
+        // Define field restrictbygrouping to be added to choicegroup.
+        $table = new xmldb_table('choicegroup');
+        $field = new xmldb_field('restrictbygrouping', XMLDB_TYPE_INTEGER, '2', null, null, null, '0', 'onlyactive');
+
+        // Conditionally launch add field restrictbygrouping.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        // Define field restrictchoicesbehaviour to be added to choicegroup.
+        $field = new xmldb_field('restrictchoicesbehaviour', XMLDB_TYPE_INTEGER, '2', null, null, null, '0', 'restrictbygrouping');
+
+        // Conditionally launch add field restrictchoicesbehaviour.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        // Choicegroup savepoint reached.
+
+        // Create Table for groupings.
+        // Define field id to be added to choicegroup_groupings.
+        $table = new xmldb_table('choicegroup_groupings');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null);
+        $table->add_field('choicegroupid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'id');
+        $table->add_field('groupingid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'choicegroupid');
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        // Conditionally create the table.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        upgrade_mod_savepoint(true, 2023011600, 'choicegroup');
     }
 
     return true;

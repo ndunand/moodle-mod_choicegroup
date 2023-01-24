@@ -291,9 +291,23 @@ class mod_choicegroup_external extends external_api {
         }
 
         if (!choicegroup_get_user_answer($choicegroup, $USER) || $choicegroup->allowupdate) {
+            // Comparable to view.php.
+            if ($choicegroup->restrictbygrouping) {
+                $usergroupassigments = choicegroup_get_all_relevant_group_assignments($choicegroup->id);
+                $groupgrouping = choicegroup_structure_groupings_to_group($choicegroup->option);
+            }
             if ($choicegroup->multipleenrollmentspossible) {
                 foreach($choicegroup->option as $optionid => $text) {
                     if (in_array($optionid, $responses)) {
+                        if ($choicegroup->restrictbygrouping && !(empty($usergroupassigments))) {
+                            $choicerecord = $DB->get_record('choicegroup_options', array('id' => $optionid),
+                                '*', MUST_EXIST);
+                            $groupavailable = choicegroup_check_group_available($choicerecord->groupid,
+                                $usergroupassigments, $groupgrouping);
+                            if (!$groupavailable) {
+                                throw new moodle_exception('restrictgroupingsconflict', 'webservice');
+                            }
+                        }
                         choicegroup_user_submit_response($optionid, $choicegroup, $USER->id, $course, $cm);
                     } else {
                         // Remove group selection if selected.
@@ -315,6 +329,15 @@ class mod_choicegroup_external extends external_api {
             } else { // !multipleenrollmentspossible
                 if (count($responses) == 1) {
                     $responses = reset($responses);
+                    if ($choicegroup->restrictbygrouping && !(empty($usergroupassigments))) {
+                        $choicerecord = $DB->get_record('choicegroup_options', array('id' => $responses->id),
+                            '*', MUST_EXIST);
+                        $groupavailable = choicegroup_check_group_available($choicerecord->groupid,
+                            $usergroupassigments, $groupgrouping);
+                        if (!$groupavailable) {
+                            throw new moodle_exception('restrictgroupingsconflict', 'webservice');
+                        }
+                    }
                     choicegroup_user_submit_response($responses, $choicegroup, $USER->id, $course, $cm);
                 }
             }

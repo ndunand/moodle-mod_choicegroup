@@ -172,3 +172,23 @@ $string['mustchoosemax'] = 'You must choose a maximum of {$a} groups. Nothing wa
 $string['maxenrollments'] = 'Max. enrollments';
 $string['maxenrollments_help'] = 'This option allows to limit the number of group enrollments for a participant. Use default value **0** if there is no limit.';
 
+$string['groupingrestrict'] = 'Restrict choices based on grouping assignments';
+$string['selectedgroupings'] = 'Restrict by grouping?';
+$string['selectedgroupings_help'] = 'If enabled, participants can only choose groups which do not belong to a grouping they are already assigned to (manually or by a group choice activity).';
+$string['assignedtogrouping'] = '(You are already assigned to a group which contradicts this choice)';
+$string['submitfailedgroupingrestriction'] = 'You are already assigned to a group which contradicts this choice.';
+$string['limitationbehaviour'] = 'Limitation behaviour';
+$string['restrictchoicesbehaviour'] = 'Choose limitation behaviour?';
+$string['restrictchoicesbehaviour_help'] = '"Hide group from group list" - will hide all groups which can not be selected due to previous assignments<br>
+ "Show group as dimmed" - will show the choice but choice can not be selected <br>
+ "Show group with limitation notice" - inform user about conflicting groups ';
+$string['hidegroup'] = 'Hide group from group list';
+$string['dimmgroup'] = 'Show group as dimmed';
+$string['informlimit'] = 'Show group with limitation notice';
+$string['informlimitgroup'] = 'Show group with information on conflicting groups';
+$string['reasongrouplimitationplural'] = '(You can not select this group as you are already assigned to the groups: {$a} )';
+$string['reasongrouplimitationsingular'] = '(You can not select this group as you are already assigned to the group: {$a} )';
+$string['reasongrouplimitationempty'] = '(You can not select this group, however no conflicting group can be found - this might be an error in the programm code)';
+$string['hidechoicetostudents'] = '(If a student had the same group assigment, this choice would not be shown)';
+$string['conflictinggroupassignment'] = 'Your Group assigment are conflicting. Therefore you can not participate in this groupchoice activity.';
+

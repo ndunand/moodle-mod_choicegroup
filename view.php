@@ -99,7 +99,11 @@ $completion->set_module_viewed($cm);
 
 /// Submit any new data if there is any
 if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') && confirm_sesskey()) {
-
+    // Get data once.
+    if ($choicegroup->restrictbygrouping) {
+        $usergroupassigments = choicegroup_get_all_relevant_group_assignments($choicegroup->id);
+        $groupgrouping = choicegroup_structure_groupings_to_group($choicegroup->option);
+    }
     if ($choicegroup->multipleenrollmentspossible == 1) {
         $number_of_groups = optional_param('number_of_groups', '', PARAM_INT);
         $enrollmentscount = 0;
@@ -120,6 +124,15 @@ if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
         for ($i = 0; $i < $number_of_groups; $i++) {
             $answer_value = optional_param('answer_' . $i, '', PARAM_INT);
             if ($answer_value != '') {
+                // Check finally if the group is still available.
+                if ($choicegroup->restrictbygrouping && !(empty($usergroupassigments))) {
+                    $choicerecord = $DB->get_record('choicegroup_options', array('id' => $answer_value), '*', MUST_EXIST);
+                    $groupavailable = choicegroup_check_group_available($choicerecord->groupid, $usergroupassigments, $groupgrouping);
+                    if (!$groupavailable) {
+                        redirect(new moodle_url('/mod/choicegroup/view.php',
+                            array('id' => $cm->id, 'notify' => 'submitfailedgroupingrestriction', 'sesskey' => sesskey())));
+                    }
+                }
                 choicegroup_user_submit_response($answer_value, $choicegroup, $USER->id, $course, $cm);
             } else {
                 $answer_value_group_id = optional_param('answer_'.$i.'_groupid', '', PARAM_INT);
@@ -152,6 +165,15 @@ if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
             redirect(new moodle_url('/mod/choicegroup/view.php',
                 array('id' => $cm->id, 'notify' => 'mustchooseone', 'sesskey' => sesskey())));
         } else {
+            // Check finally if the group is still available.
+            if ($choicegroup->restrictbygrouping && !(empty($usergroupassigments))) {
+                $choicerecord = $DB->get_record('choicegroup_options', array('id' => $answer), '*', MUST_EXIST);
+                $groupavailable = choicegroup_check_group_available($choicerecord->groupid, $usergroupassigments, $groupgrouping);
+                if (!$groupavailable) {
+                    redirect(new moodle_url('/mod/choicegroup/view.php',
+                        array('id' => $cm->id, 'notify' => 'submitfailedgroupingrestriction', 'sesskey' => sesskey())));
+                }
+            }
             choicegroup_user_submit_response($answer, $choicegroup, $USER->id, $course, $cm);
             redirect(new moodle_url('/mod/choicegroup/view.php',
                 array('id' => $cm->id, 'notify' => 'choicegroupsaved', 'sesskey' => sesskey())));
@@ -180,6 +202,8 @@ if ($notify and confirm_sesskey()) {
         echo $OUTPUT->notification(get_string('mustchooseone', 'choicegroup'), 'notifyproblem');
     } else if ($notify === 'mustchoosemax') {
         echo $OUTPUT->notification(get_string('mustchoosemax', 'choicegroup', $choicegroup->maxenrollments), 'notifyproblem');
+    } else if ($notify === 'submitfailedgroupingrestriction') {
+        echo $OUTPUT->notification(get_string('submitfailedgroupingrestriction', 'choicegroup'), 'notifyproblem');
     }
 }
 
@@ -256,10 +280,10 @@ $renderer = $PAGE->get_renderer('mod_choicegroup');
 if ( (!$current or $choicegroup->allowupdate) and $choicegroupopen and is_enrolled($context, null, 'mod/choicegroup:choose')) {
 // They haven't made their choicegroup yet or updates allowed and choicegroup is open
 
-    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, false, $choicegroup->multipleenrollmentspossible, $choicegroup->onlyactive);
+    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, false, $choicegroup->multipleenrollmentspossible, $choicegroup->onlyactive, $choicegroup->restrictchoicesbehaviour);
 } else {
     // form can not be updated
-    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, true, $choicegroup->multipleenrollmentspossible, $choicegroup->onlyactive);
+    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, true, $choicegroup->multipleenrollmentspossible, $choicegroup->onlyactive, $choicegroup->restrictchoicesbehaviour);
 }
 $choicegroupformshown = true;
 

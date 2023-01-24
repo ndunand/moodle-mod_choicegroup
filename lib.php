@@ -51,6 +51,10 @@ define('CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT',    '0');
 define('CHOICEGROUP_SORTGROUPS_CREATEDATE',    '1');
 define('CHOICEGROUP_SORTGROUPS_NAME',    '2');
 
+define('CHOICEGROUP_RESTRICTGROUPINGS_NOTAVAILABLE', '0');
+define('CHOICEGROUP_RESTRICTGROUPINGS_AVAILABLE', '1');
+define('CHOICEGROUP_RESTRICTGROUPINGS_CONFLICT', '2');
+
 // Ugly hack to make 3.11 and 4.0 work seamlessly.
 if (!defined('FEATURE_MOD_PURPOSE')) {
     define('FEATURE_MOD_PURPOSE', 'mod_purpose');
@@ -197,6 +201,11 @@ function choicegroup_add_instance($choicegroup) {
     }
 
     //insert answers
+    if (isset($choicegroup->restrictbygrouping) && $choicegroup->restrictbygrouping) {
+        $choicegroup->restrictbygrouping = $choicegroup->restrictbygrouping;
+    } else {
+        $choicegroup->restrictbygrouping = false;
+    }
     $choicegroup->id = $DB->insert_record("choicegroup", $choicegroup);
     
     // deserialize the selected groups
@@ -216,7 +225,18 @@ function choicegroup_add_instance($choicegroup) {
             }
             $option->timemodified = time();
             $DB->insert_record("choicegroup_options", $option);
-        }	
+        }
+    }
+    if (property_exists($choicegroup, 'restrictbygrouping') && $choicegroup->restrictbygrouping) {
+        if (!empty($choicegroup->selectedgroupings)) {
+            $DB->delete_records("choicegroup_groupings", array('choicegroupid' => $choicegroup->id));
+            foreach ($choicegroup->selectedgroupings as $selectedgrouping) {
+                $groupchoiceassignment = new stdClass();
+                $groupchoiceassignment->choicegroupid = $choicegroup->id;
+                $groupchoiceassignment->groupingid = $selectedgrouping;
+                $DB->insert_record("choicegroup_groupings", $groupchoiceassignment);
+            }
+        }
     }
 
     if (class_exists('\core_completion\api')) {
@@ -288,20 +308,34 @@ function choicegroup_update_instance($choicegroup) {
     				continue 2; // continue the big loop
     			}
     		}
-    		$DB->insert_record("choicegroup_options", $option);	
+
+    		$DB->insert_record("choicegroup_options", $option);
     	}
-    	 
     }
     // remove all remaining pre-existing groups which did not appear in the form (and are thus assumed to have been deleted)
     foreach ($preExistingGroups as $preExistingGroup) {
     	$DB->delete_records("choicegroup_options", array("id"=>$preExistingGroup->id));
     }
-
+    if (property_exists($choicegroup, 'restrictbygrouping') && $choicegroup->restrictbygrouping) {
+        if (!empty($choicegroup->selectedgroupings)) {
+            $DB->delete_records("choicegroup_groupings", array('choicegroupid' => $choicegroup->id));
+            foreach ($choicegroup->selectedgroupings as $selectedgrouping) {
+                $groupchoiceassignment = new stdClass();
+                $groupchoiceassignment->choicegroupid = $choicegroup->id;
+                $groupchoiceassignment->groupingid = $selectedgrouping;
+                $DB->insert_record("choicegroup_groupings", $groupchoiceassignment);
+            }
+        }
+    }
     if (class_exists('\core_completion\api')) {
         $completiontimeexpected = !empty($choicegroup->completionexpected) ? $choicegroup->completionexpected : null;
         \core_completion\api::update_completion_date_event($choicegroup->coursemodule, 'choicegroup', $choicegroup->id, $completiontimeexpected);
     }
-
+    if (isset($choicegroup->restrictbygrouping) && $choicegroup->restrictbygrouping) {
+        $choicegroup->restrictbygrouping = $choicegroup->restrictbygrouping;
+    } else {
+        $choicegroup->restrictbygrouping = false;
+    }
 
     return $DB->update_record('choicegroup', $choicegroup);
 
@@ -316,7 +350,6 @@ function choicegroup_update_instance($choicegroup) {
  * @return array
  */
 function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allresponses) {
-
     $cdisplay = array('options'=>array());
 
     $cdisplay['limitanswers'] = true;
@@ -326,6 +359,11 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
     if (!isset($choicegroup->option)) {
         $choicegroup->option = [];
     }
+    if (isset($choicegroup->restrictbygrouping) && $choicegroup->restrictbygrouping) {
+        $usergroupassigments = choicegroup_get_all_relevant_group_assignments($choicegroup->id);
+        $groupgrouping = choicegroup_structure_groupings_to_group($choicegroup->option);
+    }
+
     foreach ($choicegroup->option as $optionid => $text) {
         if (isset($text)) { //make sure there are no dud entries in the db with blank text values.
             $option = new stdClass;
@@ -347,6 +385,19 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
                     }
                 }
             }
+            // If we have grouping restrictions AND assigments to relevant groupings are not empty...
+            // - we check if group is available.
+            if ($choicegroup->restrictbygrouping) {
+                $option->groupavailable = choicegroup_check_group_available($option->groupid, $usergroupassigments,
+                    $groupgrouping);
+                // If the grouping is not clickable AND we show additional information.
+                if (!($option->groupavailable) && $choicegroup->restrictchoicesbehaviour == 3) {
+                    $option->conflictinggroups = choicegroup_get_conflictinggroups($option->groupid, $groupgrouping,
+                        $choicegroup->id);
+                }
+            } else {
+                $option->groupavailable = CHOICEGROUP_RESTRICTGROUPINGS_AVAILABLE;
+            }
             if ( $choicegroup->limitanswers && ($option->countanswers >= $option->maxanswers) && empty($option->attributes->checked)) {
                 $option->attributes->disabled = true;
             }
@@ -363,6 +414,172 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
     return $cdisplay;
 }
 
+/**
+ * Collects all group memberships which are relevant for the choicegroup activity.
+ * As those query get very fast hard to understand.
+ * If a user is member in a group which belongs to a grouping which is a restriction in the choice, the user is listed.
+ * Gets all groups from the selected groupings where the current user is a member.
+ * @param int $choicegroupid
+ * @return array
+ * @throws dml_exception
+ */
+function choicegroup_get_all_relevant_group_assignments($choicegroupid) {
+    global $DB, $USER;
+    $assignments = $DB->get_records_sql('
+    SELECT gm.id as id, cg.choicegroupid as choicegroupid, cg.groupingid as groupingid, gg.groupid as groupid, 
+           gm.userid as userid
+    FROM {choicegroup_groupings} as cg 
+LEFT JOIN {groupings_groups} as gg on cg.groupingid = gg.groupingid 
+LEFT JOIN {groups_members} as gm on gg.groupid = gm.groupid
+WHERE cg.choicegroupid=:choicegroupid AND gm.userid=:userid;',
+        array('choicegroupid' => $choicegroupid, 'userid' => $USER->id));
+    return $assignments;
+}
+
+
+/**
+ * In case the user should be informed about additional groups additional information is catched.
+ * Improvement: For sure there are more efficient DB calls.
+ * Current approach ->
+ * 1) Get all relevant groupings which is A) currentgroup is assigned to it && B) grouping is restrictioncriteria of choicegroup
+ * 2) For relevantgroupings Check for all groups if user is member - if it is not the current group it is conflicting.
+ *
+ * @param int $currentgroupid current choice group id
+ * @param array $groupgroupings only assigments from groups in the current choicegroup
+ * @param int $choicegroupid id of current mod_choicegroup
+ * @return array of conflicting group names
+ */
+function choicegroup_get_conflictinggroups($currentgroupid, $groupgroupings, $choicegroupid) {
+    global $DB, $USER;
+    // Current group does not belong to a relevant grouping.
+    if (!isset($groupgroupings[$currentgroupid])) {
+        return array();
+    }
+    // Get all groupings of group.
+    $groupings = $groupgroupings[$currentgroupid];
+    $relevantgroupings = array();
+    // Get the groupings which are mentioned in the restriction.
+    $restrictcombinations = $DB->get_records('choicegroup_groupings', array('choicegroupid' => $choicegroupid));
+    foreach ($restrictcombinations as $restrictcombination) {
+        // If the grouping is a restriction and the current group belongs to that restriction.
+        if (in_array($restrictcombination->groupingid, $groupings)) {
+            array_push($relevantgroupings, $restrictcombination->groupingid);
+        }
+    }
+    if (empty($relevantgroupings)) {
+        return array();
+    }
+    // Final Groups.
+    $conflictinggroups = array();
+
+    foreach ($relevantgroupings as $relevantgrouping) {
+        $allgroups = $DB->get_records('groupings_groups', array('groupingid' => $relevantgrouping));
+        foreach ($allgroups as $group) {
+            if (groups_is_member($group->groupid, $USER->id) && $group->groupid !== $currentgroupid) {
+                // Most likely not called very often.
+                array_push($conflictinggroups, groups_get_group_name($group->groupid));
+            }
+        }
+    }
+    return $conflictinggroups;
+}
+
+
+/**
+ * Structure Groups to Grouping to make checks easier.
+ * E.g. Group A1 with id A1, Group B with id B1
+ * Grouping A id A, Grouping B id B, Grouping 1 id 1
+ * would result in:
+ * [
+ *  [A1] => [A,1]
+ *  [B1] => [B,1]
+ * ]
+ * @param array $options get for each group a grouping
+ * @return array of groupid->array([groupingids])
+ * @throws coding_exception
+ * @throws dml_exception
+ */
+function choicegroup_structure_groupings_to_group($options) {
+    global $DB;
+    $relevantgroups = array();
+    // Get all groupids of choices.
+    foreach ($options as $groupid) {
+        if (isset($groupid)) {
+            array_push($relevantgroups, $groupid);
+        }
+    }
+
+    list($sqlgroup, $pgroup) = $DB->get_in_or_equal($relevantgroups);
+    $groupgroupingassigments = $DB->get_records_select('groupings_groups', 'groupid ' . $sqlgroup,
+        $pgroup, '', 'id, groupingid, groupid');
+    $structuredgroups = array();
+    // Make an index in the array for each group and add groupings.
+    foreach ($groupgroupingassigments as $groupgroupingassignment) {
+        if (!isset($structuredgroups[$groupgroupingassignment->groupid])) {
+            $structuredgroups[$groupgroupingassignment->groupid] = array();
+        }
+        array_push($structuredgroups[$groupgroupingassignment->groupid], $groupgroupingassignment->groupingid);
+    }
+    return $structuredgroups;
+}
+/**
+ * Check if a user is assigned to a group belonging to the same grouping as the option and if we have a conflict.
+ * Example : Gropu A1, A2 and B1, B2 A1 and B1 are in the same grouping
+ * Choicegroup is restricted by grouping 1 and has Group B1 B2
+ * If a student 1 is assigned to A1:
+ * Group B1 returns 1 as the group is not available
+ * Group B2 return 0 as the group is available to choose
+ * If student 2 is assigned to A1 and B1:
+ * The function returns 2 for group B1 as we have a real conflict - more assigment than allowed in one grouping.
+ *
+ * @param int $optiongroupid id of group
+ * @param array $assignments groups a user is assigned to
+ * @param array $structuredgroups array groupid => array([groupingsids])
+ * @return int 1 -> No Problem 0 -> group not available 2 -> CONFLICT
+ * @throws dml_exception
+ */
+function choicegroup_check_group_available($optiongroupid, $assignments, $structuredgroups) {
+    $owngroup = false;
+    $uniquegroups = [];
+    foreach ($assignments as $assigment) {
+        // Checks: 1) Do we have groupings to the current group
+        // 2) Gehört die Zuweisung zu einer Gruppierung die für die option relevant ist?
+        // 3) ist die zurzeitige
+        if (array_key_exists($optiongroupid, $structuredgroups) &&
+            in_array($assigment->groupingid, $structuredgroups[$optiongroupid]) && $assigment->groupid !== $optiongroupid) {
+            $uniquegroups[$assigment->groupid] = $assigment->groupid;
+        }
+        if ($assigment->groupid == $optiongroupid) {
+            $owngroup = true;
+            $uniquegroups[$assigment->groupid] = $assigment->groupid;
+        }
+    }
+
+    $counter = count($uniquegroups);
+
+    if (!($owngroup)) {
+        if ($counter == 0) {
+            return CHOICEGROUP_RESTRICTGROUPINGS_AVAILABLE;
+        }
+        if ($counter == 1) {
+            return CHOICEGROUP_RESTRICTGROUPINGS_NOTAVAILABLE;
+        } else if ($counter > 1) {
+            return CHOICEGROUP_RESTRICTGROUPINGS_CONFLICT;
+        }
+    } else {
+        if ($counter == 0) {
+            return CHOICEGROUP_RESTRICTGROUPINGS_AVAILABLE;
+        }
+        if ($counter == 1) {
+            return CHOICEGROUP_RESTRICTGROUPINGS_AVAILABLE;
+        }
+        if ($counter > 1) {
+            return CHOICEGROUP_RESTRICTGROUPINGS_CONFLICT;
+        }
+    }
+
+    return CHOICEGROUP_RESTRICTGROUPINGS_AVAILABLE;
+}
 /**
  * @throws \moodle_exception
  */
@@ -753,6 +970,9 @@ function choicegroup_delete_instance($id) {
     $result = true;
 
     if (! $DB->delete_records("choicegroup_options", array("choicegroupid"=>"$choicegroup->id"))) {
+        $result = false;
+    }
+    if (! $DB->delete_records("choicegroup_groupings", array("choicegroupid" => "$choicegroup->id"))) {
         $result = false;
     }
 
