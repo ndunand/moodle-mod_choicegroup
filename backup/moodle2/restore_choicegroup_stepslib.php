@@ -72,7 +72,7 @@ class restore_choicegroup_activity_structure_step extends restore_activity_struc
         $data->timemodified = $this->apply_date_offset($data->timemodified);
 
         // Check if the groupid exists in this course.
-        $group = $DB->get_recordset_sql('SELECT g.id FROM {groups} g
+        $group = $DB->record_exists_sql('SELECT g.id FROM {groups} g
                             WHERE g.courseid = ? and g.id = ?', array($this->get_courseid(), $data->groupid));
         if (!$group) {
             // It does not exist in the course already, so try to map the groupid.
