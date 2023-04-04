@@ -800,11 +800,14 @@ function choicegroup_get_option_text($choicegroup, $id) {
 function choicegroup_get_groups($choicegroup) {
     global $DB;
 
-    static $groups = [];
+    // This block of caching code creates errors, see INC4040351.
+    /*
+    static $groups = array();
 
     if (count($groups)) {
         return $groups;
     }
+    */
 
     if (is_numeric($choicegroup)) {
         $choicegroupid = $choicegroup;
