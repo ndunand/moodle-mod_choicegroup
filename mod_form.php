@@ -308,14 +308,12 @@ class mod_choicegroup_mod_form extends moodleform_mod
         $groupIDs = explode(';', $data['serializedselectedgroups']);
         $groupIDs = array_diff($groupIDs, array(''));
 
-        if (array_key_exists('multipleenrollmentspossible', $data) && $data['multipleenrollmentspossible'] === '1') {
-            if (count($groupIDs) < 1) {
-                $errors['groups'] = get_string('fillinatleastoneoption', 'choicegroup');
-            }
-        } else {
-            if (count($groupIDs) < 1) {
-                $errors['groups'] = get_string('fillinatleastoneoption', 'choicegroup');
-            }
+        if($data['timeopen'] > $data['timeclose']) {
+            $errors['timeopen'] = get_string('activitydate:closingbeforeopening', 'choicegroup');
+        }
+
+        if (count($groupIDs) < 1) {
+            $errors['groups'] = get_string('fillinatleastoneoption', 'choicegroup');
         }
 
 
