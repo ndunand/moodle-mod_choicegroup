@@ -260,10 +260,7 @@ function choicegroup_update_instance($choicegroup) {
     $groupIDs = array_diff( $groupIDs, array( '' ) );
 
     // prepare pre-existing selected groups from database
-    
-    if (!($preExistingGroups = $DB->get_records("choicegroup_options", array("choicegroupid" => $choicegroup->id), "id"))) {
-    	return false;
-    }
+    $preExistingGroups = $DB->get_records("choicegroup_options", array("choicegroupid" => $choicegroup->id), "id");
 
     // walk through form-selected groups
     foreach ($groupIDs as $groupID) {
@@ -844,6 +841,8 @@ function choicegroup_get_choicegroup($choicegroupid) {
                  ORDER BY $sortcolumn ASC";
 
         $rs = $DB->get_recordset_sql($sql, $params);
+
+        $choicegroup->option = [];
 
         foreach ($rs as $option) {
             $choicegroup->option[$option->id] = $option->groupid;
