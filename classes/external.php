@@ -79,7 +79,8 @@ class mod_choicegroup_external extends external_api {
         require_capability('mod/choicegroup:choose', $context);
 
         $groupmode = groups_get_activity_groupmode($cm);
-        $allresponses = choicegroup_get_response_data($choicegroup, $cm, $groupmode, $choicegroup->onlyactive);
+        $current_group = $groupmode > 0 ? groups_get_activity_group($cm) : 0;
+        $options_count = choicegroup_get_options_count($choicegroup, $context, $current_group, $choicegroup->onlyactive);
         $answers = choicegroup_get_user_answer($choicegroup, $userid, true);
 
         foreach ($choicegroup->option as $optionid => $text) {
@@ -91,8 +92,8 @@ class mod_choicegroup_external extends external_api {
                 $option['maxanswers'] = $choicegroup->maxanswers[$optionid];
                 $option['displaylayout'] = $choicegroup->display;
 
-                if (isset($allresponses[$text])) {
-                    $option['countanswers'] = count($allresponses[$text]);
+                if (isset($options_count[$text])) {
+                    $option['countanswers'] = $options_count[$text];
                 } else {
                     $option['countanswers'] = 0;
                 }
