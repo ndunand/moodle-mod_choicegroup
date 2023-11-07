@@ -70,15 +70,5 @@ class report_viewed extends \core\event\course_module_viewed {
         return new \moodle_url('/mod/choicegroup/view.php', array('id' => $this->contextinstanceid));
     }
 
-    /**
-     * Return the legacy event log data.
-     *
-     * @return array|null
-     */
-    protected function get_legacy_logdata() {
-        return array($this->courseid, 'choicegroup', 'view group choice report', 'view.php?id=' . $this->contextinstanceid,
-            $this->objectid, $this->contextinstanceid);
-    }
-
 }
 
