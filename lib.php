@@ -1035,21 +1035,21 @@ function choicegroup_supports($feature) {
  * @param navigation_node $choicegroupnode The node to add module settings to
  */
 function choicegroup_extend_settings_navigation(settings_navigation $settings, navigation_node $choicegroupnode) {
-    $cm = $settings->get_page()->cm;
+    global $PAGE;
 
-    if (has_capability('mod/choicegroup:readresponses', $cm->context)) {
+    if (has_capability('mod/choicegroup:readresponses', $PAGE->cm->context)) {
 
-        $groupmode = groups_get_activity_groupmode($cm);
+        $groupmode = groups_get_activity_groupmode($PAGE->cm);
         if ($groupmode) {
-            groups_get_activity_group($cm, true);
+            groups_get_activity_group($PAGE->cm, true);
         }
-        if (!$choicegroup = choicegroup_get_choicegroup($cm->instance)) {
+        if (!$choicegroup = choicegroup_get_choicegroup($PAGE->cm->instance)) {
             print_error('invalidcoursemodule');
             return false;
         }
 
         // Big function, approx 6 SQL calls per user.
-        $allresponses = choicegroup_get_response_data($choicegroup, $cm, $groupmode, $choicegroup->onlyactive);
+        $allresponses = choicegroup_get_response_data($choicegroup, $PAGE->cm, $groupmode, $choicegroup->onlyactive);
 
         $responsecount = 0;
         $respondents = array();
@@ -1069,7 +1069,7 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
         if ($choicegroup->multipleenrollmentspossible == 1) {
             $viewallresponsestext .= ' ' . get_string("byparticipants", "choicegroup", count($respondents));
         }
-        $choicegroupnode->add($viewallresponsestext, new moodle_url('/mod/choicegroup/report.php', array('id'=>$cm->id)));
+        $choicegroupnode->add($viewallresponsestext, new moodle_url('/mod/choicegroup/report.php', array('id'=>$PAGE->cm->id)));
     }
 }
 
