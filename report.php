@@ -46,11 +46,11 @@ if ($action !== '') {
 $PAGE->set_url($url);
 
 if (! $cm = get_coursemodule_from_id('choicegroup', $id)) {
-    print_error("invalidcoursemodule");
+    throw new moodle_exception("invalidcoursemodule");
 }
 
 if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
-    print_error("coursemisconf");
+    throw new moodle_exception("coursemisconf");
 }
 
 require_login($course->id, false, $cm);
@@ -60,7 +60,7 @@ $context = context_module::instance($cm->id);
 require_capability('mod/choicegroup:readresponses', $context);
 
 if (!$choicegroup = choicegroup_get_choicegroup($cm->instance)) {
-    print_error('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 $strchoicegroup = get_string("modulename", "choicegroup");
