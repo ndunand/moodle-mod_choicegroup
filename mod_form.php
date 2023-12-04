@@ -335,10 +335,19 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
     function add_completion_rules()
     {
+        global $CFG;
+
         $mform =& $this->_form;
 
-        $mform->addElement('checkbox', 'completionsubmit', '', get_string('completionsubmit', 'choicegroup'));
-        return array('completionsubmit');
+        // Changes for Moodle 4.3 - MDL-78516.
+        if ($CFG->branch < 403) {
+            $suffix = '';
+        } else {
+            $suffix = $this->get_suffix();
+        }
+
+        $mform->addElement('checkbox', 'completionsubmit' . $suffix, '', get_string('completionsubmit', 'choicegroup'));
+        return ['completionsubmit' . $suffix];
     }
 
     function completion_rule_enabled($data)
