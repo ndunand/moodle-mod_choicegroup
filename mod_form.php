@@ -75,7 +75,6 @@ class mod_choicegroup_mod_form extends moodleform_mod
             $a->linkcourse = $CFG->wwwroot . '//course/view.php?id=' . $COURSE->id;
             $message = get_string('pleasesetonegroupor', 'choicegroup', $a);
             \core\notification::add($message, \core\notification::WARNING);
-            throw new moodle_exception('nogroupincourse', 'choicegroup', new moodle_url('/course/view.php?id=' . $COURSE->id), $a);
         }
 
         $db_groupings = $DB->get_records('groupings', array('courseid' => $COURSE->id));
