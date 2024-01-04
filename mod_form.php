@@ -75,7 +75,6 @@ class mod_choicegroup_mod_form extends moodleform_mod
             $a->linkcourse = $CFG->wwwroot . '//course/view.php?id=' . $COURSE->id;
             $message = get_string('pleasesetonegroupor', 'choicegroup', $a);
             \core\notification::add($message, \core\notification::WARNING);
-            print_error('nogroupincourse', 'choicegroup', new moodle_url('/course/view.php?id=' . $COURSE->id), $a);
         }
 
         $db_groupings = $DB->get_records('groupings', array('courseid' => $COURSE->id));
@@ -335,10 +334,19 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
     function add_completion_rules()
     {
+        global $CFG;
+
         $mform =& $this->_form;
 
-        $mform->addElement('checkbox', 'completionsubmit', '', get_string('completionsubmit', 'choicegroup'));
-        return array('completionsubmit');
+        // Changes for Moodle 4.3 - MDL-78516.
+        if ($CFG->branch < 403) {
+            $suffix = '';
+        } else {
+            $suffix = $this->get_suffix();
+        }
+
+        $mform->addElement('checkbox', 'completionsubmit' . $suffix, '', get_string('completionsubmit', 'choicegroup'));
+        return ['completionsubmit' . $suffix];
     }
 
     function completion_rule_enabled($data)

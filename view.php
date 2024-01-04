@@ -41,17 +41,17 @@ if ($action !== '') {
 $PAGE->set_url($url);
 
 if (! $cm = get_coursemodule_from_id('choicegroup', $id)) {
-    print_error('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
-    print_error('coursemisconf');
+    throw new moodle_exception('coursemisconf');
 }
 
 require_login($course, false, $cm);
 $PAGE->requires->js_call_amd('mod_choicegroup/choicegroupdatadisplay', 'init');
 if (!$choicegroup = choicegroup_get_choicegroup($cm->instance)) {
-    print_error('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 $choicegroup_groups = choicegroup_get_groups($choicegroup);
 $choicegroup_users = array();
@@ -60,7 +60,7 @@ $strchoicegroup = get_string('modulename', 'choicegroup');
 $strchoicegroups = get_string('modulenameplural', 'choicegroup');
 
 if (!$context = context_module::instance($cm->id)) {
-    print_error('badcontext');
+    throw new moodle_exception('badcontext');
 }
 
 $eventparams = array(
