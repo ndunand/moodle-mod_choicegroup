@@ -19,18 +19,15 @@
  *
  * @package    mod
  * @subpackage choicegroup
- * @copyright  2013-2015 Université de Lausanne
+ * @copyright  2013-2024 Université de Lausanne
  * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2024010400;
+$plugin->version  = 2024051600;
 $plugin->requires  = 2023042400; // Moodle 4.2
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release = '1.44 for Moodle 4.2-4.3 (Build: 2024010400)';
-
+$plugin->release = '1.45 for Moodle 4.2-4.4 (Build: 2024051600)';
 $plugin->component = 'mod_choicegroup';
-$plugin->cron = 0;
-
