@@ -47,11 +47,9 @@ class mobile {
 
         $args = (object) $args;
 
-        $foldername = $args->appversioncode >= 3950 ? 'latest' : 'ionic3';
-
         return [
             'templates' => [],
-            'javascript' => file_get_contents($CFG->dirroot . "/mod/choicegroup/mobile/js/$foldername/init.js"),
+            'javascript' => file_get_contents($CFG->dirroot . "/mod/choicegroup/mobile/js/latest/init.js"),
         ];
     }
 
