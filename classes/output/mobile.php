@@ -66,7 +66,7 @@ class mobile {
 
         $args = (object) $args;
 
-        $foldername = $args->appversioncode >= 3950 ? 'latest' : 'ionic3';
+        $versionname = $args->appversioncode >= 44000 ? 'latest' : 'ionic5';
         $cm = get_coursemodule_from_id('choicegroup', $args->cmid);
         $course = $DB->get_record('course', ['id' => $cm->course]);
 
@@ -142,10 +142,10 @@ class mobile {
             'templates' => [
                 [
                     'id' => 'main',
-                    'html' => $OUTPUT->render_from_template("mod_choicegroup/mobile_view_page_$foldername", $data),
+                    'html' => $OUTPUT->render_from_template("mod_choicegroup/mobile_view_page_$versionname", $data),
                 ],
             ],
-            'javascript' => file_get_contents($CFG->dirroot . "/mod/choicegroup/mobile/js/$foldername/courseview.js"),
+            'javascript' => file_get_contents($CFG->dirroot . "/mod/choicegroup/mobile/js/latest/courseview.js"),
             'otherdata' => [
                 'data' => json_encode($responses),
                 'allowupdate' => $choicegroup->allowupdate ? 1 : 0,
