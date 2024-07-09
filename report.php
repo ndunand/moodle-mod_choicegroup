@@ -33,7 +33,7 @@ $download   = optional_param('download', '', PARAM_ALPHA);
 $action     = optional_param('action', '', PARAM_ALPHA);
 $grpsmemberids = optional_param_array('grpsmemberid', array(), PARAM_INT); //get array of responses to delete.
 
-$url = new moodle_url('/mod/choicegroup/report.php', array('id'=>$id));
+$url = new moodle_url('/mod/choicegroup/report.php', array('id' => $id));
 if ($format !== CHOICEGROUP_PUBLISH_NAMES) {
     $url->param('format', $format);
 }
@@ -77,7 +77,7 @@ $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('choicegroup', $choicegroup);
 $event->trigger();
 
-if (data_submitted() && $action == 'delete' && has_capability('mod/choicegroup:deleteresponses',$context) && confirm_sesskey()) {
+if (data_submitted() && $action == 'delete' && has_capability('mod/choicegroup:deleteresponses', $context) && confirm_sesskey()) {
     choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course); //delete responses.
     redirect("report.php?id=$cm->id");
 }
@@ -108,7 +108,7 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
     require_once("$CFG->libdir/odslib.class.php");
 
 /// Calculate file name
-    $filename = clean_filename("$course->shortname ".strip_tags(format_string($choicegroup->name,true))).'.ods';
+    $filename = clean_filename("$course->shortname ".strip_tags(format_string($choicegroup->name, true))).'.ods';
 /// Creating a workbook
     $workbook = new MoodleODSWorkbook("-");
 /// Send HTTP headers
@@ -117,16 +117,16 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
     $myxls = $workbook->add_worksheet($strresponses);
 
 /// Print names of all the fields
-    $myxls->write_string(0,0,get_string("lastname"));
-    $myxls->write_string(0,1,get_string("firstname"));
-    $myxls->write_string(0,2,get_string("idnumber"));
-    $myxls->write_string(0,3,get_string("email"));
-    $myxls->write_string(0,4,get_string("group"));
-    $myxls->write_string(0,5,get_string("choice","choicegroup"));
+    $myxls->write_string(0, 0, get_string("lastname"));
+    $myxls->write_string(0, 1, get_string("firstname"));
+    $myxls->write_string(0, 2, get_string("idnumber"));
+    $myxls->write_string(0, 3, get_string("email"));
+    $myxls->write_string(0, 4, get_string("group"));
+    $myxls->write_string(0, 5, get_string("choice", "choicegroup"));
 
 /// generate the data for the body of the spreadsheet
-    $i=0;
-    $row=1;
+    $i = 0;
+    $row = 1;
     if ($users) {
         $displayed = array();
         foreach ($users as $option => $userid) {
@@ -135,11 +135,11 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
                     continue;
                 }
                 $displayed[] = $user->id;
-                $myxls->write_string($row,0,$user->lastname);
-                $myxls->write_string($row,1,$user->firstname);
-                $studentid=(!empty($user->idnumber) ? $user->idnumber : " ");
-                $myxls->write_string($row,2,$studentid);
-                $myxls->write_string($row,3,$user->email);
+                $myxls->write_string($row, 0, $user->lastname);
+                $myxls->write_string($row, 1, $user->firstname);
+                $studentid = (!empty($user->idnumber) ? $user->idnumber : " ");
+                $myxls->write_string($row, 2, $studentid);
+                $myxls->write_string($row, 3, $user->email);
                 $ug2 = array();
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
                     foreach ($groups_ids as $gid) {
@@ -150,7 +150,7 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
                 }
                 $myxls->write_string($row, 4, implode(', ', $ug2));
                 $row++;
-                $pos=5;
+                $pos = 5;
             }
         }
     }
@@ -165,7 +165,7 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
     require_once("$CFG->libdir/excellib.class.php");
 
 /// Calculate file name
-    $filename = clean_filename("$course->shortname ".strip_tags(format_string($choicegroup->name,true))).'.xls';
+    $filename = clean_filename("$course->shortname ".strip_tags(format_string($choicegroup->name, true))).'.xls';
 /// Creating a workbook
     $workbook = new MoodleExcelWorkbook("-");
 /// Send HTTP headers
@@ -175,17 +175,17 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
     // removed the ampersand.
     $myxls = $workbook->add_worksheet($strresponses);
 /// Print names of all the fields
-    $myxls->write_string(0,0,get_string("lastname"));
-    $myxls->write_string(0,1,get_string("firstname"));
-    $myxls->write_string(0,2,get_string("idnumber"));
-    $myxls->write_string(0,3,get_string("email"));
-    $myxls->write_string(0,4,get_string("group"));
-    $myxls->write_string(0,5,get_string("choice","choicegroup"));
+    $myxls->write_string(0, 0, get_string("lastname"));
+    $myxls->write_string(0, 1, get_string("firstname"));
+    $myxls->write_string(0, 2, get_string("idnumber"));
+    $myxls->write_string(0, 3, get_string("email"));
+    $myxls->write_string(0, 4, get_string("group"));
+    $myxls->write_string(0, 5, get_string("choice", "choicegroup"));
 
 
 /// generate the data for the body of the spreadsheet
-    $i=0;
-    $row=1;
+    $i = 0;
+    $row = 1;
     if ($users) {
         $displayed = array();
         foreach ($users as $option => $userid) {
@@ -194,11 +194,11 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
                     continue;
                 }
                 $displayed[] = $user->id;
-                $myxls->write_string($row,0,$user->lastname);
-                $myxls->write_string($row,1,$user->firstname);
-                $studentid=(!empty($user->idnumber) ? $user->idnumber : " ");
-                $myxls->write_string($row,2,$studentid);
-                $myxls->write_string($row,3,$user->email);
+                $myxls->write_string($row, 0, $user->lastname);
+                $myxls->write_string($row, 1, $user->firstname);
+                $studentid = (!empty($user->idnumber) ? $user->idnumber : " ");
+                $myxls->write_string($row, 2, $studentid);
+                $myxls->write_string($row, 3, $user->email);
                 $ug2 = array();
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
                     foreach ($groups_ids as $gid) {
@@ -211,7 +211,7 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
                 $row++;
             }
         }
-        $pos=5;
+        $pos = 5;
     }
     /// Close the workbook
     $workbook->close();
@@ -220,7 +220,7 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
 
 // print text file
 if ($download == "txt" && has_capability('mod/choicegroup:downloadresponses', $context)) {
-    $filename = clean_filename("$course->shortname ".strip_tags(format_string($choicegroup->name,true))).'.txt';
+    $filename = clean_filename("$course->shortname ".strip_tags(format_string($choicegroup->name, true))).'.txt';
 
     header("Content-Type: application/download\n");
     header("Content-Disposition: attachment; filename=\"$filename\"");
@@ -233,10 +233,10 @@ if ($download == "txt" && has_capability('mod/choicegroup:downloadresponses', $c
     echo get_string("firstname")."\t".get_string("lastname") . "\t". get_string("idnumber") . "\t";
     echo get_string("email") . "\t";
     echo get_string("group"). "\t";
-    echo get_string("choice","choicegroup"). "\n";
+    echo get_string("choice", "choicegroup"). "\n";
 
     /// generate the data for the body of the spreadsheet
-    $i=0;
+    $i = 0;
     if ($users) {
         $displayed = array();
         foreach ($users as $option => $userid) {
@@ -279,25 +279,25 @@ $renderer = $PAGE->get_renderer('mod_choicegroup');
 echo $renderer->display_result($results, has_capability('mod/choicegroup:readresponses', $context));
 
 //now give links for downloading spreadsheets.
-if (!empty($users) && has_capability('mod/choicegroup:downloadresponses',$context)) {
+if (!empty($users) && has_capability('mod/choicegroup:downloadresponses', $context)) {
     $downloadoptions = array();
     $options = array();
     $options["id"] = "$cm->id";
     $options["download"] = "ods";
-    $button =  $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadods"));
-    $downloadoptions[] = html_writer::tag('li', $button, array('class'=>'reportoption mt-1'));
+    $button = $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadods"));
+    $downloadoptions[] = html_writer::tag('li', $button, array('class' => 'reportoption mt-1'));
 
     $options["download"] = "xls";
     $button = $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadexcel"));
-    $downloadoptions[] = html_writer::tag('li', $button, array('class'=>'reportoption mt-1'));
+    $downloadoptions[] = html_writer::tag('li', $button, array('class' => 'reportoption mt-1'));
 
     $options["download"] = "txt";
     $button = $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadtext"));
-    $downloadoptions[] = html_writer::tag('li', $button, array('class'=>'reportoption mt-1'));
+    $downloadoptions[] = html_writer::tag('li', $button, array('class' => 'reportoption mt-1'));
 
     $downloadlist = html_writer::tag('ul', implode('', $downloadoptions));
-    $downloadlist .= html_writer::tag('div', '', array('class'=>'clearfloat'));
-    echo html_writer::tag('div',$downloadlist, array('class'=>'downloadreport'));
+    $downloadlist .= html_writer::tag('div', '', array('class' => 'clearfloat'));
+    echo html_writer::tag('div', $downloadlist, array('class' => 'downloadreport'));
 }
 
 echo $OUTPUT->footer();

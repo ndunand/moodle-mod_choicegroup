@@ -74,7 +74,7 @@ $CHOICEGROUP_SHOWRESULTS = array (CHOICEGROUP_SHOWRESULTS_NOT          => get_st
 /** @global array $CHOICEGROUP_DISPLAY */
 global $CHOICEGROUP_DISPLAY;
 $CHOICEGROUP_DISPLAY = array (CHOICEGROUP_DISPLAY_HORIZONTAL   => get_string('displayhorizontal', 'choicegroup'),
-                         CHOICEGROUP_DISPLAY_VERTICAL     => get_string('displayvertical','choicegroup'));
+                         CHOICEGROUP_DISPLAY_VERTICAL     => get_string('displayvertical', 'choicegroup'));
 
 require_once($CFG->dirroot.'/group/lib.php');
 
@@ -291,7 +291,7 @@ function choicegroup_update_instance($choicegroup) {
     }
     // remove all remaining pre-existing groups which did not appear in the form (and are thus assumed to have been deleted)
     foreach ($preExistingGroups as $preExistingGroup) {
-    	$DB->delete_records("choicegroup_options", array("id"=>$preExistingGroup->id));
+    	$DB->delete_records("choicegroup_options", array("id" => $preExistingGroup->id));
     }
 
     if (class_exists('\core_completion\api')) {
@@ -314,7 +314,7 @@ function choicegroup_update_instance($choicegroup) {
  */
 function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allresponses) {
 
-    $cdisplay = array('options'=>array());
+    $cdisplay = array('options' => array());
 
     $cdisplay['limitanswers'] = true;
     $context = context_module::instance($coursemodule->id);
@@ -411,11 +411,11 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
     }
     $selectedgroup = $DB->get_record('groups', array('id' => $selected_option->groupid), 'id,name', MUST_EXIST);
 
-    $countanswers=0;
+    $countanswers = 0;
     groups_add_member($selected_option->groupid, $userid);
     $groupmember_added = true;
     if ($choicegroup->limitanswers) {
-        $groupmember = $DB->get_record('groups_members', array('groupid' => $selected_option->groupid, 'userid'=>$userid));
+        $groupmember = $DB->get_record('groups_members', array('groupid' => $selected_option->groupid, 'userid' => $userid));
         $select_count = 'groupid='.$selected_option->groupid.' and id<='.$groupmember->id;
         $countanswers = $DB->count_records_select('groups_members', $select_count);
         $maxans = $choicegroup->maxanswers[$formanswer];
@@ -453,7 +453,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
             $event->trigger();
         }
     } else {
-        if (!$current || !($current->id==$selected_option->groupid)) { //check to see if current choicegroup already selected - if not display error
+        if (!$current || !($current->id == $selected_option->groupid)) { //check to see if current choicegroup already selected - if not display error
             throw new moodle_exception('choicegroupfull', 'choicegroup', $CFG->wwwroot.'/mod/choicegroup/view.php?id='.$cm->id);
         }
     }
@@ -531,7 +531,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
     $display->numberofuser = $totaluser;
     $context = context_module::instance($cm->id);
     $display->viewresponsecapability = has_capability('mod/choicegroup:readresponses', $context);
-    $display->deleterepsonsecapability = has_capability('mod/choicegroup:deleteresponses',$context);
+    $display->deleterepsonsecapability = has_capability('mod/choicegroup:deleteresponses', $context);
     $display->fullnamecapability = has_capability('moodle/site:viewfullnames', $context);
 
     if (empty($allresponses)) {
@@ -556,7 +556,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
         case CHOICEGROUP_PUBLISH_NAMES:
             echo '<div id="tablecontainer">';
             if ($viewresponses) {
-                echo '<form id="attemptsform" method="post" action="'.$FULLSCRIPT.'" onsubmit="var menu = document.getElementById(\'menuaction\'); return (menu.options[menu.selectedIndex].value == \'delete\' ? \''.addslashes_js(get_string('deleteattemptcheck','quiz')).'\' : true);">';
+                echo '<form id="attemptsform" method="post" action="'.$FULLSCRIPT.'" onsubmit="var menu = document.getElementById(\'menuaction\'); return (menu.options[menu.selectedIndex].value == \'delete\' ? \''.addslashes_js(get_string('deleteattemptcheck', 'quiz')).'\' : true);">';
                 echo '<div>';
                 echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
                 echo '<input type="hidden" name="sesskey" value="'.sesskey().'" />';
@@ -593,7 +593,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
                     foreach ($allresponses[0] as $user) {
                         echo "<tr>";
                         echo "<td class=\"picture\">";
-                        echo $OUTPUT->user_picture($user, array('courseid'=>$course->id));
+                        echo $OUTPUT->user_picture($user, array('courseid' => $course->id));
                         echo "</td><td class=\"fullname\">";
                         echo "<a href=\"$CFG->wwwroot/user/view.php?id=$user->id&amp;course=$course->id\">";
                         echo fullname($user, $hascapfullnames);
@@ -615,11 +615,11 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
                         foreach ($allresponses[$optionid] as $user) {
                             $columncount[$optionid] += 1;
                             echo '<tr><td class="attemptcell">';
-                            if ($viewresponses and has_capability('mod/choicegroup:deleteresponses',$context)) {
+                            if ($viewresponses and has_capability('mod/choicegroup:deleteresponses', $context)) {
                                 echo '<input type="checkbox" name="userid[]" value="'. $user->id. '" />';
                             }
                             echo '</td><td class="picture">';
-                            echo $OUTPUT->user_picture($user, array('courseid'=>$course->id));
+                            echo $OUTPUT->user_picture($user, array('courseid' => $course->id));
                             echo '</td><td class="fullname">';
                             echo "<a href=\"$CFG->wwwroot/user/view.php?id=$user->id&amp;course=$course->id\">";
                             echo fullname($user, $hascapfullnames);
@@ -656,13 +656,13 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
             echo "</tr>";
 
             /// Print "Select all" etc.
-            if ($viewresponses and has_capability('mod/choicegroup:deleteresponses',$context)) {
+            if ($viewresponses and has_capability('mod/choicegroup:deleteresponses', $context)) {
                 echo '<tr><td></td><td>';
                 echo '<a href="javascript:select_all_in(\'DIV\',null,\'tablecontainer\');">'.get_string('selectall').'</a> / ';
                 echo '<a href="javascript:deselect_all_in(\'DIV\',null,\'tablecontainer\');">'.get_string('deselectall').'</a> ';
                 echo '&nbsp;&nbsp;';
                 echo html_writer::label(get_string('withselected', 'choicegroup'), 'menuaction');
-                echo html_writer::select(array('delete' => get_string('delete')), 'action', '', array(''=>get_string('withselectedusers')), array('id'=>'menuaction'));
+                echo html_writer::select(array('delete' => get_string('delete')), 'action', '', array('' => get_string('withselectedusers')), array('id' => 'menuaction'));
                 $PAGE->requires->js_init_call('M.util.init_select_autosubmit', array('attemptsform', 'menuaction', ''));
                 echo '<noscript id="noscriptmenuaction" style="display:inline">';
                 echo '<div>';
@@ -709,7 +709,7 @@ function choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course
     );
 
     foreach($grpsmemberids as $grpsmemberid) {
-        $groupsmember = $DB->get_record('groups_members', array('id'=>$grpsmemberid), '*', MUST_EXIST);
+        $groupsmember = $DB->get_record('groups_members', array('id' => $grpsmemberid), '*', MUST_EXIST);
         $userid = $groupsmember->userid;
         $groupid = $groupsmember->groupid;
         $currentgroup = $DB->get_record('groups', array('id' => $groupid), 'id,name', MUST_EXIST);
@@ -743,17 +743,17 @@ function choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course
 function choicegroup_delete_instance($id) {
     global $DB;
 
-    if (! $choicegroup = $DB->get_record("choicegroup", array("id"=>"$id"))) {
+    if (! $choicegroup = $DB->get_record("choicegroup", array("id" => "$id"))) {
         return false;
     }
 
     $result = true;
 
-    if (! $DB->delete_records("choicegroup_options", array("choicegroupid"=>"$choicegroup->id"))) {
+    if (! $DB->delete_records("choicegroup_options", array("choicegroupid" => "$choicegroup->id"))) {
         $result = false;
     }
 
-    if (! $DB->delete_records("choicegroup", array("id"=>"$choicegroup->id"))) {
+    if (! $DB->delete_records("choicegroup", array("id" => "$choicegroup->id"))) {
         $result = false;
     }
 
@@ -878,14 +878,14 @@ function choicegroup_get_sort_column($choicegroup) {
  * @return array
  */
 function choicegroup_get_view_actions() {
-    return array('view','view all','report');
+    return array('view', 'view all', 'report');
 }
 
 /**
  * @return array
  */
 function choicegroup_get_post_actions() {
-    return array('choose','choose again');
+    return array('choose', 'choose again');
 }
 
 
@@ -897,7 +897,7 @@ function choicegroup_get_post_actions() {
  */
 function choicegroup_reset_course_form_definition(&$mform) {
     $mform->addElement('header', 'choicegroupheader', get_string('modulenameplural', 'choicegroup'));
-    $mform->addElement('advcheckbox', 'reset_choicegroup', get_string('removeresponses','choicegroup'));
+    $mform->addElement('advcheckbox', 'reset_choicegroup', get_string('removeresponses', 'choicegroup'));
 }
 
 /**
@@ -906,7 +906,7 @@ function choicegroup_reset_course_form_definition(&$mform) {
  * @return array
  */
 function choicegroup_reset_course_form_defaults($course) {
-    return array('reset_choicegroup'=>1);
+    return array('reset_choicegroup' => 1);
 }
 
 /**
@@ -978,7 +978,7 @@ function choicegroup_get_responses($choicegroup, $ctx, $currentgroup, $onlyactiv
         $choicegroupid = $choicegroup->id;
     }
 
-    $params1 = array('choicegroupid'=>$choicegroupid);
+    $params1 = array('choicegroupid' => $choicegroupid);
     list($esql, $params2) = get_enrolled_sql($ctx, 'mod/choicegroup:choose', $currentgroup, $onlyactive);
     $params = array_merge($params1, $params2);
 
@@ -1069,7 +1069,7 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
         if ($choicegroup->multipleenrollmentspossible == 1) {
             $viewallresponsestext .= ' ' . get_string("byparticipants", "choicegroup", count($respondents));
         }
-        $choicegroupnode->add($viewallresponsestext, new moodle_url('/mod/choicegroup/report.php', array('id'=>$cm->id)));
+        $choicegroupnode->add($viewallresponsestext, new moodle_url('/mod/choicegroup/report.php', array('id' => $cm->id)));
     }
 }
 
@@ -1080,7 +1080,7 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
  * @param stdClass $currentcontext Current context of block
  */
 function choicegroup_page_type_list($pagetype, $parentcontext, $currentcontext) {
-    $module_pagetype = array('mod-choicegroup-*'=>get_string('page-mod-choicegroup-x', 'choice'));
+    $module_pagetype = array('mod-choicegroup-*' => get_string('page-mod-choicegroup-x', 'choice'));
     return $module_pagetype;
 }
 

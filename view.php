@@ -34,7 +34,7 @@ $action     = optional_param('action', '', PARAM_ALPHA);
 $userids    = optional_param_array('userid', array(), PARAM_INT); // array of attempt ids for delete action
 $notify     = optional_param('notify', '', PARAM_ALPHA);
 
-$url = new moodle_url('/mod/choicegroup/view.php', array('id'=>$id));
+$url = new moodle_url('/mod/choicegroup/view.php', array('id' => $id));
 if ($action !== '') {
     $url->param('action', $action);
 }
@@ -94,7 +94,7 @@ $PAGE->set_title(format_string($choicegroup->name));
 $PAGE->set_heading($course->fullname);
 
 /// Mark as viewed
-$completion=new completion_info($course);
+$completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
 /// Submit any new data if there is any
@@ -240,7 +240,7 @@ if (isloggedin() && ($current !== false) ) {
 /// Print the form
 $choicegroupopen = true;
 $timenow = time();
-if ($choicegroup->timeclose !=0) {
+if ($choicegroup->timeclose != 0) {
     if ($choicegroup->timeopen > $timenow ) {
         echo $OUTPUT->box(get_string("notopenyet", "choicegroup", userdate($choicegroup->timeopen)), "generalbox notopenyet");
         echo $OUTPUT->footer();
@@ -268,7 +268,7 @@ $sitecontext = context_system::instance();
 if (isguestuser()) {
     // Guest account
     echo $OUTPUT->confirm(get_string('noguestchoose', 'choicegroup').'<br /><br />'.get_string('liketologin'),
-                    get_login_url(), new moodle_url('/course/view.php', array('id'=>$course->id)));
+                    get_login_url(), new moodle_url('/course/view.php', array('id' => $course->id)));
 } else if (!is_enrolled($context)) {
     // Only people enrolled can make a choicegroup
     $SESSION->wantsurl = $FULLME;
@@ -280,7 +280,7 @@ if (isguestuser()) {
     echo $OUTPUT->box_start('generalbox', 'notice');
     echo '<p class="center">'. get_string('notenrolledchoose', 'choicegroup') .'</p>';
     echo $OUTPUT->container_start('continuebutton');
-    echo $OUTPUT->single_button(new moodle_url('/enrol/index.php?', array('id'=>$course->id)), get_string('enrolme', 'core_enrol', $courseshortname));
+    echo $OUTPUT->single_button(new moodle_url('/enrol/index.php?', array('id' => $course->id)), get_string('enrolme', 'core_enrol', $courseshortname));
     echo $OUTPUT->container_end();
     echo $OUTPUT->box_end();
 

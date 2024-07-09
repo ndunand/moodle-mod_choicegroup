@@ -253,8 +253,7 @@ AddonModChoiceGroupProvider.prototype.deleteResponsesOnline = function(id, siteI
 
             if (!response || response.status === false) {
                 // Couldn't delete the responses. Reject the promise.
-                var error = response && response.warnings && response.warnings[0] ?
-                        response.warnings[0] : that.CoreUtilsProvider.createFakeWSError('');
+                var error = response && response.warnings && response.warnings[0] ? response.warnings[0] : that.CoreUtilsProvider.createFakeWSError('');
 
                 return Promise.reject(error);
             }
@@ -329,8 +328,7 @@ AddonModChoiceGroupProvider.prototype.submitResponsesOnline = function(id, data,
 
             if (!response || response.status === false) {
                 // Couldn't delete the responses. Reject the promise.
-                var error = response && response.warnings && response.warnings[0] ?
-                        response.warnings[0] : that.CoreUtilsProvider.createFakeWSError('');
+                var error = response && response.warnings && response.warnings[0] ? response.warnings[0] : that.CoreUtilsProvider.createFakeWSError('');
 
                 return Promise.reject(error);
             }
@@ -383,8 +381,7 @@ AddonModChoiceGroupSyncProvider.prototype.syncAllChoiceGroupsFunc = function(sit
     return choiceGroupOffline.getResponses(siteId).then(function(responses) {
         // Sync all responses.
         var promises = responses.map(function(response) {
-            var promise = force ? self.syncChoiceGroup(response.choicegroupid, siteId) :
-                    self.syncChoiceGroupIfNeeded(response.choicegroupid, siteId);
+            var promise = force ? self.syncChoiceGroup(response.choicegroupid, siteId) : self.syncChoiceGroupIfNeeded(response.choicegroupid, siteId);
 
             return promise.then(function(result) {
                 if (result && result.updated) {

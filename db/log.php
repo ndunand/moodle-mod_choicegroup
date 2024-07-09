@@ -27,10 +27,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $logs = array(
-    array('module'=>'choicegroup', 'action'=>'view', 'mtable'=>'choicegroup', 'field'=>'name'),
-    array('module'=>'choicegroup', 'action'=>'update', 'mtable'=>'choicegroup', 'field'=>'name'),
-    array('module'=>'choicegroup', 'action'=>'add', 'mtable'=>'choicegroup', 'field'=>'name'),
-    array('module'=>'choicegroup', 'action'=>'report', 'mtable'=>'choicegroup', 'field'=>'name'),
-    array('module'=>'choicegroup', 'action'=>'choose', 'mtable'=>'choicegroup', 'field'=>'name'),
-    array('module'=>'choicegroup', 'action'=>'choose again', 'mtable'=>'choicegroup', 'field'=>'name'),
+    array('module' => 'choicegroup', 'action' => 'view', 'mtable' => 'choicegroup', 'field' => 'name'),
+    array('module' => 'choicegroup', 'action' => 'update', 'mtable' => 'choicegroup', 'field' => 'name'),
+    array('module' => 'choicegroup', 'action' => 'add', 'mtable' => 'choicegroup', 'field' => 'name'),
+    array('module' => 'choicegroup', 'action' => 'report', 'mtable' => 'choicegroup', 'field' => 'name'),
+    array('module' => 'choicegroup', 'action' => 'choose', 'mtable' => 'choicegroup', 'field' => 'name'),
+    array('module' => 'choicegroup', 'action' => 'choose again', 'mtable' => 'choicegroup', 'field' => 'name'),
 );

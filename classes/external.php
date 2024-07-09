@@ -356,7 +356,7 @@ class mod_choicegroup_external extends external_api {
             $value = $datavalue['value'];
             if ($allowmultiple) {
                 if ($name != 'responses' && $value === 'true') {
-                    $responses[] = substr($name, strrpos($name, '_')+1);
+                    $responses[] = substr($name, strrpos($name, '_') + 1);
                 }
             } else if ($name === 'responses') {
                 $responses[] = $value;
