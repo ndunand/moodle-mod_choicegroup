@@ -39,7 +39,7 @@ class mod_choicegroup_mod_form extends moodleform_mod
         // -------------------------------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-        $mform->addElement('text', 'name', get_string('choicegroupname', 'choicegroup'), array('size' => '64'));
+        $mform->addElement('text', 'name', get_string('choicegroupname', 'choicegroup'), ['size' => '64']);
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -55,12 +55,11 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
         // -------------------------------------------------------------------------------
 
-
         // -------------------------
         // Fetch data from database.
         // -------------------------.
-        $groups = array();
-        $db_groups = $DB->get_records('groups', array('courseid' => $COURSE->id));
+        $groups = [];
+        $db_groups = $DB->get_records('groups', ['courseid' => $COURSE->id]);
         foreach ($db_groups as $group) {
             $groups[$group->id] = new stdClass();
             $groups[$group->id]->name = format_string($group->name);
@@ -76,8 +75,8 @@ class mod_choicegroup_mod_form extends moodleform_mod
             \core\notification::add($message, \core\notification::WARNING);
         }
 
-        $db_groupings = $DB->get_records('groupings', array('courseid' => $COURSE->id));
-        $groupings = array();
+        $db_groupings = $DB->get_records('groupings', ['courseid' => $COURSE->id]);
+        $groupings = [];
         if ($db_groupings) {
             foreach ($db_groupings as $grouping) {
                 $groupings[$grouping->id] = new stdClass();
@@ -101,7 +100,7 @@ class mod_choicegroup_mod_form extends moodleform_mod
         $mform->setExpanded('miscellaneoussettingshdr');
         $mform->addElement('checkbox', 'multipleenrollmentspossible', get_string('multipleenrollmentspossible', 'choicegroup'));
 
-        $mform->addElement('text', 'maxenrollments', get_string('maxenrollments', 'choicegroup'), array('size' => '6'));
+        $mform->addElement('text', 'maxenrollments', get_string('maxenrollments', 'choicegroup'), ['size' => '6']);
         $mform->addHelpButton('maxenrollments', 'maxenrollments', 'choicegroup');
         $mform->setType('maxenrollments', PARAM_INT);
         $mform->hideIf('maxenrollments', 'multipleenrollmentspossible');
@@ -111,7 +110,8 @@ class mod_choicegroup_mod_form extends moodleform_mod
         $mform->addElement('select', 'showresults', get_string("publish", "choicegroup"), $CHOICEGROUP_SHOWRESULTS);
         $mform->setDefault('showresults', CHOICEGROUP_SHOWRESULTS_DEFAULT);
 
-        $mform->addElement('select', 'publish', get_string("privacy", "choicegroup"), $CHOICEGROUP_PUBLISH, CHOICEGROUP_PUBLISH_DEFAULT);
+        $mform->addElement('select', 'publish', get_string("privacy", "choicegroup"), $CHOICEGROUP_PUBLISH,
+            CHOICEGROUP_PUBLISH_DEFAULT);
         $mform->setDefault('publish', CHOICEGROUP_PUBLISH_DEFAULT);
         $mform->disabledIf('publish', 'showresults', 'eq', 0);
 
@@ -122,13 +122,13 @@ class mod_choicegroup_mod_form extends moodleform_mod
         $mform->addElement('selectyesno', 'onlyactive', get_string('onlyactive', 'choicegroup'));
         $mform->setDefault('onlyactive', 0);
 
-        $menuoptions = array();
+        $menuoptions = [];
         $menuoptions[0] = get_string('disable');
         $menuoptions[1] = get_string('enable');
         $mform->addElement('select', 'limitanswers', get_string('limitanswers', 'choicegroup'), $menuoptions);
         $mform->addHelpButton('limitanswers', 'limitanswers', 'choicegroup');
 
-        $mform->addElement('text', 'generallimitation', get_string('generallimitation', 'choicegroup'), array('size' => '6'));
+        $mform->addElement('text', 'generallimitation', get_string('generallimitation', 'choicegroup'), ['size' => '6']);
         $mform->setType('generallimitation', PARAM_INT);
         $mform->disabledIf('generallimitation', 'limitanswers', 'neq', 1);
         $mform->addRule('generallimitation', get_string('error'), 'numeric', 'extraruledata', 'client', false, false);
@@ -136,22 +136,27 @@ class mod_choicegroup_mod_form extends moodleform_mod
         $mform->addElement('button', 'setlimit', get_string('applytoallgroups', 'choicegroup'));
         $mform->disabledIf('setlimit', 'limitanswers', 'neq', 1);
 
-
         // -------------------------
         // Generate the groups section of the form
         // -------------------------.
 
-
         $mform->addElement('header', 'groups', get_string('groupsheader', 'choicegroup'));
         $mform->addElement('html', '<fieldset class="clearfix">
-				<div class="fcontainer clearfix">
-				<div id="fitem_id_option_0" class="fitem fitem_fselect ">
-				<div class="fitemtitle"><label for="id_option_0">' . get_string('groupsheader', 'choicegroup') . '</label><span class="helptooltip"><a href="' . $CFG->wwwroot . '/help.php?component=choicegroup&amp;identifier=choicegroupoptions&amp;lang=' . current_language() . '" title="' . get_string('choicegroupoptions_help', 'choicegroup') . '" aria-haspopup="true" target="_blank"><img src="' . $CFG->wwwroot . '/theme/image.php?theme=' . $PAGE->theme->name . '&component=core&image=help" alt="' . get_string('choicegroupoptions_help', 'choicegroup') . '" class="iconhelp"></a></span></div><div class="felement fselect">
+                <div class="fcontainer clearfix">
+                <div id="fitem_id_option_0" class="fitem fitem_fselect ">
+                <div class="fitemtitle"><label for="id_option_0">' . get_string('groupsheader', 'choicegroup') .
+            '</label><span class="helptooltip"><a href="' . $CFG->wwwroot .
+            '/help.php?component=choicegroup&amp;identifier=choicegroupoptions&amp;lang=' . current_language() .
+            '" title="' . get_string('choicegroupoptions_help', 'choicegroup') .
+            '" aria-haspopup="true" target="_blank"><img src="' . $CFG->wwwroot . '/theme/image.php?theme='
+            . $PAGE->theme->name . '&component=core&image=help" alt="' .
+            get_string('choicegroupoptions_help', 'choicegroup') .
+            '" class="iconhelp"></a></span></div><div class="felement fselect">
                 <div class="tablecontainer">
-				<table>
-				    <tr class="row">
-				        <th class="col-lg-6">' . get_string('available_groups', 'choicegroup') . '</th>
-				        <th class="col-lg-6">' . get_string('selected_groups', 'choicegroup') . '</th>
+                <table>
+                    <tr class="row">
+                        <th class="col-lg-6">' . get_string('available_groups', 'choicegroup') . '</th>
+                        <th class="col-lg-6">' . get_string('selected_groups', 'choicegroup') . '</th>
                     </tr>
                     <tr class="row">
                         <td style="vertical-align: top" class="col-5">');
@@ -159,11 +164,16 @@ class mod_choicegroup_mod_form extends moodleform_mod
         $mform->addElement('html', '<select class="col-12" id="availablegroups" name="availableGroups" multiple size=10>');
         foreach ($groupings as $groupingID => $grouping) {
             // Find all linked groups to this grouping.
-            if (isset($grouping->linkedGroupsIDs) && count($grouping->linkedGroupsIDs) > 1) { // Grouping has more than 2 items, thus we should display it (otherwise it would be clearer to display only that single group alone).
-                $mform->addElement('html', '<option value="' . $groupingID . '" style="font-weight: bold" class="grouping">' . get_string('char_bullet_expanded', 'choicegroup') . $grouping->name . '</option>');
+            if (isset($grouping->linkedGroupsIDs) && count($grouping->linkedGroupsIDs) > 1) {
+                // Grouping has more than 2 items, thus we should display it (otherwise it would be clearer to display only that
+                // single group alone).
+                $mform->addElement('html', '<option value="' . $groupingID .
+                    '" style="font-weight: bold" class="grouping">' . get_string('char_bullet_expanded', 'choicegroup') .
+                    $grouping->name . '</option>');
                 foreach ($grouping->linkedGroupsIDs as $linkedGroupID) {
                     if (isset($groups[$linkedGroupID])) {
-                        $mform->addElement('html', '<option value="' . $linkedGroupID . '" class="group nested">&nbsp;&nbsp;&nbsp;&nbsp;' . $groups[$linkedGroupID]->name . '</option>');
+                        $mform->addElement('html', '<option value="' . $linkedGroupID .
+                            '" class="group nested">&nbsp;&nbsp;&nbsp;&nbsp;' . $groups[$linkedGroupID]->name . '</option>');
                         $groups[$linkedGroupID]->mentioned = true;
                     }
                 }
@@ -171,17 +181,22 @@ class mod_choicegroup_mod_form extends moodleform_mod
         }
         foreach ($groups as $group) {
             if ($group->mentioned === false) {
-                $mform->addElement('html', '<option title="' . $group->name . '" value="' . $group->id . '" class="group toplevel">' . format_string($group->name) . '</option>');
+                $mform->addElement('html', '<option title="' . $group->name . '" value="' . $group->id .
+                    '" class="group toplevel">' . format_string($group->name) . '</option>');
             }
         }
-        $mform->addElement('html', '</select><br><button name="expandButton" type="button" disabled id="expandButton" class="btn btn-secondary">' . get_string('expand_all_groupings', 'choicegroup') .
-            '</button><button name="collapseButton" type="button" disabled id="collapseButton" class="btn btn-secondary">' . get_string('collapse_all_groupings', 'choicegroup') .
-            '</button><br>' . get_string('double_click_grouping_legend', 'choicegroup') . '<br>' . get_string('double_click_group_legend', 'choicegroup'));
-
+        $mform->addElement('html', '</select><br><button name="expandButton" type="button" disabled id="expandButton" ' .
+            'class="btn btn-secondary">' . get_string('expand_all_groupings', 'choicegroup') .
+            '</button><button name="collapseButton" type="button" disabled id="collapseButton" class="btn btn-secondary">' .
+            get_string('collapse_all_groupings', 'choicegroup') .
+            '</button><br>' . get_string('double_click_grouping_legend', 'choicegroup') . '<br>' .
+            get_string('double_click_group_legend', 'choicegroup'));
 
         $mform->addElement('html', '
-				</td><td class="col-2"><button id="addGroupButton" name="add" type="button" disabled class="btn btn-secondary">' . get_string('add', 'choicegroup') .
-            '</button><div><button name="remove" type="button" disabled id="removeGroupButton" class="btn btn-secondary">' . get_string('del', 'choicegroup') . '</button></div></td>');
+                </td><td class="col-2"><button id="addGroupButton" name="add" type="button" disabled class="btn btn-secondary">' .
+            get_string('add', 'choicegroup') .
+            '</button><div><button name="remove" type="button" disabled id="removeGroupButton" class="btn btn-secondary">' .
+            get_string('del', 'choicegroup') . '</button></div></td>');
         $mform->addElement('html', '<td style="vertical-align: top" class="col-5">
     <select class="col-12" id="id_selectedGroups" name="selectedGroups" multiple size=10></select>
     <div id="fitem_id_limit_0" class="fitem fitem_ftext" style="display:none">
@@ -199,15 +214,15 @@ class mod_choicegroup_mod_form extends moodleform_mod
         </div>
     </div>
 </div>
-				</fieldset>');
+                </fieldset>');
 
         $mform->setExpanded('groups');
 
         foreach ($groups as $group) {
-            $mform->addElement('hidden', 'group_' . $group->id . '_limit', '', array('id' => 'group_' . $group->id . '_limit', 'class' => 'limit_input_node'));
+            $mform->addElement('hidden', 'group_' . $group->id . '_limit', '', ['id' => 'group_' . $group->id . '_limit',
+                'class' => 'limit_input_node']);
             $mform->setType('group_' . $group->id . '_limit', PARAM_RAW);
         }
-
 
         $serializedselectedgroupsValue = '';
         if (isset($this->_instance) && $this->_instance != '') {
@@ -220,16 +235,16 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
         }
 
-
-        $mform->addElement('hidden', 'serializedselectedgroups', $serializedselectedgroupsValue, array('id' => 'serializedselectedgroups'));
+        $mform->addElement('hidden', 'serializedselectedgroups', $serializedselectedgroupsValue,
+            ['id' => 'serializedselectedgroups']);
         $mform->setType('serializedselectedgroups', PARAM_RAW);
 
         switch (get_config('choicegroup', 'sortgroupsby')) {
             case CHOICEGROUP_SORTGROUPS_CREATEDATE:
-                $systemdefault = array(CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT => get_string('systemdefault_date', 'choicegroup'));
+                $systemdefault = [CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT => get_string('systemdefault_date', 'choicegroup')];
                 break;
             case CHOICEGROUP_SORTGROUPS_NAME:
-                $systemdefault = array(CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT => get_string('systemdefault_name', 'choicegroup'));
+                $systemdefault = [CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT => get_string('systemdefault_name', 'choicegroup')];
                 break;
         }
 
@@ -304,7 +319,7 @@ class mod_choicegroup_mod_form extends moodleform_mod
         $errors = parent::validation($data, $files);
 
         $groupIDs = explode(';', $data['serializedselectedgroups']);
-        $groupIDs = array_diff($groupIDs, array(''));
+        $groupIDs = array_diff($groupIDs, ['']);
 
         if($data['timeopen'] > $data['timeclose']) {
             $errors['timeopen'] = get_string('activitydate:closingbeforeopening', 'choicegroup');

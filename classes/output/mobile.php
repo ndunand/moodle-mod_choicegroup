@@ -70,7 +70,7 @@ class mobile {
 
         $foldername = $args->appversioncode >= 3950 ? 'latest' : 'ionic3';
         $cm = get_coursemodule_from_id('choicegroup', $args->cmid);
-        $course = $DB->get_record('course', array('id' => $cm->course));
+        $course = $DB->get_record('course', ['id' => $cm->course]);
 
         // Capabilities check.
         require_login($args->courseid, false, $cm, true, true);
@@ -112,7 +112,7 @@ class mobile {
                 $choicegroup->alloptionsdisabled
             );
             $options = array_values($returnedoptions['options']); // Make it mustache compatible.
-            $responses = array();
+            $responses = [];
             foreach ($options as $option) {
                 if ($choicegroup->multipleenrollmentspossible) {
                     $responses['responses_'.$option['id']] = $option['checked'];
@@ -121,7 +121,7 @@ class mobile {
                 }
             }
         } catch (Exception $e) {
-            $options = array();
+            $options = [];
         }
 
         // Format name and intro.
@@ -133,27 +133,27 @@ class mobile {
             'mod_choicegroup',
             'intro'
         );
-        $data = array(
+        $data = [
             'cmid' => $cm->id,
             'courseid' => $args->courseid,
             'choicegroup' => $choicegroup,
             'options' => $options
-        );
+        ];
 
-        return array(
-            'templates' => array(
-                array(
+        return [
+            'templates' => [
+                [
                     'id' => 'main',
                     'html' => $OUTPUT->render_from_template("mod_choicegroup/mobile_view_page_$foldername", $data),
-                ),
-            ),
+                ],
+            ],
             'javascript' => file_get_contents($CFG->dirroot . "/mod/choicegroup/mobile/js/$foldername/courseview.js"),
-            'otherdata' => array(
+            'otherdata' => [
                 'data' => json_encode($responses),
                 'allowupdate' => $choicegroup->allowupdate ? 1 : 0,
                 'multipleenrollmentspossible' => $choicegroup->multipleenrollmentspossible ? 1 : 0,
                 'answergiven' => $choicegroup->answergiven ? 1 : 0,
-            )
-        );
+            ]
+        ];
     }
 }

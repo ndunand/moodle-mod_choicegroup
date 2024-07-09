@@ -30,9 +30,9 @@ $id         = required_param('id', PARAM_INT);   // Module id.
 $format     = optional_param('format', CHOICEGROUP_PUBLISH_NAMES, PARAM_INT);
 $download   = optional_param('download', '', PARAM_ALPHA);
 $action     = optional_param('action', '', PARAM_ALPHA);
-$grpsmemberids = optional_param_array('grpsmemberid', array(), PARAM_INT); // Get array of responses to delete.
+$grpsmemberids = optional_param_array('grpsmemberid', [], PARAM_INT); // Get array of responses to delete.
 
-$url = new moodle_url('/mod/choicegroup/report.php', array('id' => $id));
+$url = new moodle_url('/mod/choicegroup/report.php', ['id' => $id]);
 if ($format !== CHOICEGROUP_PUBLISH_NAMES) {
     $url->param('format', $format);
 }
@@ -48,7 +48,7 @@ if (! $cm = get_coursemodule_from_id('choicegroup', $id)) {
     throw new moodle_exception("invalidcoursemodule");
 }
 
-if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
+if (! $course = $DB->get_record("course", ["id" => $cm->course])) {
     throw new moodle_exception("coursemisconf");
 }
 
@@ -66,10 +66,10 @@ $strchoicegroup = get_string("modulename", "choicegroup");
 $strchoicegroups = get_string("modulenameplural", "choicegroup");
 $strresponses = get_string("responses", "choicegroup");
 
-$eventparams = array(
+$eventparams = [
     'context' => $context,
     'objectid' => $choicegroup->id
-);
+];
 $event = \mod_choicegroup\event\report_viewed::create($eventparams);
 $event->add_record_snapshot('course_modules', $cm);
 $event->add_record_snapshot('course', $course);
@@ -96,7 +96,7 @@ if (!$download) {
 } else {
     $groupmode = groups_get_activity_groupmode($cm);
     $groups = choicegroup_get_groups($choicegroup);
-    $groups_ids = array();
+    $groups_ids = [];
     foreach($groups as $group) {
         $groups_ids[] = $group->id;
     }
@@ -127,7 +127,7 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
     $i = 0;
     $row = 1;
     if ($users) {
-        $displayed = array();
+        $displayed = [];
         foreach ($users as $option => $userid) {
             foreach($userid as $user) {
                 if (in_array($user->id, $displayed)) {
@@ -139,7 +139,7 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
                 $studentid = (!empty($user->idnumber) ? $user->idnumber : " ");
                 $myxls->write_string($row, 2, $studentid);
                 $myxls->write_string($row, 3, $user->email);
-                $ug2 = array();
+                $ug2 = [];
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
                     foreach ($groups_ids as $gid) {
                         if (array_key_exists($gid, $usergrps)) {
@@ -170,7 +170,8 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
     // Send HTTP headers.
     $workbook->send($filename);
     // Creating the first worksheet
-    // assigning by reference gives this: Strict standards: Only variables should be assigned by reference in /data_1/www/html/moodle/moodle/mod/choicegroup/report.php on line 157
+    // assigning by reference gives this: Strict standards: Only variables should be assigned by reference in
+    // /data_1/www/html/moodle/moodle/mod/choicegroup/report.php on line 157
     // removed the ampersand.
     $myxls = $workbook->add_worksheet($strresponses);
     // Print names of all the fields.
@@ -186,7 +187,7 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
     $i = 0;
     $row = 1;
     if ($users) {
-        $displayed = array();
+        $displayed = [];
         foreach ($users as $option => $userid) {
             foreach($userid as $user) {
                 if (in_array($user->id, $displayed)) {
@@ -198,7 +199,7 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
                 $studentid = (!empty($user->idnumber) ? $user->idnumber : " ");
                 $myxls->write_string($row, 2, $studentid);
                 $myxls->write_string($row, 3, $user->email);
-                $ug2 = array();
+                $ug2 = [];
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
                     foreach ($groups_ids as $gid) {
                         if (array_key_exists($gid, $usergrps)) {
@@ -237,7 +238,7 @@ if ($download == "txt" && has_capability('mod/choicegroup:downloadresponses', $c
     // Generate the data for the body of the spreadsheet.
     $i = 0;
     if ($users) {
-        $displayed = array();
+        $displayed = [];
         foreach ($users as $option => $userid) {
             foreach($userid as $user) {
                 if (in_array($user->id, $displayed)) {
@@ -252,7 +253,7 @@ if ($download == "txt" && has_capability('mod/choicegroup:downloadresponses', $c
                 }
                 echo "\t". $studentid."\t";
                 echo $user->email . "\t";
-                $ug2 = array();
+                $ug2 = [];
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
                     foreach ($groups_ids as $gid) {
                         if (array_key_exists($gid, $usergrps)) {
@@ -279,24 +280,24 @@ echo $renderer->display_result($results, has_capability('mod/choicegroup:readres
 
 // now give links for downloading spreadsheets.
 if (!empty($users) && has_capability('mod/choicegroup:downloadresponses', $context)) {
-    $downloadoptions = array();
-    $options = array();
+    $downloadoptions = [];
+    $options = [];
     $options["id"] = "$cm->id";
     $options["download"] = "ods";
     $button = $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadods"));
-    $downloadoptions[] = html_writer::tag('li', $button, array('class' => 'reportoption mt-1'));
+    $downloadoptions[] = html_writer::tag('li', $button, ['class' => 'reportoption mt-1']);
 
     $options["download"] = "xls";
     $button = $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadexcel"));
-    $downloadoptions[] = html_writer::tag('li', $button, array('class' => 'reportoption mt-1'));
+    $downloadoptions[] = html_writer::tag('li', $button, ['class' => 'reportoption mt-1']);
 
     $options["download"] = "txt";
     $button = $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadtext"));
-    $downloadoptions[] = html_writer::tag('li', $button, array('class' => 'reportoption mt-1'));
+    $downloadoptions[] = html_writer::tag('li', $button, ['class' => 'reportoption mt-1']);
 
     $downloadlist = html_writer::tag('ul', implode('', $downloadoptions));
-    $downloadlist .= html_writer::tag('div', '', array('class' => 'clearfloat'));
-    echo html_writer::tag('div', $downloadlist, array('class' => 'downloadreport'));
+    $downloadlist .= html_writer::tag('div', '', ['class' => 'clearfloat']);
+    echo html_writer::tag('div', $downloadlist, ['class' => 'downloadreport']);
 }
 
 echo $OUTPUT->footer();

@@ -37,7 +37,7 @@ class restore_choicegroup_activity_structure_step extends restore_activity_struc
 
     protected function define_structure() {
 
-        $paths = array();
+        $paths = [];
 
         $paths[] = new restore_path_element('choicegroup', '/activity/choicegroup');
         $paths[] = new restore_path_element('choicegroup_option', '/activity/choicegroup/options/option');
@@ -74,7 +74,7 @@ class restore_choicegroup_activity_structure_step extends restore_activity_struc
 
         // Check if the groupid exists in this course.
         $group = $DB->record_exists_sql('SELECT g.id FROM {groups} g
-                            WHERE g.courseid = ? and g.id = ?', array($this->get_courseid(), $data->groupid));
+                            WHERE g.courseid = ? and g.id = ?', [$this->get_courseid(), $data->groupid]);
         if (!$group) {
             // It does not exist in the course already, so try to map the groupid.
             $data->groupid = $this->get_mappingid('group', $data->groupid);

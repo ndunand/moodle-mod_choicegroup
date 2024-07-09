@@ -31,10 +31,10 @@ require_once($CFG->libdir . '/completionlib.php');
 
 $id         = required_param('id', PARAM_INT);                 // Course Module ID.
 $action     = optional_param('action', '', PARAM_ALPHA);
-$userids    = optional_param_array('userid', array(), PARAM_INT); // Array of attempt ids for delete action.
+$userids    = optional_param_array('userid', [], PARAM_INT); // Array of attempt ids for delete action.
 $notify     = optional_param('notify', '', PARAM_ALPHA);
 
-$url = new moodle_url('/mod/choicegroup/view.php', array('id' => $id));
+$url = new moodle_url('/mod/choicegroup/view.php', ['id' => $id]);
 if ($action !== '') {
     $url->param('action', $action);
 }
@@ -44,7 +44,7 @@ if (! $cm = get_coursemodule_from_id('choicegroup', $id)) {
     throw new moodle_exception('invalidcoursemodule');
 }
 
-if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
+if (! $course = $DB->get_record("course", ["id" => $cm->course])) {
     throw new moodle_exception('coursemisconf');
 }
 
@@ -54,7 +54,7 @@ if (!$choicegroup = choicegroup_get_choicegroup($cm->instance)) {
     throw new moodle_exception('invalidcoursemodule');
 }
 $choicegroup_groups = choicegroup_get_groups($choicegroup);
-$choicegroup_users = array();
+$choicegroup_users = [];
 
 $strchoicegroup = get_string('modulename', 'choicegroup');
 $strchoicegroups = get_string('modulenameplural', 'choicegroup');
@@ -63,17 +63,18 @@ if (!$context = context_module::instance($cm->id)) {
     throw new moodle_exception('badcontext');
 }
 
-$eventparams = array(
+$eventparams = [
     'context' => $context,
     'objectid' => $choicegroup->id
-);
+];
 
 $current = choicegroup_get_user_answer($choicegroup, $USER);
-if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, null, 'mod/choicegroup:choose') and $choicegroup->allowupdate and !($choicegroup->timeclose and (time() > $choicegroup->timeclose))) {
+if ($action == 'delchoicegroup' && confirm_sesskey() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
+    $choicegroup->allowupdate && !($choicegroup->timeclose && (time() > $choicegroup->timeclose))) {
     // User wants to delete his own choice.
     if ($current !== false) {
         if (groups_is_member($current->id, $USER->id)) {
-            $currentgroup = $DB->get_record('groups', array('id' => $current->id), 'id,name', MUST_EXIST);
+            $currentgroup = $DB->get_record('groups', ['id' => $current->id], 'id,name', MUST_EXIST);
             groups_remove_member($current->id, $USER->id);
             $event = \mod_choicegroup\event\choice_removed::create($eventparams);
             $event->add_record_snapshot('course_modules', $cm);
@@ -113,7 +114,7 @@ if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
             }
             if ($enrollmentscount > $choicegroup->maxenrollments) {
                 redirect(new moodle_url('/mod/choicegroup/view.php',
-                    array('id' => $cm->id, 'notify' => 'mustchoosemax', 'sesskey' => sesskey())));
+                    ['id' => $cm->id, 'notify' => 'mustchoosemax', 'sesskey' => sesskey()]));
             }
         }
 
@@ -124,7 +125,7 @@ if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
             } else {
                 $answer_value_group_id = optional_param('answer_'.$i.'_groupid', '', PARAM_INT);
                 if (groups_is_member($answer_value_group_id, $USER->id)) {
-                    $answer_value_group = $DB->get_record('groups', array('id' => $answer_value_group_id), 'id,name', MUST_EXIST);
+                    $answer_value_group = $DB->get_record('groups', ['id' => $answer_value_group_id], 'id,name', MUST_EXIST);
                     groups_remove_member($answer_value_group_id, $USER->id);
                     $event = \mod_choicegroup\event\choice_removed::create($eventparams);
                     $event->add_record_snapshot('course_modules', $cm);
@@ -150,11 +151,11 @@ if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
 
         if (empty($answer)) {
             redirect(new moodle_url('/mod/choicegroup/view.php',
-                array('id' => $cm->id, 'notify' => 'mustchooseone', 'sesskey' => sesskey())));
+                ['id' => $cm->id, 'notify' => 'mustchooseone', 'sesskey' => sesskey()]));
         } else {
             choicegroup_user_submit_response($answer, $choicegroup, $USER->id, $course, $cm);
             redirect(new moodle_url('/mod/choicegroup/view.php',
-                array('id' => $cm->id, 'notify' => 'choicegroupsaved', 'sesskey' => sesskey())));
+                ['id' => $cm->id, 'notify' => 'choicegroupsaved', 'sesskey' => sesskey()]));
         }
     }
 }
@@ -173,7 +174,7 @@ echo $OUTPUT->header();
 if ($CFG->branch < 400) {
     echo $OUTPUT->heading(format_string($choicegroup->name));
 }
-if ($notify and confirm_sesskey()) {
+if ($notify && confirm_sesskey()) {
     if ($notify === 'choicegroupsaved') {
         echo $OUTPUT->notification(get_string('choicegroupsaved', 'choicegroup'), 'notifysuccess');
     } else if ($notify === 'mustchooseone') {
@@ -218,22 +219,26 @@ if ($choicegroup->intro) {
     }
 }
 
-// if user has already made a selection, and they are not allowed to update it, show their selected answer.
+// If user has already made a selection, and they are not allowed to update it, show their selected answer.
 if (isloggedin() && ($current !== false) ) {
     if ($choicegroup->multipleenrollmentspossible == 1) {
         $currents = choicegroup_get_user_answer($choicegroup, $USER, true, true);
 
-        $names = array();
+        $names = [];
         if (is_array($currents)) {
             foreach ($currents as $current) {
                 $names[] = format_string($current->name);
             }
         }
-        $formatted_names = join(' '.get_string("and", "choicegroup").' ', array_filter(array_merge(array(join(', ', array_slice($names, 0, -1))), array_slice($names, -1))));
-        echo $OUTPUT->box(get_string("yourselection", "choicegroup", userdate($choicegroup->timeopen)).": ".$formatted_names, 'generalbox', 'yourselection');
+        $formatted_names = join(' '.get_string("and", "choicegroup").' ',
+            array_filter(array_merge([join(', ', array_slice($names, 0, -1))],
+                array_slice($names, -1))));
+        echo $OUTPUT->box(get_string("yourselection", "choicegroup",
+                userdate($choicegroup->timeopen)).": ".$formatted_names, 'generalbox', 'yourselection');
 
     } else {
-        echo $OUTPUT->box(get_string("yourselection", "choicegroup", userdate($choicegroup->timeopen)).": ".format_string($current->name), 'generalbox', 'yourselection');
+        echo $OUTPUT->box(get_string("yourselection", "choicegroup",
+                userdate($choicegroup->timeopen)).": ".format_string($current->name), 'generalbox', 'yourselection');
     }
 }
 
@@ -253,13 +258,17 @@ if ($choicegroup->timeclose != 0) {
 
 $options = choicegroup_prepare_options($choicegroup, $USER, $cm, $allresponses);
 $renderer = $PAGE->get_renderer('mod_choicegroup');
-if ( (!$current or $choicegroup->allowupdate) and $choicegroupopen and is_enrolled($context, null, 'mod/choicegroup:choose')) {
+if ((!$current || $choicegroup->allowupdate) && $choicegroupopen && is_enrolled($context, null, 'mod/choicegroup:choose')) {
 // They haven't made their choicegroup yet or updates allowed and choicegroup is open.
 
-    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, false, $choicegroup->multipleenrollmentspossible, $choicegroup->onlyactive);
+    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers,
+        $choicegroup->showresults, $current, $choicegroupopen, false, $choicegroup->multipleenrollmentspossible,
+        $choicegroup->onlyactive);
 } else {
     // Form can not be updated.
-    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, true, $choicegroup->multipleenrollmentspossible, $choicegroup->onlyactive);
+    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers,
+        $choicegroup->showresults, $current, $choicegroupopen, true, $choicegroup->multipleenrollmentspossible,
+        $choicegroup->onlyactive);
 }
 $choicegroupformshown = true;
 
@@ -268,28 +277,29 @@ $sitecontext = context_system::instance();
 if (isguestuser()) {
     // Guest account.
     echo $OUTPUT->confirm(get_string('noguestchoose', 'choicegroup').'<br /><br />'.get_string('liketologin'),
-                    get_login_url(), new moodle_url('/course/view.php', array('id' => $course->id)));
+                    get_login_url(), new moodle_url('/course/view.php', ['id' => $course->id]));
 } else if (!is_enrolled($context)) {
     // Only people enrolled can make a choicegroup.
     $SESSION->wantsurl = $FULLME;
     $SESSION->enrolcancel = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';
 
     $coursecontext = context_course::instance($course->id);
-    $courseshortname = format_string($course->shortname, true, array('context' => $coursecontext));
+    $courseshortname = format_string($course->shortname, true, ['context' => $coursecontext]);
 
     echo $OUTPUT->box_start('generalbox', 'notice');
     echo '<p class="center">'. get_string('notenrolledchoose', 'choicegroup') .'</p>';
     echo $OUTPUT->container_start('continuebutton');
-    echo $OUTPUT->single_button(new moodle_url('/enrol/index.php?', array('id' => $course->id)), get_string('enrolme', 'core_enrol', $courseshortname));
+    echo $OUTPUT->single_button(new moodle_url('/enrol/index.php?', ['id' => $course->id]),
+        get_string('enrolme', 'core_enrol', $courseshortname));
     echo $OUTPUT->container_end();
     echo $OUTPUT->box_end();
 
 }
 
 // Print the results at the bottom of the screen.
-if ( $choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or
-    ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER and $current) or
-    ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {
+if ( $choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS ||
+    ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER && $current) ||
+    ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE && !$choicegroupopen)) {
 }
 else if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_NOT) {
     echo $OUTPUT->box(get_string('neverresultsviewable', 'choicegroup'));
@@ -297,7 +307,7 @@ else if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_NOT) {
 else if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER && !$current) {
     echo $OUTPUT->box(get_string('afterresultsviewable', 'choicegroup'));
 }
-else if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and $choicegroupopen) {
+else if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE && $choicegroupopen) {
     echo $OUTPUT->box(get_string('notyetresultsviewable', 'choicegroup'));
 }
 else if (!$choicegroupformshown) {

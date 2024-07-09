@@ -38,30 +38,30 @@ class backup_choicegroup_activity_structure_step extends backup_activity_structu
     protected function define_structure() {
 
         // Define each element separated.
-        $choicegroup = new backup_nested_element('choicegroup', array('id'), array(
+        $choicegroup = new backup_nested_element('choicegroup', ['id'], [
             'name', 'intro', 'introformat', 'publish',
             'multipleenrollmentspossible',
             'showresults', 'display', 'allowupdate', 'showunanswered',
             'limitanswers', 'timeopen', 'timeclose', 'timemodified',
-            'completionsubmit', 'sortgroupsby', 'onlyactive'));
+            'completionsubmit', 'sortgroupsby', 'onlyactive']);
 
         $options = new backup_nested_element('options');
 
-        $option = new backup_nested_element('option', array('id'), array(
-            'groupid', 'maxanswers', 'timemodified'));
+        $option = new backup_nested_element('option', ['id'], [
+            'groupid', 'maxanswers', 'timemodified']);
 
         // Build the tree.
         $choicegroup->add_child($options);
         $options->add_child($option);
 
         // Define sources.
-        $choicegroup->set_source_table('choicegroup', array('id' => backup::VAR_ACTIVITYID));
+        $choicegroup->set_source_table('choicegroup', ['id' => backup::VAR_ACTIVITYID]);
 
         $option->set_source_sql('
             SELECT *
               FROM {choicegroup_options}
              WHERE choicegroupid = ?',
-            array(backup::VAR_PARENTID));
+            [backup::VAR_PARENTID]);
 
         // Define file annotations.
         $choicegroup->annotate_files('mod_choicegroup', 'intro', null); // This file area hasn't itemid.

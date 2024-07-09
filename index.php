@@ -29,18 +29,18 @@ require_once("lib.php");
 
 $id = required_param('id', PARAM_INT); // Course.
 
-$PAGE->set_url('/mod/choicegroup/index.php', array('id' => $id));
+$PAGE->set_url('/mod/choicegroup/index.php', ['id' => $id]);
 
-if (!$course = $DB->get_record('course', array('id' => $id))) {
+if (!$course = $DB->get_record('course', ['id' => $id])) {
     throw new moodle_exception('invalidcourseid');
 }
 
 require_course_login($course);
 $PAGE->set_pagelayout('incourse');
 
-$params = array(
+$params = [
     'context' => context_course::instance($course->id)
-);
+];
 $event = \mod_choicegroup\event\course_module_instance_list_viewed::create($params);
 $event->add_record_snapshot('course', $course);
 $event->trigger();
@@ -66,11 +66,11 @@ if ($usesections) {
 $table = new html_table();
 
 if ($usesections) {
-    $table->head = array($strsectionname, get_string("question"), get_string("answer"));
-    $table->align = array("center", "left", "left");
+    $table->head = [$strsectionname, get_string("question"), get_string("answer")];
+    $table->align = ["center", "left", "left"];
 } else {
-    $table->head = array(get_string("question"), get_string("answer"));
-    $table->align = array("left", "left");
+    $table->head = [get_string("question"), get_string("answer")];
+    $table->align = ["left", "left"];
 }
 
 $currentsection = "";
@@ -106,15 +106,16 @@ foreach ($choicegroups as $choicegroup) {
     // Calculate the href.
     if (!$choicegroup->visible) {
         // Show dimmed if the mod is hidden.
-        $tt_href = "<a class=\"dimmed\" href=\"view.php?id=$choicegroup->coursemodule\">" . format_string($choicegroup->name, true) . "</a>";
+        $tt_href = "<a class=\"dimmed\" href=\"view.php?id=$choicegroup->coursemodule\">" .
+            format_string($choicegroup->name, true) . "</a>";
     } else {
         // Show normal if the mod is visible.
         $tt_href = "<a href=\"view.php?id=$choicegroup->coursemodule\">" . format_string($choicegroup->name, true) . "</a>";
     }
     if ($usesections) {
-        $table->data[] = array($printsection, $tt_href, $aa);
+        $table->data[] = [$printsection, $tt_href, $aa];
     } else {
-        $table->data[] = array($tt_href, $aa);
+        $table->data[] = [$tt_href, $aa];
     }
 }
 echo "<br />";
