@@ -61,19 +61,19 @@ if (!defined('MOD_PURPOSE_COLLABORATION')) {
 /** @global array $CHOICEGROUP_PUBLISH */
 global $CHOICEGROUP_PUBLISH;
 $CHOICEGROUP_PUBLISH = [CHOICEGROUP_PUBLISH_ANONYMOUS  => get_string('publishanonymous', 'choicegroup'),
-                         CHOICEGROUP_PUBLISH_NAMES      => get_string('publishnames', 'choicegroup')];
+                         CHOICEGROUP_PUBLISH_NAMES      => get_string('publishnames', 'choicegroup'), ];
 
 /** @global array $CHOICEGROUP_SHOWRESULTS */
 global $CHOICEGROUP_SHOWRESULTS;
 $CHOICEGROUP_SHOWRESULTS = [CHOICEGROUP_SHOWRESULTS_NOT          => get_string('publishnot', 'choicegroup'),
                          CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER => get_string('publishafteranswer', 'choicegroup'),
                          CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE  => get_string('publishafterclose', 'choicegroup'),
-                         CHOICEGROUP_SHOWRESULTS_ALWAYS       => get_string('publishalways', 'choicegroup')];
+                         CHOICEGROUP_SHOWRESULTS_ALWAYS       => get_string('publishalways', 'choicegroup'), ];
 
 /** @global array $CHOICEGROUP_DISPLAY */
 global $CHOICEGROUP_DISPLAY;
 $CHOICEGROUP_DISPLAY = [CHOICEGROUP_DISPLAY_HORIZONTAL   => get_string('displayhorizontal', 'choicegroup'),
-                         CHOICEGROUP_DISPLAY_VERTICAL     => get_string('displayvertical', 'choicegroup')];
+                         CHOICEGROUP_DISPLAY_VERTICAL     => get_string('displayvertical', 'choicegroup'), ];
 
 require_once($CFG->dirroot.'/group/lib.php');
 
@@ -397,7 +397,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
     $context = context_module::instance($cm->id);
     $eventparams = [
         'context' => $context,
-        'objectid' => $choicegroup->id
+        'objectid' => $choicegroup->id,
     ];
 
     check_restrictions($choicegroup, $userid);
@@ -707,7 +707,7 @@ function choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course
     $completion = new completion_info($course);
     $eventparams = [
         'context' => $context,
-        'objectid' => $choicegroup->id
+        'objectid' => $choicegroup->id,
     ];
 
     foreach($grpsmemberids as $grpsmemberid) {
@@ -826,7 +826,7 @@ function choicegroup_get_choicegroup($choicegroupid) {
         $sortcolumn = choicegroup_get_sort_column($choicegroup);
 
         $params = [
-            'choicegroupid' => $choicegroupid
+            'choicegroupid' => $choicegroupid,
         ];
 
         $grpfilter = '';
@@ -1090,7 +1090,7 @@ function choicegroup_page_type_list($pagetype, $parentcontext, $currentcontext) 
 function choicegroup_get_sort_options() {
     return  [
         CHOICEGROUP_SORTGROUPS_CREATEDATE => get_string('createdate', 'choicegroup'),
-        CHOICEGROUP_SORTGROUPS_NAME => get_string('name', 'choicegroup')
+        CHOICEGROUP_SORTGROUPS_NAME => get_string('name', 'choicegroup'),
     ];
 }
 
@@ -1139,7 +1139,7 @@ function choicegroup_view($choicegroup, $course, $cm, $context) {
     // TODO: Trigger course_module_viewed event.
     $params = [
         'context' => $context,
-        'objectid' => $choicegroup->id
+        'objectid' => $choicegroup->id,
     ];
 
     // Completion.

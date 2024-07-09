@@ -137,7 +137,7 @@ class mobile {
             'cmid' => $cm->id,
             'courseid' => $args->courseid,
             'choicegroup' => $choicegroup,
-            'options' => $options
+            'options' => $options,
         ];
 
         return [
@@ -153,7 +153,7 @@ class mobile {
                 'allowupdate' => $choicegroup->allowupdate ? 1 : 0,
                 'multipleenrollmentspossible' => $choicegroup->multipleenrollmentspossible ? 1 : 0,
                 'answergiven' => $choicegroup->answergiven ? 1 : 0,
-            ]
+            ],
         ];
     }
 }

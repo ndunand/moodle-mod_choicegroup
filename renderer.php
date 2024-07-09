@@ -63,7 +63,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $group = get_string('group').' ';
         $group .= html_writer::tag('a', get_string('showdescription', 'choicegroup'),
             ['role' => 'button', 'class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow btn btn-secondary ml-1',
-                'href' => '#']);
+                'href' => '#', ]);
         $html .= html_writer::tag('th', $group, ['class' => 'width40']);
 
         if ( $showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS ||
@@ -78,7 +78,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
                 $membersdisplay_html = html_writer::tag('a', get_string('showgroupmembers', 'mod_choicegroup'),
                     ['role' => 'button', 'class' => 'choicegroup-memberdisplay choicegroup-membershow btn btn-secondary ml-1',
-                        'href' => '#']);
+                        'href' => '#', ]);
                 $html .= html_writer::tag('th', get_string('groupmembers', 'choicegroup') .' '.
                     $membersdisplay_html, ['class' => 'width40']);
             }
@@ -187,7 +187,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                         'type' => 'submit',
                         'value' => get_string('savemychoicegroup', 'choicegroup'),
                         'class' => 'btn btn-primary',
-                        'style' => $initiallyHideSubmitButton ? 'display: none' : ''
+                        'style' => $initiallyHideSubmitButton ? 'display: none' : '',
                     ]);
                 }
             }
@@ -258,7 +258,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         if ($choicegroups->viewresponsecapability) {
             $html .= html_writer::start_tag('form', $attributes);
             $html .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'id',
-                'value' => $choicegroups->coursemoduleid]);
+                'value' => $choicegroups->coursemoduleid, ]);
             $html .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
             $html .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'mode', 'value' => 'overview']);
         }
@@ -400,7 +400,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                $percentageamount = ((float)$numberofuser / (float)$choicegroups->numberofuser) * 100.0;
             }
             $displaydiagram = html_writer::tag('img', '', ['style' => 'height:50px; width:'.$width.'px', 'alt' => '',
-                'src' => $this->output->pix_url('row', 'choicegroup')]);
+                'src' => $this->output->pix_url('row', 'choicegroup'), ]);
 
             $skiplink = html_writer::tag('a', get_string('skipresultgraph', 'choicegroup'),
                 ['href' => '#skipresultgraph'. $optionid, 'class' => 'skip-block']);

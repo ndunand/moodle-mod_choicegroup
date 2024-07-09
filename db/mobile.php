@@ -41,10 +41,10 @@ $addons = [
                 ], // Function needs caching for offline.
                 'styles' => [
                     'url' => $CFG->wwwroot . '/mod/choicegroup/styles_app.css',
-                    'version' => '0.2'
+                    'version' => '0.2',
                 ],
                 'displayrefresh' => false, // Hide default refresh button, a custom one will be used.
-            ]
+            ],
         ],
         'lang' => [
             ['group', 'moodle'],
@@ -55,7 +55,7 @@ $addons = [
             ['modulename', 'choicegroup'],
             ['pluginname', 'choicegroup'],
             ['removemychoicegroup', 'choicegroup'],
-            ['savemychoicegroup', 'choicegroup']
-        ]
-    ]
+            ['savemychoicegroup', 'choicegroup'],
+        ],
+    ],
 ];

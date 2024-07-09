@@ -34,8 +34,8 @@ $capabilities = [
         'archetypes' => [
             'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW
-        ]
+            'editingteacher' => CAP_ALLOW,
+        ],
     ],
 
     'mod/choicegroup:addinstance' => [
@@ -45,8 +45,8 @@ $capabilities = [
         'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ]
+            'manager' => CAP_ALLOW,
+        ],
     ],
 
 
@@ -57,8 +57,8 @@ $capabilities = [
         'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ]
+            'manager' => CAP_ALLOW,
+        ],
     ],
 
     'mod/choicegroup:deleteresponses' => [
@@ -68,8 +68,8 @@ $capabilities = [
         'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ]
+            'manager' => CAP_ALLOW,
+        ],
     ],
 
     'mod/choicegroup:downloadresponses' => [
@@ -79,9 +79,9 @@ $capabilities = [
         'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ]
-    ]
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 ];
 
 

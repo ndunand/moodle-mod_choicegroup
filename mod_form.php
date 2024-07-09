@@ -220,7 +220,7 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
         foreach ($groups as $group) {
             $mform->addElement('hidden', 'group_' . $group->id . '_limit', '', ['id' => 'group_' . $group->id . '_limit',
-                'class' => 'limit_input_node']);
+                'class' => 'limit_input_node', ]);
             $mform->setType('group_' . $group->id . '_limit', PARAM_RAW);
         }
 

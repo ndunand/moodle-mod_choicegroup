@@ -33,7 +33,7 @@ $functions = [
         'description'   => 'Retrieve options for a specific choicegroup.',
         'type'          => 'read',
         'capabilities'  => 'mod/choicegroup:choose',
-        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE, 'local_mobile']
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE, 'local_mobile'],
     ],
 
     'mod_choicegroup_submit_choicegroup_response' => [
@@ -42,7 +42,7 @@ $functions = [
         'description'   => 'Submit responses to a specific choicegroup item.',
         'type'          => 'write',
         'capabilities'  => 'mod/choicegroup:choose',
-        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE, 'local_mobile']
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE, 'local_mobile'],
     ],
 
     'mod_choicegroup_view_choicegroup' => [
@@ -51,7 +51,7 @@ $functions = [
         'description'   => 'Trigger the course module viewed event and update the module completion status.',
         'type'          => 'write',
         'capabilities'  => '',
-        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE, 'local_mobile']
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE, 'local_mobile'],
     ],
 
     'mod_choicegroup_delete_choicegroup_responses' => [
@@ -60,6 +60,6 @@ $functions = [
         'description'   => 'Delete the given submitted responses in a choice group',
         'type'          => 'write',
         'capabilities'  => 'mod/choicegroup:choose',
-        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE, 'local_mobile']
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE, 'local_mobile'],
     ],
 ];

@@ -68,7 +68,7 @@ $strresponses = get_string("responses", "choicegroup");
 
 $eventparams = [
     'context' => $context,
-    'objectid' => $choicegroup->id
+    'objectid' => $choicegroup->id,
 ];
 $event = \mod_choicegroup\event\report_viewed::create($eventparams);
 $event->add_record_snapshot('course_modules', $cm);

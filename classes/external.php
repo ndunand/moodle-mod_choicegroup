@@ -46,7 +46,7 @@ class mod_choicegroup_external extends external_api {
         return new external_function_parameters(
             [
                 'choicegroupid' => new external_value(PARAM_INT, 'Choice group instance id'),
-                'userid' => new external_value(PARAM_INT, 'User id')
+                'userid' => new external_value(PARAM_INT, 'User id'),
             ]
         );
     }
@@ -69,7 +69,7 @@ class mod_choicegroup_external extends external_api {
 
         $params = [
             'choicegroupid' => $choicegroupid,
-            'userid' => $userid
+            'userid' => $userid,
         ];
         $params = self::validate_parameters(self::get_choicegroup_options_parameters(), $params);
         $choicegroup = choicegroup_get_choicegroup($choicegroupid);
@@ -161,7 +161,7 @@ class mod_choicegroup_external extends external_api {
     public static function view_choicegroup_parameters() {
         return new external_function_parameters(
             [
-                'choicegroupid' => new external_value(PARAM_INT, 'Choice group instance id')
+                'choicegroupid' => new external_value(PARAM_INT, 'Choice group instance id'),
             ]
         );
     }
@@ -177,7 +177,7 @@ class mod_choicegroup_external extends external_api {
         global $DB;
 
         $params = [
-            'choicegroupid' => $choicegroupid
+            'choicegroupid' => $choicegroupid,
         ];
         $params = self::validate_parameters(self::view_choicegroup_parameters(), $params);
         $warnings = [];
@@ -216,7 +216,7 @@ class mod_choicegroup_external extends external_api {
         return new external_single_structure(
             [
                 'status' => new external_value(PARAM_BOOL, 'Status: true if success'),
-                'warnings' => new external_warnings()
+                'warnings' => new external_warnings(),
             ]
         );
     }
@@ -240,7 +240,7 @@ class mod_choicegroup_external extends external_api {
                     'The data to be saved',
                     VALUE_DEFAULT,
                     []
-                )
+                ),
             ]
         );
     }
@@ -259,7 +259,7 @@ class mod_choicegroup_external extends external_api {
 
         $params = [
             'choicegroupid' => $choicegroupid,
-            'data' => $data
+            'data' => $data,
         ];
 
         $params = self::validate_parameters(self::submit_choicegroup_response_parameters(), $params);
@@ -303,7 +303,7 @@ class mod_choicegroup_external extends external_api {
                             groups_remove_member($answer_value_group->id, $USER->id);
                             $eventparams = [
                                 'context' => $context,
-                                'objectid' => $choicegroup->id
+                                'objectid' => $choicegroup->id,
                             ];
                             $event = \mod_choicegroup\event\choice_removed::create($eventparams);
                             $event->add_record_snapshot('course_modules', $cm);
@@ -395,7 +395,7 @@ class mod_choicegroup_external extends external_api {
         $warnings = [];
 
         $params = [
-            'choicegroupid' => $choicegroupid
+            'choicegroupid' => $choicegroupid,
         ];
 
         $params = self::validate_parameters(self::submit_choicegroup_response_parameters(), $params);
@@ -431,7 +431,7 @@ class mod_choicegroup_external extends external_api {
 
         $result = [
             'status' => $status,
-            'warnings' => $warnings
+            'warnings' => $warnings,
         ];
         return $result;
     }

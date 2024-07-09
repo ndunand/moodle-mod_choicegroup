@@ -65,7 +65,7 @@ if (!$context = context_module::instance($cm->id)) {
 
 $eventparams = [
     'context' => $context,
-    'objectid' => $choicegroup->id
+    'objectid' => $choicegroup->id,
 ];
 
 $current = choicegroup_get_user_answer($choicegroup, $USER);

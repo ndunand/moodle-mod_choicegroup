@@ -39,7 +39,7 @@ require_course_login($course);
 $PAGE->set_pagelayout('incourse');
 
 $params = [
-    'context' => context_course::instance($course->id)
+    'context' => context_course::instance($course->id),
 ];
 $event = \mod_choicegroup\event\course_module_instance_list_viewed::create($params);
 $event->add_record_snapshot('course', $course);

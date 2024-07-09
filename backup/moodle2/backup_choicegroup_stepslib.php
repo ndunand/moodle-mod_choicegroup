@@ -43,12 +43,12 @@ class backup_choicegroup_activity_structure_step extends backup_activity_structu
             'multipleenrollmentspossible',
             'showresults', 'display', 'allowupdate', 'showunanswered',
             'limitanswers', 'timeopen', 'timeclose', 'timemodified',
-            'completionsubmit', 'sortgroupsby', 'onlyactive']);
+            'completionsubmit', 'sortgroupsby', 'onlyactive', ]);
 
         $options = new backup_nested_element('options');
 
         $option = new backup_nested_element('option', ['id'], [
-            'groupid', 'maxanswers', 'timemodified']);
+            'groupid', 'maxanswers', 'timemodified', ]);
 
         // Build the tree.
         $choicegroup->add_child($options);
