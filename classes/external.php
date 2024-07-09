@@ -283,7 +283,7 @@ class mod_choicegroup_external extends external_api {
             $choicegroup->multipleenrollmentspossible
         );
         if (empty($responses)) {
-            // Update completion state
+            // Update completion state.
             $completion = new completion_info($course);
             if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
                 $completion->update_state($cm, COMPLETION_INCOMPLETE);

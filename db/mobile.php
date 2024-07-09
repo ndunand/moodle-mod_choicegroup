@@ -27,14 +27,14 @@ defined('MOODLE_INTERNAL') || die();
 $addons = array(
     "mod_choicegroup" => array(
         "handlers" => array( // Different places where the add-on will display content.
-            'coursechoicegroup' => array( // Handler unique name (can be anything)
+            'coursechoicegroup' => array( // Handler unique name (can be anything).
                 'displaydata' => array(
                     'title' => 'pluginname',
                     'icon' => $CFG->wwwroot . '/mod/choicegroup/pix/icon.svg',
                     'class' => '',
                 ),
-                'delegate' => 'CoreCourseModuleDelegate', // Delegate (where to display the link to the add-on)
-                'method' => 'mobile_course_view', // Main function in \mod_choicegroup\output\mobile
+                'delegate' => 'CoreCourseModuleDelegate', // Delegate (where to display the link to the add-on).
+                'method' => 'mobile_course_view', // Main function in \mod_choicegroup\output\mobile.
                 'init' => 'mobile_init',
                 'offlinefunctions' => array(
                     'mobile_course_view' => array(),

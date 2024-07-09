@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/choicegroup/backup/moodle2/backup_choicegroup_stepslib.php'); // Because it exists (must)
-require_once($CFG->dirroot . '/mod/choicegroup/backup/moodle2/backup_choicegroup_settingslib.php'); // Because it exists (optional)
+require_once($CFG->dirroot . '/mod/choicegroup/backup/moodle2/backup_choicegroup_stepslib.php'); // Because it exists (must).
+require_once($CFG->dirroot . '/mod/choicegroup/backup/moodle2/backup_choicegroup_settingslib.php'); // Because it exists (optional).
 
 /**
  * choicegroup backup task that provides all the settings and steps to perform one
@@ -37,14 +37,14 @@ class backup_choicegroup_activity_task extends backup_activity_task {
      * Define (add) particular settings this activity can have
      */
     protected function define_my_settings() {
-        // No particular settings for this activity
+        // No particular settings for this activity.
     }
 
     /**
      * Define (add) particular steps this activity can have
      */
     protected function define_my_steps() {
-        // Choice only has one structure step
+        // Choice only has one structure step.
         $this->add_step(new backup_choicegroup_activity_structure_step('choicegroup_structure', 'choicegroup.xml'));
     }
 
@@ -57,11 +57,11 @@ class backup_choicegroup_activity_task extends backup_activity_task {
 
         $base = preg_quote($CFG->wwwroot, "/");
 
-        // Link to the list of choicegroups
+        // Link to the list of choicegroups.
         $search = "/(".$base."\/mod\/choicegroup\/index.php\?id\=)([0-9]+)/";
         $content = preg_replace($search, '$@CHOICEGROUPINDEX*$2@$', $content);
 
-        // Link to choicegroup view by moduleid
+        // Link to choicegroup view by moduleid.
         $search = "/(".$base."\/mod\/choicegroup\/view.php\?id\=)([0-9]+)/";
         $content = preg_replace($search, '$@CHOICEGROUPVIEWBYID*$2@$', $content);
 

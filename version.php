@@ -27,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->version  = 2024051600;
-$plugin->requires  = 2023042400; // Moodle 4.2
+$plugin->requires  = 2023042400; // Moodle 4.2.
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->release = '1.45 for Moodle 4.2-4.4 (Build: 2024051600)';
 $plugin->component = 'mod_choicegroup';

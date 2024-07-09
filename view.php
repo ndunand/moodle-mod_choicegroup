@@ -29,9 +29,9 @@ require_once("lib.php");
 require_once($CFG->dirroot.'/group/lib.php');
 require_once($CFG->libdir . '/completionlib.php');
 
-$id         = required_param('id', PARAM_INT);                 // Course Module ID
+$id         = required_param('id', PARAM_INT);                 // Course Module ID.
 $action     = optional_param('action', '', PARAM_ALPHA);
-$userids    = optional_param_array('userid', array(), PARAM_INT); // array of attempt ids for delete action
+$userids    = optional_param_array('userid', array(), PARAM_INT); // Array of attempt ids for delete action.
 $notify     = optional_param('notify', '', PARAM_ALPHA);
 
 $url = new moodle_url('/mod/choicegroup/view.php', array('id' => $id));
@@ -70,7 +70,7 @@ $eventparams = array(
 
 $current = choicegroup_get_user_answer($choicegroup, $USER);
 if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, null, 'mod/choicegroup:choose') and $choicegroup->allowupdate and !($choicegroup->timeclose and (time() > $choicegroup->timeclose))) {
-    // user wants to delete his own choice:
+    // User wants to delete his own choice.
     if ($current !== false) {
         if (groups_is_member($current->id, $USER->id)) {
             $currentgroup = $DB->get_record('groups', array('id' => $current->id), 'id,name', MUST_EXIST);
@@ -82,7 +82,7 @@ if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, 
             $event->trigger();
         }
         $current = choicegroup_get_user_answer($choicegroup, $USER, false, true);
-        // Update completion state
+        // Update completion state.
         $completion = new completion_info($course);
         if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
             $completion->update_state($cm, COMPLETION_INCOMPLETE);
@@ -93,11 +93,11 @@ if ($action == 'delchoicegroup' and confirm_sesskey() and is_enrolled($context, 
 $PAGE->set_title(format_string($choicegroup->name));
 $PAGE->set_heading($course->fullname);
 
-/// Mark as viewed
+// Mark as viewed.
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
-/// Submit any new data if there is any
+// Submit any new data if there is any.
 if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') && confirm_sesskey()) {
 
     if ($choicegroup->multipleenrollmentspossible == 1) {
@@ -136,12 +136,12 @@ if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
         }
 
 
-    } else { // multipleenrollmentspossible != 1
+    } else { // Multipleenrollmentspossible != 1.
 
         $timenow = time();
         if (has_capability('mod/choicegroup:deleteresponses', $context)) {
-            if ($action == 'delete') { //some responses need to be deleted
-                choicegroup_delete_responses($userids, $choicegroup, $cm, $course); //delete responses.
+            if ($action == 'delete') { // Some responses need to be deleted.
+                choicegroup_delete_responses($userids, $choicegroup, $cm, $course); // Delete responses.
                 redirect("view.php?id=$cm->id");
             }
         }
@@ -160,7 +160,7 @@ if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
 }
 
 
-/// Display the choicegroup and possibly results
+// Display the choicegroup and possibly results.
 
 
 $event = \mod_choicegroup\event\course_module_viewed::create($eventparams);
@@ -194,7 +194,7 @@ if ($CFG->branch < 400) {
     }
 }
 
-/// Check to see if groups are being used in this choicegroup
+// Check to see if groups are being used in this choicegroup.
 $groupmode = groups_get_activity_groupmode($cm);
 
 if ($groupmode) {
@@ -218,7 +218,7 @@ if ($choicegroup->intro) {
     }
 }
 
-//if user has already made a selection, and they are not allowed to update it, show their selected answer.
+// if user has already made a selection, and they are not allowed to update it, show their selected answer.
 if (isloggedin() && ($current !== false) ) {
     if ($choicegroup->multipleenrollmentspossible == 1) {
         $currents = choicegroup_get_user_answer($choicegroup, $USER, true, true);
@@ -237,7 +237,7 @@ if (isloggedin() && ($current !== false) ) {
     }
 }
 
-/// Print the form
+// Print the form.
 $choicegroupopen = true;
 $timenow = time();
 if ($choicegroup->timeclose != 0) {
@@ -254,11 +254,11 @@ if ($choicegroup->timeclose != 0) {
 $options = choicegroup_prepare_options($choicegroup, $USER, $cm, $allresponses);
 $renderer = $PAGE->get_renderer('mod_choicegroup');
 if ( (!$current or $choicegroup->allowupdate) and $choicegroupopen and is_enrolled($context, null, 'mod/choicegroup:choose')) {
-// They haven't made their choicegroup yet or updates allowed and choicegroup is open
+// They haven't made their choicegroup yet or updates allowed and choicegroup is open.
 
     echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, false, $choicegroup->multipleenrollmentspossible, $choicegroup->onlyactive);
 } else {
-    // form can not be updated
+    // Form can not be updated.
     echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers, $choicegroup->showresults, $current, $choicegroupopen, true, $choicegroup->multipleenrollmentspossible, $choicegroup->onlyactive);
 }
 $choicegroupformshown = true;
@@ -266,11 +266,11 @@ $choicegroupformshown = true;
 $sitecontext = context_system::instance();
 
 if (isguestuser()) {
-    // Guest account
+    // Guest account.
     echo $OUTPUT->confirm(get_string('noguestchoose', 'choicegroup').'<br /><br />'.get_string('liketologin'),
                     get_login_url(), new moodle_url('/course/view.php', array('id' => $course->id)));
 } else if (!is_enrolled($context)) {
-    // Only people enrolled can make a choicegroup
+    // Only people enrolled can make a choicegroup.
     $SESSION->wantsurl = $FULLME;
     $SESSION->enrolcancel = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';
 
@@ -286,7 +286,7 @@ if (isguestuser()) {
 
 }
 
-// print the results at the bottom of the screen
+// Print the results at the bottom of the screen.
 if ( $choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS or
     ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER and $current) or
     ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE and !$choicegroupopen)) {

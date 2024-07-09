@@ -15,10 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * This page prints a list of all student's results
  *
- * @package    mod
- * @subpackage choicegroup
+ * @package    mod_choicegroup
  * @copyright  2013 Université de Lausanne
  * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,11 +26,11 @@
 require_once("../../config.php");
 require_once("lib.php");
 
-$id         = required_param('id', PARAM_INT);   //moduleid
+$id         = required_param('id', PARAM_INT);   // Module id.
 $format     = optional_param('format', CHOICEGROUP_PUBLISH_NAMES, PARAM_INT);
 $download   = optional_param('download', '', PARAM_ALPHA);
 $action     = optional_param('action', '', PARAM_ALPHA);
-$grpsmemberids = optional_param_array('grpsmemberid', array(), PARAM_INT); //get array of responses to delete.
+$grpsmemberids = optional_param_array('grpsmemberid', array(), PARAM_INT); // Get array of responses to delete.
 
 $url = new moodle_url('/mod/choicegroup/report.php', array('id' => $id));
 if ($format !== CHOICEGROUP_PUBLISH_NAMES) {
@@ -78,7 +77,7 @@ $event->add_record_snapshot('choicegroup', $choicegroup);
 $event->trigger();
 
 if (data_submitted() && $action == 'delete' && has_capability('mod/choicegroup:deleteresponses', $context) && confirm_sesskey()) {
-    choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course); //delete responses.
+    choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course); // delete responses.
     redirect("report.php?id=$cm->id");
 }
 
@@ -88,7 +87,7 @@ if (!$download) {
     $PAGE->set_heading(format_string($course->fullname));
     echo $OUTPUT->header();
     echo $OUTPUT->heading(format_string($choicegroup->name));
-    /// Check to see if groups are being used in this choicegroup
+    // Check to see if groups are being used in this choicegroup.
     $groupmode = groups_get_activity_groupmode($cm);
     if ($groupmode) {
         groups_get_activity_group($cm, true);
@@ -107,16 +106,16 @@ $users = choicegroup_get_response_data($choicegroup, $cm, $groupmode, $choicegro
 if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $context)) {
     require_once("$CFG->libdir/odslib.class.php");
 
-/// Calculate file name
+// Calculate file name.
     $filename = clean_filename("$course->shortname ".strip_tags(format_string($choicegroup->name, true))).'.ods';
-/// Creating a workbook
+// Creating a workbook.
     $workbook = new MoodleODSWorkbook("-");
-/// Send HTTP headers
+// Send HTTP headers.
     $workbook->send($filename);
-/// Creating the first worksheet
+// Creating the first worksheet.
     $myxls = $workbook->add_worksheet($strresponses);
 
-/// Print names of all the fields
+// Print names of all the fields.
     $myxls->write_string(0, 0, get_string("lastname"));
     $myxls->write_string(0, 1, get_string("firstname"));
     $myxls->write_string(0, 2, get_string("idnumber"));
@@ -124,7 +123,7 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
     $myxls->write_string(0, 4, get_string("group"));
     $myxls->write_string(0, 5, get_string("choice", "choicegroup"));
 
-/// generate the data for the body of the spreadsheet
+// Generate the data for the body of the spreadsheet.
     $i = 0;
     $row = 1;
     if ($users) {
@@ -154,27 +153,27 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
             }
         }
     }
-    /// Close the workbook
+    // Close the workbook.
     $workbook->close();
 
     exit;
 }
 
-//print spreadsheet if one is asked for:
+// Print spreadsheet if one is asked for.
 if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $context)) {
     require_once("$CFG->libdir/excellib.class.php");
 
-/// Calculate file name
+    // Calculate file name.
     $filename = clean_filename("$course->shortname ".strip_tags(format_string($choicegroup->name, true))).'.xls';
-/// Creating a workbook
+    // Creating a workbook.
     $workbook = new MoodleExcelWorkbook("-");
-/// Send HTTP headers
+    // Send HTTP headers.
     $workbook->send($filename);
-/// Creating the first worksheet
+    // Creating the first worksheet
     // assigning by reference gives this: Strict standards: Only variables should be assigned by reference in /data_1/www/html/moodle/moodle/mod/choicegroup/report.php on line 157
     // removed the ampersand.
     $myxls = $workbook->add_worksheet($strresponses);
-/// Print names of all the fields
+    // Print names of all the fields.
     $myxls->write_string(0, 0, get_string("lastname"));
     $myxls->write_string(0, 1, get_string("firstname"));
     $myxls->write_string(0, 2, get_string("idnumber"));
@@ -183,7 +182,7 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
     $myxls->write_string(0, 5, get_string("choice", "choicegroup"));
 
 
-/// generate the data for the body of the spreadsheet
+    // Generate the data for the body of the spreadsheet.
     $i = 0;
     $row = 1;
     if ($users) {
@@ -213,12 +212,12 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
         }
         $pos = 5;
     }
-    /// Close the workbook
+    // Close the workbook.
     $workbook->close();
     exit;
 }
 
-// print text file
+// Print text file.
 if ($download == "txt" && has_capability('mod/choicegroup:downloadresponses', $context)) {
     $filename = clean_filename("$course->shortname ".strip_tags(format_string($choicegroup->name, true))).'.txt';
 
@@ -228,14 +227,14 @@ if ($download == "txt" && has_capability('mod/choicegroup:downloadresponses', $c
     header("Cache-Control: must-revalidate,post-check=0,pre-check=0");
     header("Pragma: public");
 
-    /// Print names of all the fields
+    // Print names of all the fields.
 
     echo get_string("firstname")."\t".get_string("lastname") . "\t". get_string("idnumber") . "\t";
     echo get_string("email") . "\t";
     echo get_string("group"). "\t";
     echo get_string("choice", "choicegroup"). "\n";
 
-    /// generate the data for the body of the spreadsheet
+    // Generate the data for the body of the spreadsheet.
     $i = 0;
     if ($users) {
         $displayed = array();
@@ -278,7 +277,7 @@ $results = prepare_choicegroup_show_results($choicegroup, $course, $cm, $users);
 $renderer = $PAGE->get_renderer('mod_choicegroup');
 echo $renderer->display_result($results, has_capability('mod/choicegroup:readresponses', $context));
 
-//now give links for downloading spreadsheets.
+// now give links for downloading spreadsheets.
 if (!empty($users) && has_capability('mod/choicegroup:downloadresponses', $context)) {
     $downloadoptions = array();
     $options = array();

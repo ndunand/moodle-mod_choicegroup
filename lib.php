@@ -15,10 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * Library of interface functions and constants for the choicegroup module
  *
- * @package    mod
- * @subpackage choicegroup
+ * @package    mod_choicegroup
  * @copyright  2013 Université de Lausanne
  * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -78,7 +77,7 @@ $CHOICEGROUP_DISPLAY = array (CHOICEGROUP_DISPLAY_HORIZONTAL   => get_string('di
 
 require_once($CFG->dirroot.'/group/lib.php');
 
-/// Standard functions /////////////////////////////////////////////////////////
+// Standard functions /////////////////////////////////////////////////////////.
 
 /**
  * @global object
@@ -89,7 +88,7 @@ require_once($CFG->dirroot.'/group/lib.php');
  * @return object|null
  */
 function choicegroup_user_outline($course, $user, $mod, $choicegroup) {
-    if ($groupmembership = choicegroup_get_user_answer($choicegroup, $user)) { // if user has answered
+    if ($groupmembership = choicegroup_get_user_answer($choicegroup, $user)) { // If user has answered.
         $result = new stdClass();
         $result->info = "'".format_string($groupmembership->name)."'";
         $result->time = $groupmembership->timeuseradded;
@@ -166,7 +165,7 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnArray = false, 
  * @return string|void
  */
 function choicegroup_user_complete($course, $user, $mod, $choicegroup) {
-    if ($groupmembership = choicegroup_get_user_answer($choicegroup, $user)) { // if user has answered
+    if ($groupmembership = choicegroup_get_user_answer($choicegroup, $user)) { // If user has answered.
         $result = new stdClass();
         $result->info = "'".format_string($groupmembership->name)."'";
         $result->time = $groupmembership->timeuseradded;
@@ -196,10 +195,10 @@ function choicegroup_add_instance($choicegroup) {
         $choicegroup->timeclose = 0;
     }
 
-    //insert answers
+    // Insert answers.
     $choicegroup->id = $DB->insert_record("choicegroup", $choicegroup);
 
-    // deserialize the selected groups
+    // Deserialize the selected groups.
 
     $groupIDs = explode(';', $choicegroup->serializedselectedgroups);
     $groupIDs = array_diff( $groupIDs, array( '' ) );
@@ -254,15 +253,15 @@ function choicegroup_update_instance($choicegroup) {
     }
 
 
-    // deserialize the selected groups
+    // Deserialize the selected groups.
 
     $groupIDs = explode(';', $choicegroup->serializedselectedgroups);
     $groupIDs = array_diff( $groupIDs, array( '' ) );
 
-    // prepare pre-existing selected groups from database
+    // Prepare pre-existing selected groups from database.
     $preExistingGroups = $DB->get_records("choicegroup_options", array("choicegroupid" => $choicegroup->id), "id");
 
-    // walk through form-selected groups
+    // Walk through form-selected groups.
     foreach ($groupIDs as $groupID) {
     	$groupID = trim($groupID);
     	if (isset($groupID) && $groupID != '') {
@@ -274,22 +273,22 @@ function choicegroup_update_instance($choicegroup) {
     			$option->maxanswers = $choicegroup->$property;
     		}
     		$option->timemodified = time();
-    		// Find out if this selection already exists
+    		// Find out if this selection already exists.
     		foreach ($preExistingGroups as $key => $preExistingGroup) {
     			if ($option->groupid == $preExistingGroup->groupid) {
-    				// match found, so instead of creating a new record we should merely update a pre-existing record
+    				// Match found, so instead of creating a new record we should merely update a pre-existing record.
     				$option->id = $preExistingGroup->id;
     				$DB->update_record("choicegroup_options", $option);
-    				// remove the element from the array to not deal with it later
+    				// Remove the element from the array to not deal with it later.
     				unset($preExistingGroups[$key]);
-    				continue 2; // continue the big loop
+    				continue 2; // Continue the big loop.
     			}
     		}
     		$DB->insert_record("choicegroup_options", $option);
     	}
 
     }
-    // remove all remaining pre-existing groups which did not appear in the form (and are thus assumed to have been deleted)
+    // Remove all remaining pre-existing groups which did not appear in the form (and are thus assumed to have been deleted).
     foreach ($preExistingGroups as $preExistingGroup) {
     	$DB->delete_records("choicegroup_options", array("id" => $preExistingGroup->id));
     }
@@ -324,7 +323,7 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
         $choicegroup->option = [];
     }
     foreach ($choicegroup->option as $optionid => $text) {
-        if (isset($text)) { //make sure there are no dud entries in the db with blank text values.
+        if (isset($text)) { // make sure there are no dud entries in the db with blank text values.
             $option = new stdClass;
             $option->attributes = new stdClass;
             $option->attributes->value = $optionid;
@@ -351,7 +350,7 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
         }
     }
 
-    $cdisplay['hascapability'] = is_enrolled($context, null, 'mod/choicegroup:choose'); //only enrolled users are allowed to make a choicegroup
+    $cdisplay['hascapability'] = is_enrolled($context, null, 'mod/choicegroup:choose'); // Only enrolled users are allowed to make a choicegroup.
 
     if ($choicegroup->allowupdate && is_array($answers)) {
         $cdisplay['allowupdate'] = true;
@@ -365,7 +364,7 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
  */
 function check_restrictions($choicegroup, $userid) {
     check_date_restrictions($choicegroup);
-    //TODO check other restrictions
+    // TODO check other restrictions.
 }
 
 
@@ -430,7 +429,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
                 if ($selected_option->groupid != $current->id) {
                     if (groups_is_member($current->id, $userid)) {
                         groups_remove_member($current->id, $userid);
-//                        $eventparams['groupname'] = $currentgroup->name;
+// $eventparams['groupname'] = $currentgroup->name;
                         $event = \mod_choicegroup\event\choice_removed::create($eventparams);
                         $event->add_record_snapshot('course_modules', $cm);
                         $event->add_record_snapshot('course', $course);
@@ -440,12 +439,12 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
                 }
             }
         } else {
-            // Update completion state
+            // Update completion state.
             $completion = new completion_info($course);
             if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
                 $completion->update_state($cm, COMPLETION_COMPLETE);
             }
-//            $eventparams['groupname'] = $selectedgroup->name;
+// $eventparams['groupname'] = $selectedgroup->name;
             $event = \mod_choicegroup\event\choice_updated::create($eventparams);
             $event->add_record_snapshot('course_modules', $cm);
             $event->add_record_snapshot('course', $course);
@@ -453,7 +452,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
             $event->trigger();
         }
     } else {
-        if (!$current || !($current->id == $selected_option->groupid)) { //check to see if current choicegroup already selected - if not display error
+        if (!$current || !($current->id == $selected_option->groupid)) { // Check to see if current choicegroup already selected - if not display error.
             throw new moodle_exception('choicegroupfull', 'choicegroup', $CFG->wwwroot.'/mod/choicegroup/view.php?id='.$cm->id);
         }
     }
@@ -503,10 +502,8 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
     $display = clone($choicegroup);
     $display->coursemoduleid = $cm->id;
     $display->courseid = $course->id;
-//debugging('<pre>'.print_r($choicegroup->option, true).'</pre>', DEBUG_DEVELOPER);
-//debugging('<pre>'.print_r($allresponses, true).'</pre>', DEBUG_DEVELOPER);
 
-    //overwrite options value;
+    // Overwrite options value.
     $display->options = array();
     $totaluser = 0;
     foreach ($choicegroup->option as $optionid => $groupid) {
@@ -566,7 +563,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
             echo "<table cellpadding=\"5\" cellspacing=\"10\" class=\"results names\">";
             echo "<tr>";
 
-            $columncount = array(); // number of votes in each column
+            $columncount = array(); // Number of votes in each column.
             if ($choicegroup->showunanswered) {
                 $columncount[0] = 0;
                 echo "<th class=\"col0 header\" scope=\"col\">";
@@ -575,7 +572,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
             }
             $count = 1;
             foreach ($choicegroup->option as $optionid => $optiontext) {
-                $columncount[$optionid] = 0; // init counters
+                $columncount[$optionid] = 0; // Init counters.
                 echo "<th class=\"col$count header\" scope=\"col\">";
                 echo format_string($optiontext);
                 echo "</th>";
@@ -587,7 +584,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
                 echo "<td class=\"col$count data\" >";
                 // added empty row so that when the next iteration is empty,
                 // we do not get <table></table> error from w3c validator
-                // MDL-7861
+                // MDL-7861.
                 echo "<table class=\"choicegroupresponse\"><tr><td></td></tr>";
                 if (!empty($allresponses[0])) {
                     foreach ($allresponses[0] as $user) {
@@ -609,7 +606,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
 
                     // added empty row so that when the next iteration is empty,
                     // we do not get <table></table> error from w3c validator
-                    // MDL-7861
+                    // MDL-7861.
                     echo '<table class="choicegroupresponse"><tr><td></td></tr>';
                     if (isset($allresponses[$optionid])) {
                         foreach ($allresponses[$optionid] as $user) {
@@ -721,7 +718,7 @@ function choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course
             $event->add_record_snapshot('choicegroup', $choicegroup);
             $event->trigger();
         }
-        // Update completion state
+        // Update completion state.
         $current = choicegroup_get_user_answer($choicegroup, $userid, false, true);
         if ($current === false && $completion->is_enabled($cm) && $choicegroup->completionsubmit) {
             $completion->update_state($cm, COMPLETION_INCOMPLETE, $userid);

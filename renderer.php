@@ -15,10 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * Choicegroup output functions
  *
- * @package    mod
- * @subpackage choicegroup
+ * @package    mod_choicegroup
  * @copyright  2013 Université de Lausanne
  * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -200,15 +199,15 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * @return string
      */
     public function display_result($choicegroups, $forcepublish = false) {
-        if (empty($forcepublish)) { //allow the publish setting to be overridden
+        if (empty($forcepublish)) { // Allow the publish setting to be overridden.
             $forcepublish = $choicegroups->publish;
         }
 
         $displaylayout = ($choicegroups) ? ($choicegroups->display) : (CHOICEGROUP_DISPLAY_HORIZONTAL);
 
-        if ($forcepublish) {  //CHOICEGROUP_PUBLISH_NAMES
+        if ($forcepublish) {  // CHOICEGROUP_PUBLISH_NAMES.
             return $this->display_publish_name_vertical($choicegroups);
-        } else { //CHOICEGROUP_PUBLISH_ANONYMOUS';
+        } else { // CHOICEGROUP_PUBLISH_ANONYMOUS'.
             if ($displaylayout == CHOICEGROUP_DISPLAY_HORIZONTAL_LAYOUT) {
                 return $this->display_publish_anonymous_horizontal($choicegroups);
             }
@@ -228,10 +227,10 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         global $context;
 
         if (!has_capability('mod/choicegroup:downloadresponses', $context)) {
-            return; // only the (editing)teacher can see the diagram
+            return; // Only the (editing)teacher can see the diagram.
         }
         if (!$choicegroups) {
-            return; // no answers yet, so don't bother
+            return; // No answers yet, so don't bother.
         }
 
         $html = '';
@@ -351,7 +350,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         global $context, $DB, $CHOICEGROUP_COLUMN_WIDTH;
 
         if (!has_capability('mod/choicegroup:downloadresponses', $context)) {
-            return; // only the (editing)teacher can see the diagram
+            return; // Only the (editing)teacher can see the diagram.
         }
 
         $table = new html_table();

@@ -15,10 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * Choicegroup activity instance editing form.
  *
- * @package    mod
- * @subpackage choicegroup
+ * @package    mod_choicegroup
  * @copyright  2013 Université de Lausanne
  * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -37,7 +36,7 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
         $mform =& $this->_form;
 
-        //-------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         $mform->addElement('text', 'name', get_string('choicegroupname', 'choicegroup'), array('size' => '64'));
@@ -54,12 +53,12 @@ class mod_choicegroup_mod_form extends moodleform_mod
             $this->add_intro_editor(true, get_string('description'));
         }
 
-        //-------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------
 
 
         // -------------------------
-        // Fetch data from database
-        // -------------------------
+        // Fetch data from database.
+        // -------------------------.
         $groups = array();
         $db_groups = $DB->get_records('groups', array('courseid' => $COURSE->id));
         foreach ($db_groups as $group) {
@@ -97,7 +96,7 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
         // -------------------------
         // Continue generating form
-        // -------------------------
+        // -------------------------.
         $mform->addElement('header', 'miscellaneoussettingshdr', get_string('miscellaneoussettings', 'form'));
         $mform->setExpanded('miscellaneoussettingshdr');
         $mform->addElement('checkbox', 'multipleenrollmentspossible', get_string('multipleenrollmentspossible', 'choicegroup'));
@@ -140,7 +139,7 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
         // -------------------------
         // Generate the groups section of the form
-        // -------------------------
+        // -------------------------.
 
 
         $mform->addElement('header', 'groups', get_string('groupsheader', 'choicegroup'));
@@ -159,8 +158,8 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
         $mform->addElement('html', '<select class="col-12" id="availablegroups" name="availableGroups" multiple size=10>');
         foreach ($groupings as $groupingID => $grouping) {
-            // find all linked groups to this grouping
-            if (isset($grouping->linkedGroupsIDs) && count($grouping->linkedGroupsIDs) > 1) { // grouping has more than 2 items, thus we should display it (otherwise it would be clearer to display only that single group alone)
+            // Find all linked groups to this grouping.
+            if (isset($grouping->linkedGroupsIDs) && count($grouping->linkedGroupsIDs) > 1) { // Grouping has more than 2 items, thus we should display it (otherwise it would be clearer to display only that single group alone).
                 $mform->addElement('html', '<option value="' . $groupingID . '" style="font-weight: bold" class="grouping">' . get_string('char_bullet_expanded', 'choicegroup') . $grouping->name . '</option>');
                 foreach ($grouping->linkedGroupsIDs as $linkedGroupID) {
                     if (isset($groups[$linkedGroupID])) {
@@ -212,7 +211,7 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
         $serializedselectedgroupsValue = '';
         if (isset($this->_instance) && $this->_instance != '') {
-            // this is presumably edit mode, try to fill in the data for javascript
+            // This is presumably edit mode, try to fill in the data for javascript.
             $cg = choicegroup_get_choicegroup($this->_instance);
             foreach ($cg->option as $optionID => $groupID) {
                 $serializedselectedgroupsValue .= ';' . $groupID;
@@ -240,10 +239,10 @@ class mod_choicegroup_mod_form extends moodleform_mod
 
         // -------------------------
         // Go on the with the remainder of the form
-        // -------------------------
+        // -------------------------.
 
 
-        //-------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------
         $mform->addElement('header', 'timerestricthdr', get_string('timerestrict', 'choicegroup'));
         $mform->addElement('checkbox', 'timerestrict', get_string('timerestrict', 'choicegroup'));
 
@@ -253,9 +252,9 @@ class mod_choicegroup_mod_form extends moodleform_mod
         $mform->addElement('date_time_selector', 'timeclose', get_string("choicegroupclose", "choicegroup"));
         $mform->disabledIf('timeclose', 'timerestrict');
 
-        //-------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------
         $this->standard_coursemodule_elements();
-        //-------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------
         $this->add_action_buttons();
     }
 
@@ -292,7 +291,7 @@ class mod_choicegroup_mod_form extends moodleform_mod
      */
     public function data_postprocessing($data) {
         parent::data_postprocessing($data);
-        // Set up completion section even if checkbox is not ticked
+        // Set up completion section even if checkbox is not ticked.
         if (!empty($data->completionunlocked)) {
             if (empty($data->completionsubmit)) {
                 $data->completionsubmit = 0;
@@ -325,7 +324,7 @@ class mod_choicegroup_mod_form extends moodleform_mod
         if (!$data) {
             return false;
         }
-        // Set up completion section even if checkbox is not ticked
+        // Set up completion section even if checkbox is not ticked.
         if (empty($data->completionsection)) {
             $data->completionsection = 0;
         }

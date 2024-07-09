@@ -41,7 +41,7 @@ class restore_choicegroup_activity_structure_step extends restore_activity_struc
         $paths[] = new restore_path_element('choicegroup', '/activity/choicegroup');
         $paths[] = new restore_path_element('choicegroup_option', '/activity/choicegroup/options/option');
 
-        // Return the paths wrapped into standard activity structure
+        // Return the paths wrapped into standard activity structure.
         return $this->prepare_activity_structure($paths);
     }
 
@@ -56,9 +56,9 @@ class restore_choicegroup_activity_structure_step extends restore_activity_struc
         $data->timeclose = $this->apply_date_offset($data->timeclose);
         $data->timemodified = $this->apply_date_offset($data->timemodified);
 
-        // insert the choicegroup record
+        // Insert the choicegroup record.
         $newitemid = $DB->insert_record('choicegroup', $data);
-        // immediately after inserting "activity" record, call this
+        // Immediately after inserting "activity" record, call this.
         $this->apply_activity_instance($newitemid);
     }
 
@@ -88,7 +88,7 @@ class restore_choicegroup_activity_structure_step extends restore_activity_struc
     }
 
     protected function after_execute() {
-        // Add choicegroup related files, no need to match by itemname (just internally handled context)
+        // Add choicegroup related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_choicegroup', 'intro', null);
     }
 }

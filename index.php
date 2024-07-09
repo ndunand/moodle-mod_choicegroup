@@ -15,10 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * This page lists all the instances of choicegroup in a particular course
  *
- * @package    mod
- * @subpackage choicegroup
+ * @package    mod_choicegroup
  * @copyright  2013 Université de Lausanne
  * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,7 +27,7 @@
 require_once("../../config.php");
 require_once("lib.php");
 
-$id = required_param('id', PARAM_INT);   // course
+$id = required_param('id', PARAM_INT); // Course.
 
 $PAGE->set_url('/mod/choicegroup/index.php', array('id' => $id));
 
@@ -104,12 +103,12 @@ foreach ($choicegroups as $choicegroup) {
         }
     }
 
-    //Calculate the href
+    // Calculate the href.
     if (!$choicegroup->visible) {
-        //Show dimmed if the mod is hidden
+        // Show dimmed if the mod is hidden.
         $tt_href = "<a class=\"dimmed\" href=\"view.php?id=$choicegroup->coursemodule\">" . format_string($choicegroup->name, true) . "</a>";
     } else {
-        //Show normal if the mod is visible
+        // Show normal if the mod is visible.
         $tt_href = "<a href=\"view.php?id=$choicegroup->coursemodule\">" . format_string($choicegroup->name, true) . "</a>";
     }
     if ($usesections) {

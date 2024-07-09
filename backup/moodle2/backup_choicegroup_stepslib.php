@@ -36,7 +36,7 @@ class backup_choicegroup_activity_structure_step extends backup_activity_structu
 
     protected function define_structure() {
 
-        // Define each element separated
+        // Define each element separated.
         $choicegroup = new backup_nested_element('choicegroup', array('id'), array(
             'name', 'intro', 'introformat', 'publish',
             'multipleenrollmentspossible',
@@ -49,11 +49,11 @@ class backup_choicegroup_activity_structure_step extends backup_activity_structu
         $option = new backup_nested_element('option', array('id'), array(
             'groupid', 'maxanswers', 'timemodified'));
 
-        // Build the tree
+        // Build the tree.
         $choicegroup->add_child($options);
         $options->add_child($option);
 
-        // Define sources
+        // Define sources.
         $choicegroup->set_source_table('choicegroup', array('id' => backup::VAR_ACTIVITYID));
 
         $option->set_source_sql('
@@ -62,10 +62,10 @@ class backup_choicegroup_activity_structure_step extends backup_activity_structu
              WHERE choicegroupid = ?',
             array(backup::VAR_PARENTID));
 
-        // Define file annotations
-        $choicegroup->annotate_files('mod_choicegroup', 'intro', null); // This file area hasn't itemid
+        // Define file annotations.
+        $choicegroup->annotate_files('mod_choicegroup', 'intro', null); // This file area hasn't itemid.
 
-        // Return the root element (choicegroup), wrapped into standard activity structure
+        // Return the root element (choicegroup), wrapped into standard activity structure.
         return $this->prepare_activity_structure($choicegroup);
     }
 }
