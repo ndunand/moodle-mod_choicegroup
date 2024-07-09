@@ -253,7 +253,8 @@ class AddonModChoiceGroupProvider {
 
                 if (!response || response.status === false) {
                     // Couldn't delete the responses. Reject the promise.
-                    var error = response && response.warnings && response.warnings[0] ? response.warnings[0] : new context.CoreError('');
+                    var error = response && response.warnings && response.warnings[0] ?
+                            response.warnings[0] : new context.CoreError('');
 
                     return Promise.reject(error);
                 }
@@ -326,7 +327,8 @@ class AddonModChoiceGroupProvider {
 
                 if (!response || response.status === false) {
                     // Couldn't delete the responses. Reject the promise.
-                    var error = response && response.warnings && response.warnings[0] ? response.warnings[0] : new context.CoreError('');
+                    var error = response && response.warnings && response.warnings[0] ?
+                            response.warnings[0] : new context.CoreError('');
 
                     return Promise.reject(error);
                 }
@@ -375,7 +377,8 @@ class AddonModChoiceGroupSyncProvider extends this.CoreSyncBaseProvider {
         return choiceGroupOffline.getResponses(siteId).then((responses) => {
             // Sync all responses.
             var promises = responses.map((response) => {
-                var promise = force ? this.syncChoiceGroup(response.choicegroupid, siteId) : this.syncChoiceGroupIfNeeded(response.choicegroupid, siteId);
+                var promise = force ? this.syncChoiceGroup(response.choicegroupid, siteId) :
+                        this.syncChoiceGroupIfNeeded(response.choicegroupid, siteId);
 
                 return promise.then((result) => {
                     if (result && result.updated) {

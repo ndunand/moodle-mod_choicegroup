@@ -61,7 +61,7 @@ class mod_choicegroup_external extends external_api {
      * @return array The choice group options.
      */
     public static function get_choicegroup_options($choicegroupid, $userid, $alloptionsdisabled = false) {
-        global $CFG, $choicegroup_groups;
+        global $CFG, $choicegroupgroups;
 
         $result = [];
         $returnedoptions = [];
@@ -88,7 +88,7 @@ class mod_choicegroup_external extends external_api {
                 $option = [];
                 $option['id'] = $optionid;
                 $option['groupid'] = $text;
-                $option['name'] = $choicegroup_groups[$text]->name;
+                $option['name'] = $choicegroupgroups[$text]->name;
                 $option['maxanswers'] = $choicegroup->maxanswers[$optionid];
                 $option['displaylayout'] = $choicegroup->display;
 
@@ -100,7 +100,7 @@ class mod_choicegroup_external extends external_api {
                 // Check if the option has been answered previously by the user.
                 $option['checked'] = false;
                 if (is_array($answers)) {
-                    foreach($answers as $answer) {
+                    foreach ($answers as $answer) {
                         if ($answer && $text == $answer->id) {
                             $option['checked'] = true;
                         }
@@ -293,14 +293,14 @@ class mod_choicegroup_external extends external_api {
 
         if (!choicegroup_get_user_answer($choicegroup, $USER) || $choicegroup->allowupdate) {
             if ($choicegroup->multipleenrollmentspossible) {
-                foreach($choicegroup->option as $optionid => $text) {
+                foreach ($choicegroup->option as $optionid => $text) {
                     if (in_array($optionid, $responses)) {
                         choicegroup_user_submit_response($optionid, $choicegroup, $USER->id, $course, $cm);
                     } else {
                         // Remove group selection if selected.
                         if (groups_is_member($text, $USER->id)) {
-                            $answer_value_group = $DB->get_record('groups', ['id' => $text], 'id, name', MUST_EXIST);
-                            groups_remove_member($answer_value_group->id, $USER->id);
+                            $answervaluegroup = $DB->get_record('groups', ['id' => $text], 'id, name', MUST_EXIST);
+                            groups_remove_member($answervaluegroup->id, $USER->id);
                             $eventparams = [
                                 'context' => $context,
                                 'objectid' => $choicegroup->id,
@@ -313,7 +313,7 @@ class mod_choicegroup_external extends external_api {
                         }
                     }
                 }
-            } else { // !multipleenrollmentspossible
+            } else { // When !multipleenrollmentspossible.
                 if (count($responses) == 1) {
                     $responses = reset($responses);
                     choicegroup_user_submit_response($responses, $choicegroup, $USER->id, $course, $cm);
@@ -352,7 +352,7 @@ class mod_choicegroup_external extends external_api {
      */
     protected static function parse_data_to_responses($data, $allowmultiple) {
         $responses = [];
-        foreach($data as $index => $datavalue) {
+        foreach ($data as $index => $datavalue) {
             $name = $datavalue['name'];
             $value = $datavalue['value'];
             if ($allowmultiple) {

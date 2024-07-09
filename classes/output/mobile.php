@@ -24,8 +24,6 @@
 
 namespace mod_choicegroup\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 use context_module;
 use mod_choicegroup_external;
 use completion_info;
@@ -101,7 +99,7 @@ class mobile {
         $choicegroup->answergiven = choicegroup_get_user_answer($choicegroup, $USER->id);
         $choicegroup->alloptionsdisabled = (!$choicegroup->open || $choicegroup->expired
                 || ($choicegroup->answergiven && !$choicegroup->allowupdate)
-                || !is_enrolled($context, NULL, 'mod/choicegroup:choose')
+                || !is_enrolled($context, null, 'mod/choicegroup:choose')
             );
 
         // Get choicegroup options from external.

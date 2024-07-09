@@ -76,7 +76,7 @@ if ($usesections) {
 $currentsection = "";
 
 foreach ($choicegroups as $choicegroup) {
-    $choicegroup_groups = choicegroup_get_groups($choicegroup);
+    $choicegroupgroups = choicegroup_get_groups($choicegroup);
 
     $answers = choicegroup_get_user_answer($choicegroup, $USER->id, true);
     if (!empty($answers)) {
@@ -106,16 +106,16 @@ foreach ($choicegroups as $choicegroup) {
     // Calculate the href.
     if (!$choicegroup->visible) {
         // Show dimmed if the mod is hidden.
-        $tt_href = "<a class=\"dimmed\" href=\"view.php?id=$choicegroup->coursemodule\">" .
+        $tthref = "<a class=\"dimmed\" href=\"view.php?id=$choicegroup->coursemodule\">" .
             format_string($choicegroup->name, true) . "</a>";
     } else {
         // Show normal if the mod is visible.
-        $tt_href = "<a href=\"view.php?id=$choicegroup->coursemodule\">" . format_string($choicegroup->name, true) . "</a>";
+        $tthref = "<a href=\"view.php?id=$choicegroup->coursemodule\">" . format_string($choicegroup->name, true) . "</a>";
     }
     if ($usesections) {
-        $table->data[] = [$printsection, $tt_href, $aa];
+        $table->data[] = [$printsection, $tthref, $aa];
     } else {
-        $table->data[] = [$tt_href, $aa];
+        $table->data[] = [$tthref, $aa];
     }
 }
 echo "<br />";

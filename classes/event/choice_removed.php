@@ -24,8 +24,6 @@
 
 namespace mod_choicegroup\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The mod_choicegroup post created event class.
  *

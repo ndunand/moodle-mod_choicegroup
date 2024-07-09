@@ -26,15 +26,13 @@
 /**
  * Define all the restore steps that will be used by the restore_choicegroup_activity_task
  */
-
-/**
- * Structure step to restore one choicegroup activity
- */
-
-defined('MOODLE_INTERNAL') || die();
-
 class restore_choicegroup_activity_structure_step extends restore_activity_structure_step {
 
+    /**
+     * List of elements that can be restored
+     *
+     * @return mixed
+     */
     protected function define_structure() {
 
         $paths = [];
@@ -46,6 +44,14 @@ class restore_choicegroup_activity_structure_step extends restore_activity_struc
         return $this->prepare_activity_structure($paths);
     }
 
+    /**
+     * Restore a choicegroup record.
+     *
+     * @param stdClass $data
+     * @return void
+     * @throws base_step_exception
+     * @throws dml_exception
+     */
     protected function process_choicegroup($data) {
         global $DB;
 
@@ -63,6 +69,15 @@ class restore_choicegroup_activity_structure_step extends restore_activity_struc
         $this->apply_activity_instance($newitemid);
     }
 
+    /**
+     * Restore a choicegroup option.
+     *
+     * @param stdClass $data
+     * @return void
+     * @throws base_step_exception
+     * @throws dml_exception
+     * @throws restore_step_exception
+     */
     protected function process_choicegroup_option($data) {
         global $DB;
 
@@ -88,6 +103,11 @@ class restore_choicegroup_activity_structure_step extends restore_activity_struc
         $this->set_mapping('choicegroup_option', $oldid, $newitemid);
     }
 
+    /**
+     * Extra actions to take once restore is complete.
+     *
+     * @return void
+     */
     protected function after_execute() {
         // Add choicegroup related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_choicegroup', 'intro', null);

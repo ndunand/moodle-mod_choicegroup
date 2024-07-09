@@ -25,8 +25,9 @@
 
 namespace mod_choicegroup\event;
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Event for when a choicegroup report is viewed.
+ */
 class report_viewed extends \core\event\course_module_viewed {
 
     /**

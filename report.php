@@ -77,7 +77,7 @@ $event->add_record_snapshot('choicegroup', $choicegroup);
 $event->trigger();
 
 if (data_submitted() && $action == 'delete' && has_capability('mod/choicegroup:deleteresponses', $context) && confirm_sesskey()) {
-    choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course); // delete responses.
+    choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course); // Delete responses.
     redirect("report.php?id=$cm->id");
 }
 
@@ -96,9 +96,9 @@ if (!$download) {
 } else {
     $groupmode = groups_get_activity_groupmode($cm);
     $groups = choicegroup_get_groups($choicegroup);
-    $groups_ids = [];
-    foreach($groups as $group) {
-        $groups_ids[] = $group->id;
+    $groupsids = [];
+    foreach ($groups as $group) {
+        $groupsids[] = $group->id;
     }
 }
 $users = choicegroup_get_response_data($choicegroup, $cm, $groupmode, $choicegroup->onlyactive);
@@ -106,16 +106,16 @@ $users = choicegroup_get_response_data($choicegroup, $cm, $groupmode, $choicegro
 if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $context)) {
     require_once("$CFG->libdir/odslib.class.php");
 
-// Calculate file name.
+    // Calculate file name.
     $filename = clean_filename("$course->shortname ".strip_tags(format_string($choicegroup->name, true))).'.ods';
-// Creating a workbook.
+    // Creating a workbook.
     $workbook = new MoodleODSWorkbook("-");
-// Send HTTP headers.
+    // Send HTTP headers.
     $workbook->send($filename);
-// Creating the first worksheet.
+    // Creating the first worksheet.
     $myxls = $workbook->add_worksheet($strresponses);
 
-// Print names of all the fields.
+    // Print names of all the fields.
     $myxls->write_string(0, 0, get_string("lastname"));
     $myxls->write_string(0, 1, get_string("firstname"));
     $myxls->write_string(0, 2, get_string("idnumber"));
@@ -123,13 +123,13 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
     $myxls->write_string(0, 4, get_string("group"));
     $myxls->write_string(0, 5, get_string("choice", "choicegroup"));
 
-// Generate the data for the body of the spreadsheet.
+    // Generate the data for the body of the spreadsheet.
     $i = 0;
     $row = 1;
     if ($users) {
         $displayed = [];
         foreach ($users as $option => $userid) {
-            foreach($userid as $user) {
+            foreach ($userid as $user) {
                 if (in_array($user->id, $displayed)) {
                     continue;
                 }
@@ -141,7 +141,7 @@ if ($download == "ods" && has_capability('mod/choicegroup:downloadresponses', $c
                 $myxls->write_string($row, 3, $user->email);
                 $ug2 = [];
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
-                    foreach ($groups_ids as $gid) {
+                    foreach ($groupsids as $gid) {
                         if (array_key_exists($gid, $usergrps)) {
                             $ug2[] = format_string($usergrps[$gid]->name);
                         }
@@ -189,7 +189,7 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
     if ($users) {
         $displayed = [];
         foreach ($users as $option => $userid) {
-            foreach($userid as $user) {
+            foreach ($userid as $user) {
                 if (in_array($user->id, $displayed)) {
                     continue;
                 }
@@ -201,7 +201,7 @@ if ($download == "xls" && has_capability('mod/choicegroup:downloadresponses', $c
                 $myxls->write_string($row, 3, $user->email);
                 $ug2 = [];
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
-                    foreach ($groups_ids as $gid) {
+                    foreach ($groupsids as $gid) {
                         if (array_key_exists($gid, $usergrps)) {
                             $ug2[] = format_string($usergrps[$gid]->name);
                         }
@@ -240,7 +240,7 @@ if ($download == "txt" && has_capability('mod/choicegroup:downloadresponses', $c
     if ($users) {
         $displayed = [];
         foreach ($users as $option => $userid) {
-            foreach($userid as $user) {
+            foreach ($userid as $user) {
                 if (in_array($user->id, $displayed)) {
                     continue;
                 }
@@ -255,7 +255,7 @@ if ($download == "txt" && has_capability('mod/choicegroup:downloadresponses', $c
                 echo $user->email . "\t";
                 $ug2 = [];
                 if ($usergrps = groups_get_all_groups($course->id, $user->id)) {
-                    foreach ($groups_ids as $gid) {
+                    foreach ($groupsids as $gid) {
                         if (array_key_exists($gid, $usergrps)) {
                             $ug2[] = format_string($usergrps[$gid]->name);
                         }
@@ -278,7 +278,7 @@ $results = prepare_choicegroup_show_results($choicegroup, $course, $cm, $users);
 $renderer = $PAGE->get_renderer('mod_choicegroup');
 echo $renderer->display_result($results, has_capability('mod/choicegroup:readresponses', $context));
 
-// now give links for downloading spreadsheets.
+// Now give links for downloading spreadsheets.
 if (!empty($users) && has_capability('mod/choicegroup:downloadresponses', $context)) {
     $downloadoptions = [];
     $options = [];

@@ -27,12 +27,20 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
-class mod_choicegroup_mod_form extends moodleform_mod
-{
+/**
+ * Activity instance editing form.
+ */
+class mod_choicegroup_mod_form extends moodleform_mod {
 
-    function definition()
-    {
-        global $CFG, $CHOICEGROUP_SHOWRESULTS, $CHOICEGROUP_PUBLISH, $CHOICEGROUP_DISPLAY, $DB, $COURSE, $PAGE;
+    /**
+     * Define form elements
+     *
+     * @return void
+     * @throws coding_exception
+     * @throws dml_exception
+     */
+    public function definition() {
+        global $CFG, $choicegroupshowresults, $choicegrouppublish, $choicegroupdisplay, $DB, $COURSE, $PAGE;
 
         $mform =& $this->_form;
 
@@ -59,15 +67,15 @@ class mod_choicegroup_mod_form extends moodleform_mod
         // Fetch data from database.
         // -------------------------.
         $groups = [];
-        $db_groups = $DB->get_records('groups', ['courseid' => $COURSE->id]);
-        foreach ($db_groups as $group) {
+        $dbgroups = $DB->get_records('groups', ['courseid' => $COURSE->id]);
+        foreach ($dbgroups as $group) {
             $groups[$group->id] = new stdClass();
             $groups[$group->id]->name = format_string($group->name);
             $groups[$group->id]->mentioned = false;
             $groups[$group->id]->id = $group->id;
         }
 
-        if (count($db_groups) < 1) {
+        if (count($dbgroups) < 1) {
             $a = new stdClass();
             $a->linkgroups = $CFG->wwwroot . '/group/index.php?id=' . $COURSE->id;
             $a->linkcourse = $CFG->wwwroot . '//course/view.php?id=' . $COURSE->id;
@@ -75,19 +83,19 @@ class mod_choicegroup_mod_form extends moodleform_mod
             \core\notification::add($message, \core\notification::WARNING);
         }
 
-        $db_groupings = $DB->get_records('groupings', ['courseid' => $COURSE->id]);
+        $dbgroupings = $DB->get_records('groupings', ['courseid' => $COURSE->id]);
         $groupings = [];
-        if ($db_groupings) {
-            foreach ($db_groupings as $grouping) {
+        if ($dbgroupings) {
+            foreach ($dbgroupings as $grouping) {
                 $groupings[$grouping->id] = new stdClass();
                 $groupings[$grouping->id]->name = $grouping->name;
             }
 
             list($sqlin, $inparams) = $DB->get_in_or_equal(array_keys($groupings));
-            $db_groupings_groups = $DB->get_records_select('groupings_groups', 'groupingid ' . $sqlin, $inparams);
+            $dbgroupingsgroups = $DB->get_records_select('groupings_groups', 'groupingid ' . $sqlin, $inparams);
 
-            foreach ($db_groupings_groups as $grouping_group_link) {
-                $groupings[$grouping_group_link->groupingid]->linkedGroupsIDs[] = $grouping_group_link->groupid;
+            foreach ($dbgroupingsgroups as $groupinggrouplink) {
+                $groupings[$groupinggrouplink->groupingid]->linkedGroupsIDs[] = $groupinggrouplink->groupid;
             }
         }
         // -------------------------
@@ -107,10 +115,10 @@ class mod_choicegroup_mod_form extends moodleform_mod
         $mform->addRule('maxenrollments', get_string('error'), 'numeric', 'extraruledata', 'client', false, false);
         $mform->setDefault('maxenrollments', 0);
 
-        $mform->addElement('select', 'showresults', get_string("publish", "choicegroup"), $CHOICEGROUP_SHOWRESULTS);
+        $mform->addElement('select', 'showresults', get_string("publish", "choicegroup"), $choicegroupshowresults);
         $mform->setDefault('showresults', CHOICEGROUP_SHOWRESULTS_DEFAULT);
 
-        $mform->addElement('select', 'publish', get_string("privacy", "choicegroup"), $CHOICEGROUP_PUBLISH,
+        $mform->addElement('select', 'publish', get_string("privacy", "choicegroup"), $choicegrouppublish,
             CHOICEGROUP_PUBLISH_DEFAULT);
         $mform->setDefault('publish', CHOICEGROUP_PUBLISH_DEFAULT);
         $mform->disabledIf('publish', 'showresults', 'eq', 0);
@@ -162,19 +170,19 @@ class mod_choicegroup_mod_form extends moodleform_mod
                         <td style="vertical-align: top" class="col-5">');
 
         $mform->addElement('html', '<select class="col-12" id="availablegroups" name="availableGroups" multiple size=10>');
-        foreach ($groupings as $groupingID => $grouping) {
+        foreach ($groupings as $groupingid => $grouping) {
             // Find all linked groups to this grouping.
             if (isset($grouping->linkedGroupsIDs) && count($grouping->linkedGroupsIDs) > 1) {
                 // Grouping has more than 2 items, thus we should display it (otherwise it would be clearer to display only that
                 // single group alone).
-                $mform->addElement('html', '<option value="' . $groupingID .
+                $mform->addElement('html', '<option value="' . $groupingid .
                     '" style="font-weight: bold" class="grouping">' . get_string('char_bullet_expanded', 'choicegroup') .
                     $grouping->name . '</option>');
-                foreach ($grouping->linkedGroupsIDs as $linkedGroupID) {
-                    if (isset($groups[$linkedGroupID])) {
-                        $mform->addElement('html', '<option value="' . $linkedGroupID .
-                            '" class="group nested">&nbsp;&nbsp;&nbsp;&nbsp;' . $groups[$linkedGroupID]->name . '</option>');
-                        $groups[$linkedGroupID]->mentioned = true;
+                foreach ($grouping->linkedGroupsIDs as $linkedgroupid) {
+                    if (isset($groups[$linkedgroupid])) {
+                        $mform->addElement('html', '<option value="' . $linkedgroupid .
+                            '" class="group nested">&nbsp;&nbsp;&nbsp;&nbsp;' . $groups[$linkedgroupid]->name . '</option>');
+                        $groups[$linkedgroupid]->mentioned = true;
                     }
                 }
             }
@@ -224,18 +232,18 @@ class mod_choicegroup_mod_form extends moodleform_mod
             $mform->setType('group_' . $group->id . '_limit', PARAM_RAW);
         }
 
-        $serializedselectedgroupsValue = '';
+        $serializedselectedgroupsvalue = '';
         if (isset($this->_instance) && $this->_instance != '') {
             // This is presumably edit mode, try to fill in the data for javascript.
             $cg = choicegroup_get_choicegroup($this->_instance);
-            foreach ($cg->option as $optionID => $groupID) {
-                $serializedselectedgroupsValue .= ';' . $groupID;
-                $mform->setDefault('group_' . $groupID . '_limit', $cg->maxanswers[$optionID]);
+            foreach ($cg->option as $optionid => $groupid) {
+                $serializedselectedgroupsvalue .= ';' . $groupid;
+                $mform->setDefault('group_' . $groupid . '_limit', $cg->maxanswers[$optionid]);
             }
 
         }
 
-        $mform->addElement('hidden', 'serializedselectedgroups', $serializedselectedgroupsValue,
+        $mform->addElement('hidden', 'serializedselectedgroups', $serializedselectedgroupsvalue,
             ['id' => 'serializedselectedgroups']);
         $mform->setType('serializedselectedgroups', PARAM_RAW);
 
@@ -256,7 +264,6 @@ class mod_choicegroup_mod_form extends moodleform_mod
         // Go on the with the remainder of the form
         // -------------------------.
 
-
         // -------------------------------------------------------------------------------
         $mform->addElement('header', 'timerestricthdr', get_string('timerestrict', 'choicegroup'));
         $mform->addElement('checkbox', 'timerestrict', get_string('timerestrict', 'choicegroup'));
@@ -273,21 +280,31 @@ class mod_choicegroup_mod_form extends moodleform_mod
         $this->add_action_buttons();
     }
 
-    function data_preprocessing(&$default_values)
-    {
+    /**
+     * Pre-process form data
+     *
+     * @param array $defaultvalues
+     * @return void
+     */
+    public function data_preprocessing(&$defaultvalues) {
         global $DB;
         $this->js_call();
 
-        if (empty($default_values['timeopen'])) {
-            $default_values['timerestrict'] = 0;
+        if (empty($defaultvalues['timeopen'])) {
+            $defaultvalues['timerestrict'] = 0;
         } else {
-            $default_values['timerestrict'] = 1;
+            $defaultvalues['timerestrict'] = 1;
         }
 
     }
 
-    public function js_call()
-    {
+    /**
+     * Add JavaScript to the form
+     *
+     * @return void
+     * @throws coding_exception
+     */
+    public function js_call() {
         global $PAGE;
         $params = [$this->_form->getAttribute('id')];
         $PAGE->requires->yui_module('moodle-mod_choicegroup-form', 'Y.Moodle.mod_choicegroup.form.init', $params);
@@ -303,8 +320,9 @@ class mod_choicegroup_mod_form extends moodleform_mod
      * Only available on moodleform_mod.
      *
      * @param stdClass $data the form data to be modified.
+     * @return void
      */
-    public function data_postprocessing($data) {
+    public function data_postprocessing($data): void {
         parent::data_postprocessing($data);
         // Set up completion section even if checkbox is not ticked.
         if (!empty($data->completionunlocked)) {
@@ -314,27 +332,37 @@ class mod_choicegroup_mod_form extends moodleform_mod
         }
     }
 
-    function validation($data, $files)
-    {
+    /**
+     * Validate the form data
+     *
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array
+     * @throws coding_exception
+     */
+    public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 
-        $groupIDs = explode(';', $data['serializedselectedgroups']);
-        $groupIDs = array_diff($groupIDs, ['']);
+        $groupids = explode(';', $data['serializedselectedgroups']);
+        $groupids = array_diff($groupids, ['']);
 
-        if($data['timeopen'] > $data['timeclose']) {
+        if ($data['timeopen'] > $data['timeclose']) {
             $errors['timeopen'] = get_string('activitydate:closingbeforeopening', 'choicegroup');
         }
 
-        if (count($groupIDs) < 1) {
+        if (count($groupids) < 1) {
             $errors['groups'] = get_string('fillinatleastoneoption', 'choicegroup');
         }
-
 
         return $errors;
     }
 
-    function get_data()
-    {
+    /**
+     * Get the form data
+     *
+     * @return false|object
+     */
+    public function get_data() {
         $data = parent::get_data();
         if (!$data) {
             return false;
@@ -346,8 +374,13 @@ class mod_choicegroup_mod_form extends moodleform_mod
         return $data;
     }
 
-    function add_completion_rules()
-    {
+    /**
+     * Add completion rules
+     *
+     * @return string[]
+     * @throws coding_exception
+     */
+    public function add_completion_rules() {
         global $CFG;
 
         $mform =& $this->_form;
@@ -363,8 +396,13 @@ class mod_choicegroup_mod_form extends moodleform_mod
         return ['completionsubmit' . $suffix];
     }
 
-    function completion_rule_enabled($data)
-    {
+    /**
+     * Are completion rules enabled?
+     *
+     * @param array $data Input data (not yet validated)
+     * @return bool
+     */
+    public function completion_rule_enabled($data) {
         return !empty($data['completionsubmit']);
     }
 

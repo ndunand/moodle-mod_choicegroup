@@ -23,16 +23,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 define ('CHOICEGROUP_DISPLAY_HORIZONTAL_LAYOUT', 0);
 define ('CHOICEGROUP_DISPLAY_VERTICAL_LAYOUT', 1);
 
+/**
+ * Renderer for the mod_choicegroup plugin.
+ */
 class mod_choicegroup_renderer extends plugin_renderer_base {
 
     /**
-     * @param      $options
-     * @param      $coursemoduleid
+     * Returns HTML to display choices of option
+     *
+     * @param array $options
+     * @param int $coursemoduleid
      * @param bool $vertical
      * @param bool $publish
      * @param bool $limitanswers
@@ -42,13 +45,15 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * @param bool $disabled
      * @param bool $multipleenrollmentspossible
      * @param bool $onlyactive
-     *
      * @return string
+     * @return string
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false,
         $showresults = false, $current = false, $choicegroupopen = false, $disabled = false,
         $multipleenrollmentspossible = false, $onlyactive = false) {
-        global $DB, $PAGE, $choicegroup_groups;
+        global $choicegroupgroups;
 
         $target = new moodle_url('/mod/choicegroup/view.php');
         $attributes = ['method' => 'POST', 'action' => $target, 'class' => 'tableform'];
@@ -71,16 +76,15 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE && !$choicegroupopen)) {
             if ($limitanswers) {
                 $html .= html_writer::tag('th', get_string('members/max', 'choicegroup'), ['class' => 'width10']);
-            }
-            else {
+            } else {
                 $html .= html_writer::tag('th', get_string('members/', 'choicegroup'), ['class' => 'width10']);
             }
             if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
-                $membersdisplay_html = html_writer::tag('a', get_string('showgroupmembers', 'mod_choicegroup'),
+                $membersdisplayhtml = html_writer::tag('a', get_string('showgroupmembers', 'mod_choicegroup'),
                     ['role' => 'button', 'class' => 'choicegroup-memberdisplay choicegroup-membershow btn btn-secondary ml-1',
                         'href' => '#', ]);
                 $html .= html_writer::tag('th', get_string('groupmembers', 'choicegroup') .' '.
-                    $membersdisplay_html, ['class' => 'width40']);
+                    $membersdisplayhtml, ['class' => 'width40']);
             }
         }
         $html .= html_writer::end_tag('tr');
@@ -88,11 +92,11 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $availableoption = count($options['options']);
         if ($multipleenrollmentspossible == 1) {
             $i = 0;
-            $answer_to_groupid_mappings = '';
+            $answertogroupidmappings = '';
         }
-        $initiallyHideSubmitButton = false;
+        $initiallyhidesubmitbutton = false;
         foreach ($options['options'] as $option) {
-            $group = (isset($choicegroup_groups[$option->groupid])) ? ($choicegroup_groups[$option->groupid]) : (false);
+            $group = (isset($choicegroupgroups[$option->groupid])) ? ($choicegroupgroups[$option->groupid]) : (false);
             if (!$group) {
                 $colspan = 2;
                 if ($showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS ||
@@ -113,26 +117,26 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             if ($multipleenrollmentspossible == 1) {
                 $option->attributes->name = 'answer_'.$i;
                 $option->attributes->type = 'checkbox';
-                $answer_to_groupid_mappings .= '<input type="hidden" name="answer_'.$i.'_groupid" value="'.$option->groupid.'">';
+                $answertogroupidmappings .= '<input type="hidden" name="answer_'.$i.'_groupid" value="'.$option->groupid.'">';
                 $i++;
             } else {
                 $option->attributes->name = 'answer';
                 $option->attributes->type = 'radio';
                 if (property_exists($option, 'attributes') && property_exists($option->attributes, 'checked') &&
                     $option->attributes->checked == true) {
-                    $initiallyHideSubmitButton = true;
+                    $initiallyhidesubmitbutton = true;
                 }
             }
 
             $context = \context_course::instance($group->courseid);
             $labeltext = html_writer::tag('label', format_string($group->name),
                 ['for' => 'choiceid_' . $option->attributes->value]);
-            $group_members = get_enrolled_users($context, '', $group->id, 'u.*', 'u.lastname, u.firstname', 0, 0, $onlyactive);
-            $group_members_names = [];
-            foreach ($group_members as $group_member) {
-                $group_members_names[] = fullname($group_member);
+            $groupmembers = get_enrolled_users($context, '', $group->id, 'u.*', 'u.lastname, u.firstname', 0, 0, $onlyactive);
+            $groupmembersnames = [];
+            foreach ($groupmembers as $groupmember) {
+                $groupmembersnames[] = fullname($groupmember);
             }
-            if (!empty($option->attributes->disabled) || ($limitanswers && sizeof($group_members) >= $option->maxanswers) &&
+            if (!empty($option->attributes->disabled) || ($limitanswers && count($groupmembers) >= $option->maxanswers) &&
                 empty($option->attributes->checked)) {
                 $labeltext .= ' ' . html_writer::tag('em', get_string('full', 'choicegroup'));
                 $option->attributes->disabled = true;
@@ -154,17 +158,16 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $html .= html_writer::end_tag('td');
             $html .= html_writer::tag('td', $labeltext);
 
-
             if ( $showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS ||
             ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER && $current) ||
             ($showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE && !$choicegroupopen)) {
 
                 $maxanswers = ($limitanswers) ? (' / '.$option->maxanswers) : ('');
-                $html .= html_writer::tag('td', sizeof($group_members_names).$maxanswers, ['class' => 'center']);
+                $html .= html_writer::tag('td', count($groupmembersnames).$maxanswers, ['class' => 'center']);
                 if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
-                    $group_members_html = html_writer::tag('div', implode('<br />', $group_members_names),
+                    $groupmembershtml = html_writer::tag('div', implode('<br />', $groupmembersnames),
                         ['class' => 'choicegroups-membersnames hidden', 'id' => 'choicegroup_'.$option->attributes->value]);
-                    $html .= html_writer::tag('td', $group_members_html, ['class' => 'center']);
+                    $html .= html_writer::tag('td', $groupmembershtml, ['class' => 'center']);
                 }
             }
             $html .= html_writer::end_tag('tr');
@@ -172,7 +175,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $html .= html_writer::end_tag('table');
         $html .= html_writer::end_tag('div');
         if ($multipleenrollmentspossible == 1) {
-            $html .= '<input type="hidden" name="number_of_groups" value="'.$i.'">' . $answer_to_groupid_mappings;
+            $html .= '<input type="hidden" name="number_of_groups" value="'.$i.'">' . $answertogroupidmappings;
         }
         $html .= html_writer::tag('div', '', ['class' => 'clearfloat']);
         $html .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
@@ -180,14 +183,14 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
         if (!empty($options['hascapability']) && ($options['hascapability'])) {
             if ($availableoption < 1) {
-               $html .= html_writer::tag('p', get_string('choicegroupfull', 'choicegroup'));
+                $html .= html_writer::tag('p', get_string('choicegroupfull', 'choicegroup'));
             } else {
                 if (!$disabled) {
                     $html .= html_writer::tag('button', get_string('savemychoicegroup', 'choicegroup'), [
                         'type' => 'submit',
                         'value' => get_string('savemychoicegroup', 'choicegroup'),
                         'class' => 'btn btn-primary',
-                        'style' => $initiallyHideSubmitButton ? 'display: none' : '',
+                        'style' => $initiallyhidesubmitbutton ? 'display: none' : '',
                     ]);
                 }
             }
@@ -197,7 +200,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $url = new moodle_url('view.php', ['id' => $coursemoduleid, 'action' => 'delchoicegroup', 'sesskey' => sesskey()]);
                 $html .= ' ' . html_writer::link($url, get_string('removemychoicegroup', 'choicegroup'));
             }
-        } elseif (!isloggedin() || isguestuser()) { // Only display message if user is not logged in or is a guest user.
+        } else if (!isloggedin() || isguestuser()) { // Only display message if user is not logged in or is a guest user.
             $html .= ' '.html_writer::tag('p', get_string('havetologin', 'choicegroup'));
         }
 
@@ -231,13 +234,13 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
     /**
      * Returns HTML to display choicegroups result
+     *
      * @param object $choicegroups
-     * @param bool $forcepublish
-     * @return string
+     * @return string|void
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public function display_publish_name_vertical($choicegroups) {
-        global $PAGE;
-        global $DB;
         global $context;
 
         if (!has_capability('mod/choicegroup:downloadresponses', $context)) {
@@ -251,7 +254,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $html .= html_writer::tag('h3', format_string(get_string("responses", "choicegroup")));
 
         $attributes = ['method' => 'POST'];
-        $attributes['action'] = new moodle_url($PAGE->url);
+        $attributes['action'] = new moodle_url($this->page->url);
         $attributes['id'] = 'attemptsform';
         $attributes['class'] = 'tableform';
 
@@ -304,7 +307,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 if (!empty($options->user)) {
                     foreach ($options->user as $user) {
                         $data = '';
-                        if (empty($user->imagealt)){
+                        if (empty($user->imagealt)) {
                             $user->imagealt = '';
                         }
 
@@ -346,11 +349,11 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $actiondata .= html_writer::tag('label', ' ' . get_string('withselected', 'choice') .
                 ' ', ['for' => 'menuaction', 'class' => 'mr-1']);
 
-            $actionurl = new moodle_url($PAGE->url, ['sesskey' => sesskey(), 'action' => 'delete_confirmation()']);
+            $actionurl = new moodle_url($this->page->url, ['sesskey' => sesskey(), 'action' => 'delete_confirmation()']);
             $select = new single_select($actionurl, 'action', ['delete' => get_string('delete')], null,
                 ['' => get_string('chooseaction', 'choicegroup')], 'attemptsform');
 
-            $PAGE->requires->js_call_amd('mod_choicegroup/select_all_choices', 'init');
+            $this->page->requires->js_call_amd('mod_choicegroup/select_all_choices', 'init');
             $actiondata .= $this->output->render($select);
         }
         $html .= html_writer::tag('div', $actiondata, ['class' => 'responseaction']);
@@ -369,7 +372,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * @return string
      */
     public function display_publish_anonymous_horizontal($choicegroups) {
-        global $context, $DB, $CHOICEGROUP_COLUMN_WIDTH;
+        global $context;
 
         if (!has_capability('mod/choicegroup:downloadresponses', $context)) {
             return; // Only the (editing)teacher can see the diagram.
@@ -389,15 +392,15 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $numberofuser = 0;
             $graphcell = new html_table_cell();
             if (!empty($options->user)) {
-               $numberofuser = count($options->user);
+                $numberofuser = count($options->user);
             }
 
             $width = 0;
             $percentageamount = 0;
             $columndata = '';
-            if($choicegroups->numberofuser > 0) {
-               $width = ($CHOICEGROUP_COLUMN_WIDTH * ((float)$numberofuser / (float)$choicegroups->numberofuser));
-               $percentageamount = ((float)$numberofuser / (float)$choicegroups->numberofuser) * 100.0;
+            if ($choicegroups->numberofuser > 0) {
+                $width = (CHOICEGROUP_COLUMN_WIDTH * ((float)$numberofuser / (float)$choicegroups->numberofuser));
+                $percentageamount = ((float)$numberofuser / (float)$choicegroups->numberofuser) * 100.0;
             }
             $displaydiagram = html_writer::tag('img', '', ['style' => 'height:50px; width:'.$width.'px', 'alt' => '',
                 'src' => $this->output->pix_url('row', 'choicegroup'), ]);
@@ -421,8 +424,8 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $columndata .= html_writer::tag('div', ' ('.$numberofuser.')',
                 ['title' => get_string('numberofuser', 'choicegroup'), 'class' => 'numberofuser']);
 
-            if($choicegroups->numberofuser > 0) {
-               $percentageamount = ((float)$numberofuser / (float)$choicegroups->numberofuser) * 100.0;
+            if ($choicegroups->numberofuser > 0) {
+                $percentageamount = ((float)$numberofuser / (float)$choicegroups->numberofuser) * 100.0;
             }
             $columndata .= html_writer::tag('div', format_float($percentageamount, 1). '%', ['class' => 'percentage']);
 

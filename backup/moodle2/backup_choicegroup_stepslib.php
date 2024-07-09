@@ -24,17 +24,16 @@
  */
 
 /**
- * Define all the backup steps that will be used by the backup_choicegroup_activity_task
+ * Define the complete url structure for backup, with file and id annotations
  */
-
-/**
- * Define the complete choicegroup structure for backup, with file and id annotations
- */
-
-defined('MOODLE_INTERNAL') || die();
-
 class backup_choicegroup_activity_structure_step extends backup_activity_structure_step {
 
+    /**
+     * Defines structure of activity backup
+     *
+     * @return backup_nested_element
+     * @throws base_element_struct_exception
+     */
     protected function define_structure() {
 
         // Define each element separated.

@@ -15,10 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * This page prints a particular instance of choicegroup
  *
- * @package    mod
- * @subpackage choicegroup
+ * @package    mod_choicegroup
  * @copyright  2013 Université de Lausanne
  * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -53,8 +52,8 @@ $PAGE->requires->js_call_amd('mod_choicegroup/choicegroupdatadisplay', 'init');
 if (!$choicegroup = choicegroup_get_choicegroup($cm->instance)) {
     throw new moodle_exception('invalidcoursemodule');
 }
-$choicegroup_groups = choicegroup_get_groups($choicegroup);
-$choicegroup_users = [];
+$choicegroupgroups = choicegroup_get_groups($choicegroup);
+$choicegroupusers = [];
 
 $strchoicegroup = get_string('modulename', 'choicegroup');
 $strchoicegroups = get_string('modulenameplural', 'choicegroup');
@@ -102,13 +101,13 @@ $completion->set_module_viewed($cm);
 if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') && confirm_sesskey()) {
 
     if ($choicegroup->multipleenrollmentspossible == 1) {
-        $number_of_groups = optional_param('number_of_groups', '', PARAM_INT);
+        $numberofgroups = optional_param('number_of_groups', '', PARAM_INT);
         $enrollmentscount = 0;
 
         if ($choicegroup->maxenrollments > 0) {
-            for ($i = 0; $i < $number_of_groups; $i++) {
-                $answer_value = optional_param('answer_' . $i, '', PARAM_INT);
-                if ($answer_value != '') {
+            for ($i = 0; $i < $numberofgroups; $i++) {
+                $answervalue = optional_param('answer_' . $i, '', PARAM_INT);
+                if ($answervalue != '') {
                     $enrollmentscount++;
                 }
             }
@@ -118,15 +117,15 @@ if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
             }
         }
 
-        for ($i = 0; $i < $number_of_groups; $i++) {
-            $answer_value = optional_param('answer_' . $i, '', PARAM_INT);
-            if ($answer_value != '') {
-                choicegroup_user_submit_response($answer_value, $choicegroup, $USER->id, $course, $cm);
+        for ($i = 0; $i < $numberofgroups; $i++) {
+            $answervalue = optional_param('answer_' . $i, '', PARAM_INT);
+            if ($answervalue != '') {
+                choicegroup_user_submit_response($answervalue, $choicegroup, $USER->id, $course, $cm);
             } else {
-                $answer_value_group_id = optional_param('answer_'.$i.'_groupid', '', PARAM_INT);
-                if (groups_is_member($answer_value_group_id, $USER->id)) {
-                    $answer_value_group = $DB->get_record('groups', ['id' => $answer_value_group_id], 'id,name', MUST_EXIST);
-                    groups_remove_member($answer_value_group_id, $USER->id);
+                $answervaluegroupid = optional_param('answer_'.$i.'_groupid', '', PARAM_INT);
+                if (groups_is_member($answervaluegroupid, $USER->id)) {
+                    $answervaluegroup = $DB->get_record('groups', ['id' => $answervaluegroupid], 'id,name', MUST_EXIST);
+                    groups_remove_member($answervaluegroupid, $USER->id);
                     $event = \mod_choicegroup\event\choice_removed::create($eventparams);
                     $event->add_record_snapshot('course_modules', $cm);
                     $event->add_record_snapshot('course', $course);
@@ -230,11 +229,11 @@ if (isloggedin() && ($current !== false) ) {
                 $names[] = format_string($current->name);
             }
         }
-        $formatted_names = join(' '.get_string("and", "choicegroup").' ',
+        $formattednames = join(' '.get_string("and", "choicegroup").' ',
             array_filter(array_merge([join(', ', array_slice($names, 0, -1))],
                 array_slice($names, -1))));
         echo $OUTPUT->box(get_string("yourselection", "choicegroup",
-                userdate($choicegroup->timeopen)).": ".$formatted_names, 'generalbox', 'yourselection');
+                userdate($choicegroup->timeopen)).": ".$formattednames, 'generalbox', 'yourselection');
 
     } else {
         echo $OUTPUT->box(get_string("yourselection", "choicegroup",
@@ -259,7 +258,7 @@ if ($choicegroup->timeclose != 0) {
 $options = choicegroup_prepare_options($choicegroup, $USER, $cm, $allresponses);
 $renderer = $PAGE->get_renderer('mod_choicegroup');
 if ((!$current || $choicegroup->allowupdate) && $choicegroupopen && is_enrolled($context, null, 'mod/choicegroup:choose')) {
-// They haven't made their choicegroup yet or updates allowed and choicegroup is open.
+    // They haven't made their choicegroup yet or updates allowed and choicegroup is open.
 
     echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers,
         $choicegroup->showresults, $current, $choicegroupopen, false, $choicegroup->multipleenrollmentspossible,
@@ -297,20 +296,18 @@ if (isguestuser()) {
 }
 
 // Print the results at the bottom of the screen.
-if ( $choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS ||
+// phpcs:disable Generic.CodeAnalysis.EmptyStatement
+if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS ||
     ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER && $current) ||
     ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE && !$choicegroupopen)) {
-}
-else if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_NOT) {
+
+} else if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_NOT) {
     echo $OUTPUT->box(get_string('neverresultsviewable', 'choicegroup'));
-}
-else if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER && !$current) {
+} else if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER && !$current) {
     echo $OUTPUT->box(get_string('afterresultsviewable', 'choicegroup'));
-}
-else if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE && $choicegroupopen) {
+} else if ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE && $choicegroupopen) {
     echo $OUTPUT->box(get_string('notyetresultsviewable', 'choicegroup'));
-}
-else if (!$choicegroupformshown) {
+} else if (!$choicegroupformshown) {
     echo $OUTPUT->box(get_string('noresultsviewable', 'choicegroup'));
 }
 
