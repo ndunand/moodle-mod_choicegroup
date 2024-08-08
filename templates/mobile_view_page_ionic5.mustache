@@ -109,7 +109,7 @@
 }}
 {{=<% %>=}}
 <!-- Add options to the context menu. -->
-<core-navbar-buttons end>
+<core-navbar-buttons slot="end">
     <core-context-menu>
         <core-context-menu-item *ngIf="loaded && !hasOffline && isOnline" [priority]="700" [content]="'core.refresh' | translate" (action)="doRefresh($event)" [iconAction]="refreshIcon" [closeOnClick]="false"></core-context-menu-item>
 
@@ -121,14 +121,17 @@
     <core-course-module-description description="<% choicegroup.intro %>" component="mod_choicegroup" componentId="<% cmid %>"></core-course-module-description>
 
     <!-- Choice done in offline but not synchronized -->
-    <ion-card class="core-warning-card" icon-start *ngIf="hasOffline">
-        <ion-icon name="warning"></ion-icon> {{ 'core.hasdatatosync' | translate:{$a: moduleName} }}
+    <ion-card class="core-warning-card" *ngIf="hasOffline">
+        <ion-item>
+            <ion-icon name="fas-exclamation-triangle" slot="start"></ion-icon>
+            <ion-label>{{ 'core.hasdatatosync' | translate:{$a: moduleName} }}</ion-label>
+        </ion-item>
     </ion-card>
 
     <%# choicegroup.message %>
     <ion-list>
         <ion-item>
-                <% choicegroup.message %>
+            <ion-label><% choicegroup.message %></ion-label>
         </ion-item>
     </ion-list>
     <%/ choicegroup.message %>
@@ -141,7 +144,7 @@
                 <ion-col class="bold">
                     {{ 'plugin.mod_choicegroup.group' | translate }}
                 </ion-col>
-                <ion-col col-3 class="bold" justify-content-center align-items-center text-center>
+                <ion-col size="3" class="bold ion-justify-content-center ion-align-items-center ion-text-center">
                     <%^ choicegroup.limitanswers %>
                         {{ 'plugin.mod_choicegroup.members/' | translate }}
                     <%/ choicegroup.limitanswers %>
@@ -151,11 +154,9 @@
                 </ion-col>
             </ion-row>
 
+            <ion-list>
             <%^ choicegroup.multipleenrollmentspossible %>
-                <ion-list radio-group [(ngModel)]="CONTENT_OTHERDATA.data.responses" name="responses">
-            <%/ choicegroup.multipleenrollmentspossible %>
-            <%# choicegroup.multipleenrollmentspossible %>
-                <ion-list>
+                <ion-radio-group [(ngModel)]="CONTENT_OTHERDATA.data.responses" name="responses">
             <%/ choicegroup.multipleenrollmentspossible %>
                 <%# options %>
                     <ion-row>
@@ -163,45 +164,44 @@
                             <ion-item>
                                 <ion-label><% name %></ion-label>
                                 <%^ choicegroup.multipleenrollmentspossible %>
-                                    <ion-radio <%# checked %>checked="true"<%/ checked %> <%# disabled %>disabled="true"<%/ disabled %> value="<% id %>"></ion-radio>
+                                    <ion-radio slot="end" <%# checked %>checked="true"<%/ checked %> <%# disabled %>disabled="true"<%/ disabled %> [value]="<% id %>"></ion-radio>
                                 <%/ choicegroup.multipleenrollmentspossible %>
                                 <%# choicegroup.multipleenrollmentspossible %>
-                                    <ion-checkbox item-right
+                                    <ion-checkbox slot="end"
                                     [(ngModel)]="CONTENT_OTHERDATA.data.responses_<% id %>" name="responses_<% id %>"
                                     <%# checked %>checked="true"<%/ checked %>
                                     <%# disabled %>disabled="true"<%/ disabled %>
-                                    value="<% id %>">
+                                    [value]="<% id %>">
                                 </ion-checkbox>
                                 <%/ choicegroup.multipleenrollmentspossible %>
                             </ion-item>
                         </ion-col>
 
-                        <ion-col col-3 justify-content-center align-items-center text-center>
+                        <ion-col size="3" class="ion-justify-content-center ion-align-items-center ion-text-center">
                             <% countanswers %>
                             <%# choicegroup.limitanswers %> / <% maxanswers %> <%/ choicegroup.limitanswers %>
                         </ion-col>
                     </ion-row>
                 <%/ options %>
+            <%^ choicegroup.multipleenrollmentspossible %>
+                </ion-radio-group>
+            <%/ choicegroup.multipleenrollmentspossible %>
             </ion-list>
         </ion-grid>
 
         <%^ choicegroup.expired %>
             <%^ choicegroup.alloptionsdisabled %>
                 <ion-list>
-                    <ion-item>
-                        <button ion-button block type="submit" (click)="submitResponses()">
-                            {{ 'plugin.mod_choicegroup.savemychoicegroup' | translate }}
-                        </button>
-                    </ion-item>
+                    <ion-button class="ion-margin" expand="block" type="submit" (click)="submitResponses()">
+                        {{ 'plugin.mod_choicegroup.savemychoicegroup' | translate }}
+                    </ion-button>
 
                     <%^ choicegroup.multipleenrollmentspossible %>
                     <%# choicegroup.allowupdate %>
-                    <ion-item *ngIf="showDelete">
-                        <button ion-button block outline color="danger" type="button" (click)="deleteResponses()">
-                            <ion-icon name="trash"></ion-icon>&nbsp;
-                            {{ 'plugin.mod_choicegroup.removemychoicegroup' | translate }}
-                        </button>
-                    </ion-item>
+                    <ion-button *ngIf="showDelete" class="ion-margin" expand="block" fill="outline" color="danger" (click)="deleteResponses()">
+                        <ion-icon slot="start" name="fas-trash"></ion-icon>
+                        {{ 'plugin.mod_choicegroup.removemychoicegroup' | translate }}
+                    </ion-button>
                     <%/ choicegroup.allowupdate %>
                     <%/ choicegroup.multipleenrollmentspossible %>
                 </ion-list>
