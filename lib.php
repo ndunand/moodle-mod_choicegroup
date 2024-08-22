@@ -491,7 +491,7 @@ function choicegroup_show_reportlink($choicegroup, $allresponses, $cm) {
  * @return object
  */
 function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allresponses, $forcepublish=false) {
-    global $CFG, $fullscript, $PAGE, $OUTPUT;
+    global $CFG, $FULLSCRIPT, $PAGE, $OUTPUT;
 
     $display = clone($choicegroup);
     $display->coursemoduleid = $cm->id;
@@ -546,7 +546,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
         case CHOICEGROUP_PUBLISH_NAMES:
             echo '<div id="tablecontainer">';
             if ($viewresponses) {
-                echo '<form id="attemptsform" method="post" action="'.$fullscript.'" '.
+                echo '<form id="attemptsform" method="post" action="'.$FULLSCRIPT.'" '.
                     'onsubmit="var menu = document.getElementById(\'menuaction\'); return (menu.options[menu.selectedIndex].value '.
                     '== \'delete\' ? \''.addslashes_js(get_string('deleteattemptcheck', 'quiz')).'\' : true);">';
                 echo '<div>';
