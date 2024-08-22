@@ -53,20 +53,6 @@ if (!defined('MOD_PURPOSE_COLLABORATION')) {
     define('MOD_PURPOSE_COLLABORATION', 'collaboration');
 }
 
-global $choicegrouppublish;
-$choicegrouppublish = [CHOICEGROUP_PUBLISH_ANONYMOUS  => get_string('publishanonymous', 'choicegroup'),
-                         CHOICEGROUP_PUBLISH_NAMES      => get_string('publishnames', 'choicegroup'), ];
-
-global $choicegroupshowresults;
-$choicegroupshowresults = [CHOICEGROUP_SHOWRESULTS_NOT          => get_string('publishnot', 'choicegroup'),
-                         CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER => get_string('publishafteranswer', 'choicegroup'),
-                         CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE  => get_string('publishafterclose', 'choicegroup'),
-                         CHOICEGROUP_SHOWRESULTS_ALWAYS       => get_string('publishalways', 'choicegroup'), ];
-
-global $choicegroupdisplay;
-$choicegroupdisplay = [CHOICEGROUP_DISPLAY_HORIZONTAL   => get_string('displayhorizontal', 'choicegroup'),
-                         CHOICEGROUP_DISPLAY_VERTICAL     => get_string('displayvertical', 'choicegroup'), ];
-
 require_once($CFG->dirroot.'/group/lib.php');
 
 // Standard functions /////////////////////////////////////////////////////////.

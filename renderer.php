@@ -23,9 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define ('CHOICEGROUP_DISPLAY_HORIZONTAL_LAYOUT', 0);
-define ('CHOICEGROUP_DISPLAY_VERTICAL_LAYOUT', 1);
-
 /**
  * Renderer for the mod_choicegroup plugin.
  */
@@ -229,7 +226,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         if ($forcepublish) {  // CHOICEGROUP_PUBLISH_NAMES.
             return $this->display_publish_name_vertical($choicegroups);
         } else { // CHOICEGROUP_PUBLISH_ANONYMOUS'.
-            if ($displaylayout == CHOICEGROUP_DISPLAY_HORIZONTAL_LAYOUT) {
+            if ($displaylayout == CHOICEGROUP_DISPLAY_HORIZONTAL) {
                 return $this->display_publish_anonymous_horizontal($choicegroups);
             }
             return $this->display_publish_anonymous_vertical($choicegroups);
