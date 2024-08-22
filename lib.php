@@ -104,7 +104,7 @@ function choicegroup_user_outline($course, $user, $mod, $choicegroup) {
  * @throws dml_exception
  */
 function choicegroup_get_user_answer($choicegroup, $user, $returnarray = false, $refresh = false) {
-    global $DB, $choicegroupgroups;
+    global $DB;
 
     static $useranswers = [];
 
@@ -793,21 +793,14 @@ function choicegroup_get_option_text($choicegroup, $id) {
 /**
  * Returns DB records of groups used by the choicegroup activity
  *
- * @param object $choicegroup
+ * @param object|int $choicegroup
  * @return array
  * @throws dml_exception
  */
 function choicegroup_get_groups($choicegroup) {
     global $DB;
 
-    // This block of caching code creates errors, see INC4040351.
-    /*
-    static $groups = array();
-
-    if (count($groups)) {
-        return $groups;
-    }
-    */
+    static $groups = [];
 
     if (is_numeric($choicegroup)) {
         $choicegroupid = $choicegroup;
@@ -815,14 +808,13 @@ function choicegroup_get_groups($choicegroup) {
         $choicegroupid = $choicegroup->id;
     }
 
-    $groups = [];
-    $options = $DB->get_records('choicegroup_options', ['choicegroupid' => $choicegroupid]);
-    foreach ($options as $option) {
-        if ($group = $DB->get_record('groups', ['id' => $option->groupid])) {
-            $groups[$group->id] = $group;
-        }
+    if (!isset($groups[$choicegroupid])) {
+        $groupids = $DB->get_fieldset_select('choicegroup_options', 'groupid', 'choicegroupid = ?', [$choicegroupid]);
+        [$insql, $inparams] = $DB->get_in_or_equal($groupids, SQL_PARAMS_NAMED);
+        $groups[$choicegroupid] = $DB->get_records_select('groups', 'id ' . $insql, $inparams);
     }
-    return $groups;
+
+    return $groups[$choicegroupid];
 }
 
 /**

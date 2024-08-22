@@ -61,7 +61,7 @@ class mod_choicegroup_external extends external_api {
      * @return array The choice group options.
      */
     public static function get_choicegroup_options($choicegroupid, $userid, $alloptionsdisabled = false) {
-        global $CFG, $choicegroupgroups;
+        global $CFG;
 
         $result = [];
         $returnedoptions = [];
@@ -73,6 +73,7 @@ class mod_choicegroup_external extends external_api {
         ];
         $params = self::validate_parameters(self::get_choicegroup_options_parameters(), $params);
         $choicegroup = choicegroup_get_choicegroup($choicegroupid);
+        $choicegroupgroups = choicegroup_get_groups($choicegroupid);
         $cm = get_coursemodule_from_instance('choicegroup', $choicegroupid);
         $context = context_module::instance($cm->id);
 

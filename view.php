@@ -260,14 +260,10 @@ $renderer = $PAGE->get_renderer('mod_choicegroup');
 if ((!$current || $choicegroup->allowupdate) && $choicegroupopen && is_enrolled($context, null, 'mod/choicegroup:choose')) {
     // They haven't made their choicegroup yet or updates allowed and choicegroup is open.
 
-    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers,
-        $choicegroup->showresults, $current, $choicegroupopen, false, $choicegroup->multipleenrollmentspossible,
-        $choicegroup->onlyactive);
+    echo $renderer->display_options($options, $cm->id, $choicegroup, $current, $choicegroupopen, false);
 } else {
     // Form can not be updated.
-    echo $renderer->display_options($options, $cm->id, $choicegroup->display, $choicegroup->publish, $choicegroup->limitanswers,
-        $choicegroup->showresults, $current, $choicegroupopen, true, $choicegroup->multipleenrollmentspossible,
-        $choicegroup->onlyactive);
+    echo $renderer->display_options($options, $cm->id, $choicegroup, $current, $choicegroupopen, true);
 }
 $choicegroupformshown = true;
 

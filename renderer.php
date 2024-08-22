@@ -35,7 +35,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * Returns HTML to display choices of option
      *
      * @param array $options
-     * @param int $coursemoduleid
+     * @param int $cmid
      * @param bool $vertical
      * @param bool $publish
      * @param bool $limitanswers
@@ -50,10 +50,14 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false,
-        $showresults = false, $current = false, $choicegroupopen = false, $disabled = false,
-        $multipleenrollmentspossible = false, $onlyactive = false) {
-        global $choicegroupgroups;
+    public function display_options($options, $cmid, $choicegroup, $current = false, $choicegroupopen = false, $disabled = false) {
+        $vertical = $choicegroup->display;
+        $publish = $choicegroup->publish;
+        $limitanswers = $choicegroup->limitanswers;
+        $showresults = $choicegroup->showresults;
+        $multipleenrollmentspossible = $choicegroup->multipleenrollmentspossible;
+        $onlyactive = $choicegroup->onlyactive;
+        $choicegroupgroups = choicegroup_get_groups($choicegroup->id);
 
         $target = new moodle_url('/mod/choicegroup/view.php');
         $attributes = ['method' => 'POST', 'action' => $target, 'class' => 'tableform'];
@@ -179,7 +183,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         }
         $html .= html_writer::tag('div', '', ['class' => 'clearfloat']);
         $html .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
-        $html .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'id', 'value' => $coursemoduleid]);
+        $html .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'id', 'value' => $cmid]);
 
         if (!empty($options['hascapability']) && ($options['hascapability'])) {
             if ($availableoption < 1) {
@@ -197,7 +201,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
             if (!empty($options['allowupdate']) && ($options['allowupdate']) &&
                 !($multipleenrollmentspossible == 1) && !$disabled) {
-                $url = new moodle_url('view.php', ['id' => $coursemoduleid, 'action' => 'delchoicegroup', 'sesskey' => sesskey()]);
+                $url = new moodle_url('view.php', ['id' => $cmid, 'action' => 'delchoicegroup', 'sesskey' => sesskey()]);
                 $html .= ' ' . html_writer::link($url, get_string('removemychoicegroup', 'choicegroup'));
             }
         } else if (!isloggedin() || isguestuser()) { // Only display message if user is not logged in or is a guest user.
