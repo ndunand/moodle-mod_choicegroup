@@ -100,48 +100,42 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnarray = false, 
         $userid = $user->id;
     }
 
-    if (!$refresh && isset($useranswers[$userid])) {
-        if ($returnarray === true) {
-            return $useranswers[$userid];
-        } else {
-            return $useranswers[$userid][0];
-        }
-    } else {
-        $useranswers = [];
-    }
-    if (!is_array($choicegroupgroups) || !count($choicegroupgroups)) {
-            $choicegroupgroups = choicegroup_get_groups($choicegroup);
-
-    }
-
-    $groupids = [];
-    foreach ($choicegroupgroups as $group) {
-        if (is_numeric($group->id)) {
-            $groupids[] = $group->id;
-        }
-    }
-    if ($groupids) {
-        $params1 = [$userid];
-        list($insql, $params2) = $DB->get_in_or_equal($groupids);
-        $params = array_merge($params1, $params2);
-        $groupmemberships = $DB->get_records_sql('SELECT * FROM {groups_members} WHERE userid = ? AND groupid '.$insql, $params);
+    if ($refresh || !isset($useranswers[$userid][$choicegroup])) {
         $groups = [];
-        foreach ($groupmemberships as $groupmembership) {
-            $group = $choicegroupgroups[$groupmembership->groupid];
-            $group->timeuseradded = $groupmembership->timeadded;
-            $groups[] = $group;
-        }
-        if (count($groups) > 0) {
-            $useranswers[$userid] = $groups;
-            if ($returnarray === true) {
-                return $groups;
-            } else {
-                return $groups[0];
+        $groupids = [];
+        $choicegroupgroups = choicegroup_get_groups($choicegroup);
+
+        foreach ($choicegroupgroups as $group) {
+            if (is_numeric($group->id)) {
+                $groupids[] = $group->id;
             }
         }
-    }
-    return false;
 
+        if ($groupids) {
+            $params1 = [$userid];
+            list($insql, $params2) = $DB->get_in_or_equal($groupids);
+            $params = array_merge($params1, $params2);
+            $groupmemberships = $DB->get_records_select('groups_members', 'userid = ? AND groupid '.$insql, $params);
+
+            foreach ($groupmemberships as $groupmembership) {
+                $group = $choicegroupgroups[$groupmembership->groupid];
+                $group->timeuseradded = $groupmembership->timeadded;
+                $groups[] = $group;
+            }
+        }
+
+        $useranswers[$userid][$choicegroup] = $groups;
+    }
+
+    if (empty($useranswers[$userid][$choicegroup])) {
+        return false;
+    }
+
+    if ($returnarray === true) {
+        return $useranswers[$userid][$choicegroup];
+    } else {
+        return $useranswers[$userid][$choicegroup][0];
+    }
 }
 
 /**
@@ -927,8 +921,14 @@ function choicegroup_get_response_data($choicegroup, $cm, $groupmode, $onlyactiv
     // Initialise the returned array, which is a matrix:  $allresponses[responseid][userid] = responseobject.
     static $allresponses = [];
 
-    if (count($allresponses)) {
-        return $allresponses;
+    if (is_numeric($choicegroup)) {
+        $choicegroupid = $choicegroup;
+    } else {
+        $choicegroupid = $choicegroup->id;
+    }
+
+    if (isset($allresponses[$choicegroupid])) {
+        return $allresponses[$choicegroupid];
     }
 
     // Get the current group.
@@ -949,18 +949,24 @@ function choicegroup_get_response_data($choicegroup, $cm, $groupmode, $onlyactiv
         $users = $availability->filter_user_list($users);
     }
 
-    $allresponses[0] = $users;
+    // Start without responses.
+    $activityresponses = [
+        0 => $users,
+    ];
 
-    $responses = choicegroup_get_responses($choicegroup, $ctx, $currentgroup, $onlyactive);
+    $responses = choicegroup_get_responses($choicegroupid, $ctx, $currentgroup, $onlyactive);
     foreach ($responses as $response) {
         if (isset($users[$response->userid])) {
-            $allresponses[$response->groupid][$response->userid] = clone $users[$response->userid];
-            $allresponses[$response->groupid][$response->userid]->timemodified = $response->timeadded;
+            $activityresponses[$response->groupid][$response->userid] = clone $users[$response->userid];
+            $activityresponses[$response->groupid][$response->userid]->timemodified = $response->timeadded;
 
-            unset($allresponses[0][$response->userid]);
+            unset($activityresponses[0][$response->userid]);
         }
     }
-    return $allresponses;
+
+    $allresponses[$choicegroupid] = $activityresponses;
+
+    return $allresponses[$choicegroupid];
 }
 
 /**
