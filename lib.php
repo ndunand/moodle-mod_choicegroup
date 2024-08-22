@@ -100,10 +100,10 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnarray = false, 
         $userid = $user->id;
     }
 
-    if ($refresh || !isset($useranswers[$userid][$choicegroup])) {
+    if ($refresh || !isset($useranswers[$userid][$choicegroup->id])) {
         $groups = [];
         $groupids = [];
-        $choicegroupgroups = choicegroup_get_groups($choicegroup);
+        $choicegroupgroups = choicegroup_get_groups($choicegroup->id);
 
         foreach ($choicegroupgroups as $group) {
             if (is_numeric($group->id)) {
@@ -124,17 +124,17 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnarray = false, 
             }
         }
 
-        $useranswers[$userid][$choicegroup] = $groups;
+        $useranswers[$userid][$choicegroup->id] = $groups;
     }
 
-    if (empty($useranswers[$userid][$choicegroup])) {
+    if (empty($useranswers[$userid][$choicegroup->id])) {
         return false;
     }
 
     if ($returnarray === true) {
-        return $useranswers[$userid][$choicegroup];
+        return $useranswers[$userid][$choicegroup->id];
     } else {
-        return $useranswers[$userid][$choicegroup][0];
+        return $useranswers[$userid][$choicegroup->id][0];
     }
 }
 
