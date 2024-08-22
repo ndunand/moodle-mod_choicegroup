@@ -63,7 +63,6 @@ class mod_choicegroup_external extends external_api {
     public static function get_choicegroup_options($choicegroupid, $userid, $alloptionsdisabled = false) {
         global $CFG;
 
-        $result = [];
         $returnedoptions = [];
         $warnings = [];
 
