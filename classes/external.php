@@ -277,7 +277,7 @@ class mod_choicegroup_external extends external_api {
         if (!empty($choicegroup->timeopen) && ($choicegroup->timeopen > $timenow)) {
             throw new moodle_exception('notopenyet', 'choicegroup', '', userdate($choicegroup->timeopen));
         } else if (!empty($choicegroup->timeclose) && ($timenow > $choicegroup->timeclose)) {
-            throw new moodle_exception('expired', 'choicegroup', '', userdate($choice->timeclose));
+            throw new moodle_exception('expired', 'choicegroup', '', userdate($choicegroup->timeclose));
         }
 
         $responses = self::parse_data_to_responses(
@@ -413,7 +413,7 @@ class mod_choicegroup_external extends external_api {
         if (!empty($choicegroup->timeopen) && ($choicegroup->timeopen > $timenow)) {
             throw new moodle_exception('notopenyet', 'choicegroup', '', userdate($choicegroup->timeopen));
         } else if (!empty($choicegroup->timeclose) && ($timenow > $choicegroup->timeclose)) {
-            throw new moodle_exception('expired', 'choicegroup', '', userdate($choice->timeclose));
+            throw new moodle_exception('expired', 'choicegroup', '', userdate($choicegroup->timeclose));
         }
 
         $answergiven = choicegroup_get_user_answer($choicegroup, $USER, true);
