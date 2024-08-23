@@ -304,6 +304,7 @@ class mod_choicegroup_external extends external_api {
                             $eventparams = [
                                 'context' => $context,
                                 'objectid' => $choicegroup->id,
+                                'relateduserid' => $USER->id,
                             ];
                             $event = \mod_choicegroup\event\choice_removed::create($eventparams);
                             $event->add_record_snapshot('course_modules', $cm);

@@ -390,6 +390,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
     $eventparams = [
         'context' => $context,
         'objectid' => $choicegroup->id,
+        'relateduserid' => $userid,
     ];
 
     check_restrictions($choicegroup, $userid);
@@ -421,6 +422,8 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
                 if ($selectedoption->groupid != $current->id) {
                     if (groups_is_member($current->id, $userid)) {
                         groups_remove_member($current->id, $userid);
+
+                        // Log event of user group choice removal.
                         $event = \mod_choicegroup\event\choice_removed::create($eventparams);
                         $event->add_record_snapshot('course_modules', $cm);
                         $event->add_record_snapshot('course', $course);
@@ -429,18 +432,21 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
                     }
                 }
             }
-        } else {
-            // Update completion state.
-            $completion = new completion_info($course);
-            if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
-                $completion->update_state($cm, COMPLETION_COMPLETE);
-            }
-            $event = \mod_choicegroup\event\choice_updated::create($eventparams);
-            $event->add_record_snapshot('course_modules', $cm);
-            $event->add_record_snapshot('course', $course);
-            $event->add_record_snapshot('choicegroup', $choicegroup);
-            $event->trigger();
         }
+
+        // Update completion state.
+        $completion = new completion_info($course);
+        if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
+            $completion->update_state($cm, COMPLETION_COMPLETE);
+        }
+
+        // Log event of user group choice creation.
+        $event = \mod_choicegroup\event\choice_updated::create($eventparams);
+        $event->add_record_snapshot('course_modules', $cm);
+        $event->add_record_snapshot('course', $course);
+        $event->add_record_snapshot('choicegroup', $choicegroup);
+        $event->trigger();
+
     } else {
         if (!$current || !($current->id == $selectedoption->groupid)) { // Check to see if current choicegroup already selected -
             // if not display error.
