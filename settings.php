@@ -33,4 +33,15 @@ if ($ADMIN->fulltree) {
     $options = choicegroup_get_sort_options();
     $settings->add(new admin_setting_configselect('choicegroup/sortgroupsby', get_string('sortgroupsby', 'choicegroup'), '',
         CHOICEGROUP_SORTGROUPS_CREATEDATE, $options));
+
+    $settings->add(new admin_setting_configselect(
+        'choicegroup/defaultgroupdescriptionstate',
+        get_string('defaultgroupdescriptionstate', 'choicegroup'),
+        get_string('defaultgroupdescriptionstate_desc', 'choicegroup'),
+        CHOICEGROUP_GROUPDESCRIPTIONSTATE_HIDDEN,
+        [
+            CHOICEGROUP_GROUPDESCRIPTIONSTATE_VISIBLE => get_string('showdescription', 'choicegroup'),
+            CHOICEGROUP_GROUPDESCRIPTIONSTATE_HIDDEN => get_string('hidedescription', 'choicegroup')
+        ]
+    ));
 }
