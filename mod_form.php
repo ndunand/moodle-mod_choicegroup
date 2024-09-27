@@ -75,7 +75,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
             $groups[$group->id]->id = $group->id;
         }
 
-        if (count($dbgroups) < 1) {
+        if (count($dbgroups) < 1 && $PAGE->pagetype != 'course-defaultcompletion') {
             $a = new stdClass();
             $a->linkgroups = $CFG->wwwroot . '/group/index.php?id=' . $COURSE->id;
             $a->linkcourse = $CFG->wwwroot . '//course/view.php?id=' . $COURSE->id;
