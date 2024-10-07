@@ -204,6 +204,8 @@ function choicegroup_add_instance($choicegroup) {
 
     $groupids = explode(';', $choicegroup->serializedselectedgroups);
     $groupids = array_diff( $groupids, [ '' ] );
+    // Only add unique groups as groups can be in multiple groupings.
+    $groupids = array_unique($groupids);
 
     foreach ($groupids as $groupid) {
         $groupid = trim($groupid);
@@ -256,6 +258,8 @@ function choicegroup_update_instance($choicegroup) {
 
     $groupids = explode(';', $choicegroup->serializedselectedgroups);
     $groupids = array_diff( $groupids, [ '' ] );
+    // Only add unique groups as groups can be in multiple groupings.
+    $groupids = array_unique($groupids);
 
     // Prepare pre-existing selected groups from database.
     $preexistinggroups = $DB->get_records("choicegroup_options", ["choicegroupid" => $choicegroup->id], "id");
