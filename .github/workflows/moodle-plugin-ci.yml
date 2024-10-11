@@ -1,13 +1,7 @@
 name: Moodle Plugin CI
 # Based on version gha.dist.yml version 4.5.4
 
-on:
-  push:
-    branches:
-      - 'main'
-  pull_request:
-    branches:
-      - 'main'
+on: [push, pull_request]
 
 jobs:
   test:
