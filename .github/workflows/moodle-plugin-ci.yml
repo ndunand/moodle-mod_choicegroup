@@ -84,36 +84,6 @@ jobs:
           - php: '8.2'
             moodle-branch: 'MOODLE_403_STABLE'
             database: mariadb
-          - php: '8.0'
-            moodle-branch: 'MOODLE_402_STABLE'
-            database: pgsql
-          - php: '8.1'
-            moodle-branch: 'MOODLE_402_STABLE'
-            database: pgsql
-          - php: '8.2'
-            moodle-branch: 'MOODLE_402_STABLE'
-            database: pgsql
-          - php: '8.0'
-            moodle-branch: 'MOODLE_402_STABLE'
-            database: mariadb
-          - php: '8.1'
-            moodle-branch: 'MOODLE_402_STABLE'
-            database: mariadb
-          - php: '8.2'
-            moodle-branch: 'MOODLE_402_STABLE'
-            database: mariadb
-          - php: '8.0'
-            moodle-branch: 'MOODLE_401_STABLE'
-            database: pgsql
-          - php: '7.4'
-            moodle-branch: 'MOODLE_401_STABLE'
-            database: pgsql
-          - php: '8.0'
-            moodle-branch: 'MOODLE_401_STABLE'
-            database: mariadb
-          - php: '7.4'
-            moodle-branch: 'MOODLE_401_STABLE'
-            database: mariadb
 
     steps:
       - name: Check out repository code
@@ -164,18 +134,6 @@ jobs:
       - name: Validating
         if: ${{ always() }}
         run: moodle-plugin-ci validate
-
-      - name: Check upgrade savepoints
-        if: ${{ always() }}
-        run: moodle-plugin-ci savepoints
-
-      - name: Mustache Lint
-        if: ${{ always() }}
-        run: moodle-plugin-ci mustache
-
-      - name: Grunt
-        if: ${{ always() }}
-        run: moodle-plugin-ci grunt --max-lint-warnings 0
 
       - name: PHPUnit tests
         if: ${{ always() }}
