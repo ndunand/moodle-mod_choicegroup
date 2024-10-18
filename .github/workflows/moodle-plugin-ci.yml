@@ -16,10 +16,12 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
       mariadb:
-        image: mariadb:10
+        image: mariadb:10.6
         env:
           MYSQL_USER: 'root'
           MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+          MYSQL_CHARACTER_SET_SERVER: "utf8mb4"
+          MYSQL_COLLATION_SERVER: "utf8mb4_unicode_ci"
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 3
@@ -28,41 +30,89 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - php: 8.3
-            moodle-branch: MOODLE_404_STABLE
+          - php: '8.1'
+            moodle-branch: 'MOODLE_405_STABLE'
             database: pgsql
-          - php: 8.3
-            moodle-branch: MOODLE_404_STABLE
+          - php: '8.2'
+            moodle-branch: 'MOODLE_405_STABLE'
+            database: pgsql
+          - php: '8.3'
+            moodle-branch: 'MOODLE_405_STABLE'
+            database: pgsql
+          - php: '8.1'
+            moodle-branch: 'MOODLE_405_STABLE'
             database: mariadb
-          - php: 8.2
-            moodle-branch: MOODLE_404_STABLE
-            database: pgsql
-          - php: 8.2
-            moodle-branch: MOODLE_404_STABLE
+          - php: '8.2'
+            moodle-branch: 'MOODLE_405_STABLE'
             database: mariadb
-          - php: 8.1
-            moodle-branch: MOODLE_404_STABLE
-            database: pgsql
-          - php: 8.1
-            moodle-branch: MOODLE_404_STABLE
+          - php: '8.3'
+            moodle-branch: 'MOODLE_405_STABLE'
             database: mariadb
-          - php: 8.2
-            moodle-branch: MOODLE_403_STABLE
+          - php: '8.1'
+            moodle-branch: 'MOODLE_404_STABLE'
             database: pgsql
-          - php: 8.2
-            moodle-branch: MOODLE_403_STABLE
+          - php: '8.2'
+            moodle-branch: 'MOODLE_404_STABLE'
+            database: pgsql
+          - php: '8.3'
+            moodle-branch: 'MOODLE_404_STABLE'
+            database: pgsql
+          - php: '8.1'
+            moodle-branch: 'MOODLE_404_STABLE'
             database: mariadb
-          - php: 8.1
-            moodle-branch: MOODLE_403_STABLE
-            database: pgsql
-          - php: 8.1
-            moodle-branch: MOODLE_403_STABLE
+          - php: '8.2'
+            moodle-branch: 'MOODLE_404_STABLE'
             database: mariadb
-          - php: 8.0
-            moodle-branch: MOODLE_403_STABLE
+          - php: '8.3'
+            moodle-branch: 'MOODLE_404_STABLE'
+            database: mariadb
+          - php: '8.0'
+            moodle-branch: 'MOODLE_403_STABLE'
             database: pgsql
-          - php: 8.0
-            moodle-branch: MOODLE_403_STABLE
+          - php: '8.1'
+            moodle-branch: 'MOODLE_403_STABLE'
+            database: pgsql
+          - php: '8.2'
+            moodle-branch: 'MOODLE_403_STABLE'
+            database: pgsql
+          - php: '8.0'
+            moodle-branch: 'MOODLE_403_STABLE'
+            database: mariadb
+          - php: '8.1'
+            moodle-branch: 'MOODLE_403_STABLE'
+            database: mariadb
+          - php: '8.2'
+            moodle-branch: 'MOODLE_403_STABLE'
+            database: mariadb
+          - php: '8.0'
+            moodle-branch: 'MOODLE_402_STABLE'
+            database: pgsql
+          - php: '8.1'
+            moodle-branch: 'MOODLE_402_STABLE'
+            database: pgsql
+          - php: '8.2'
+            moodle-branch: 'MOODLE_402_STABLE'
+            database: pgsql
+          - php: '8.0'
+            moodle-branch: 'MOODLE_402_STABLE'
+            database: mariadb
+          - php: '8.1'
+            moodle-branch: 'MOODLE_402_STABLE'
+            database: mariadb
+          - php: '8.2'
+            moodle-branch: 'MOODLE_402_STABLE'
+            database: mariadb
+          - php: '8.0'
+            moodle-branch: 'MOODLE_401_STABLE'
+            database: pgsql
+          - php: '7.4'
+            moodle-branch: 'MOODLE_401_STABLE'
+            database: pgsql
+          - php: '8.0'
+            moodle-branch: 'MOODLE_401_STABLE'
+            database: mariadb
+          - php: '7.4'
+            moodle-branch: 'MOODLE_401_STABLE'
             database: mariadb
 
     steps:
@@ -105,7 +155,7 @@ jobs:
 
       - name: Moodle Code Checker
         if: ${{ always() }}
-        run: moodle-plugin-ci codechecker
+        run: moodle-plugin-ci codechecker --max-warnings 0
 
       - name: Moodle PHPDoc Checker
         if: ${{ always() }}
@@ -117,20 +167,20 @@ jobs:
 
       - name: Check upgrade savepoints
         if: ${{ always() }}
-        run: moodle-plugin-ci savepoints || true
+        run: moodle-plugin-ci savepoints
 
       - name: Mustache Lint
         if: ${{ always() }}
-        run: moodle-plugin-ci mustache || true
+        run: moodle-plugin-ci mustache
 
       - name: Grunt
         if: ${{ always() }}
-        run: moodle-plugin-ci grunt
+        run: moodle-plugin-ci grunt --max-lint-warnings 0
 
       - name: PHPUnit tests
         if: ${{ always() }}
-        run: moodle-plugin-ci phpunit
+        run: moodle-plugin-ci phpunit --fail-on-warning
 
       - name: Behat features
         if: ${{ always() }}
-        run: moodle-plugin-ci behat --profile chrome
+        run: moodle-plugin-ci behat --profile chrome --auto-rerun 0
