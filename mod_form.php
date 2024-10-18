@@ -287,8 +287,11 @@ class mod_choicegroup_mod_form extends moodleform_mod {
      * @return void
      */
     public function data_preprocessing(&$defaultvalues) {
-        global $DB;
-        $this->js_call();
+        global $PAGE;
+
+        if ($PAGE->pagetype != 'course-defaultcompletion') {
+            $this->js_call();
+        }
 
         if (empty($defaultvalues['timeopen'])) {
             $defaultvalues['timerestrict'] = 0;
