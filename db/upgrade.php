@@ -101,6 +101,21 @@ function xmldb_choicegroup_upgrade($oldversion) {
         // Group choice savepoint reached.
         upgrade_mod_savepoint(true, 2021080500, 'choicegroup');
     }
+    if ($oldversion < 2024092600) {
+
+        // Define field defaultgroupdescriptionstate to be added to choicegroup.
+        $table = new xmldb_table('choicegroup');
+        $field = new xmldb_field('defaultgroupdescriptionstate', XMLDB_TYPE_INTEGER, '1', null, null, null, '0', 'onlyactive');
+
+        // Conditionally launch add field defaultgroupdescriptionstate.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Choicegroup savepoint reached.
+        upgrade_mod_savepoint(true, 2024092600, 'choicegroup');
+    }
+
 
     return true;
 }
