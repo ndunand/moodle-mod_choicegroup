@@ -151,6 +151,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $mform->addElement('header', 'groups', get_string('groupsheader', 'choicegroup'));
         $mform->addElement('html', '<fieldset class="clearfix">
                 <div class="fcontainer clearfix">
+                <label for="fitem_id_option_0" class="fitemtitle">' . get_string('choicegroupoptions_description', 'choicegroup') . '</label>
                 <div id="fitem_id_option_0" name="fitem_id_option_0" class="fitem fitem_fselect ">
                 <div class="felement fselect">
                 <div class="tablecontainer">

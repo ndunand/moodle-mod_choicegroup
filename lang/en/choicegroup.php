@@ -57,6 +57,7 @@ $string['choicegroupfull'] = 'This group choice is full and there are no availab
 $string['choicegroupname'] = 'Group choice name';
 $string['choicegroupopen'] = 'Open';
 $string['choicegroupoptions'] = 'Choice options';
+$string['choicegroupoptions_description'] = 'Define available group options for participants';
 $string['choicegroupoptions_help'] = 'Here is where you specify which groups participants can choose from.
 
 The list on the left displays all available groups and groupings. To add one or several groups, select these from the list and click "Add". To add all groups from a grouping, select the grouping and click "Add".
