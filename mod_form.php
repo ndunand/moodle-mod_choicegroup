@@ -151,15 +151,10 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $mform->addElement('header', 'groups', get_string('groupsheader', 'choicegroup'));
         $mform->addElement('html', '<fieldset class="clearfix">
                 <div class="fcontainer clearfix">
-                <div id="fitem_id_option_0" class="fitem fitem_fselect ">
-                <div class="fitemtitle"><label for="id_option_0">' . get_string('groupsheader', 'choicegroup') .
-            '</label><span class="helptooltip"><a href="' . $CFG->wwwroot .
-            '/help.php?component=choicegroup&amp;identifier=choicegroupoptions&amp;lang=' . current_language() .
-            '" title="' . get_string('choicegroupoptions_help', 'choicegroup') .
-            '" aria-haspopup="true" target="_blank"><img height="24px" width="24px" src="' . $CFG->wwwroot . '/theme/image.php?theme='
-            . $PAGE->theme->name . '&component=core&image=help" alt="' .
-            get_string('choicegroupoptions_help', 'choicegroup') .
-            '" class="iconhelp"></a></span></div><div class="felement fselect">
+                <label for="fitem_id_option_0" class="fitemtitle">'
+                    . get_string('choicegroupoptions_description', 'choicegroup') . '</label>
+                <div id="fitem_id_option_0" name="fitem_id_option_0" class="fitem fitem_fselect ">
+                <div class="felement fselect">
                 <div class="tablecontainer">
                 <table>
                     <tr class="row">
@@ -168,6 +163,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                     </tr>
                     <tr class="row">
                         <td style="vertical-align: top" class="col-5">');
+        $mform->addHelpButton('groups', 'choicegroupoptions', 'choicegroup');
 
         $mform->addElement('html', '<select class="col-12" id="availablegroups" name="availableGroups" multiple size=10>');
         foreach ($groupings as $groupingid => $grouping) {
