@@ -32,23 +32,21 @@ define ('CHOICEGROUP_DISPLAY_VERTICAL_LAYOUT', 1);
 class mod_choicegroup_renderer extends plugin_renderer_base {
 
     /**
-     * Returns HTML to display choices of option
+     * Displays the choice group options.
      *
-     * @param array $options
-     * @param int $coursemoduleid
-     * @param bool $vertical
-     * @param bool $publish
-     * @param bool $limitanswers
-     * @param bool $showresults
-     * @param bool $current
-     * @param bool $choicegroupopen
-     * @param bool $disabled
-     * @param bool $multipleenrollmentspossible
-     * @param bool $onlyactive
-     * @return string
-     * @return string
-     * @throws coding_exception
-     * @throws moodle_exception
+     * @param array $options The options to display.
+     * @param int $coursemoduleid The course module ID.
+     * @param bool $vertical Whether to display options vertically.
+     * @param bool $publish Whether to publish the results.
+     * @param bool $limitanswers Whether to limit the number of answers.
+     * @param bool $showresults Whether to show the results.
+     * @param bool $current Whether the current user has answered.
+     * @param bool $choicegroupopen Whether the choice group is open.
+     * @param bool $disabled Whether the options are disabled.
+     * @param bool $multipleenrollmentspossible Whether multiple enrollments are possible.
+     * @param bool $onlyactive Whether to show only active users.
+     * @param bool $groupdescriptionstate The state of the group description.
+     * @return string The HTML to display the options.
      */
     public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false,
         $showresults = false, $current = false, $choicegroupopen = false, $disabled = false,
