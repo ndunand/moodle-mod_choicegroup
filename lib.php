@@ -45,6 +45,9 @@ define('CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT',    '0');
 define('CHOICEGROUP_SORTGROUPS_CREATEDATE',    '1');
 define('CHOICEGROUP_SORTGROUPS_NAME',    '2');
 
+define('CHOICEGROUP_GROUPDESCRIPTIONSTATE_HIDDEN', 0);
+define('CHOICEGROUP_GROUPDESCRIPTIONSTATE_VISIBLE', 1);
+
 // Ugly hack to make 3.11 and 4.0 work seamlessly.
 if (!defined('FEATURE_MOD_PURPOSE')) {
     define('FEATURE_MOD_PURPOSE', 'mod_purpose');
