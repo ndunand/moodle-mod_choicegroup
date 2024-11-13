@@ -116,6 +116,5 @@ function xmldb_choicegroup_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024092600, 'choicegroup');
     }
 
-
     return true;
 }

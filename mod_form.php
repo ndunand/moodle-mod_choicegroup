@@ -257,16 +257,21 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $mform->addElement('select', 'sortgroupsby', get_string('sortgroupsby', 'choicegroup'), $options);
         $mform->setDefault('sortgroupsby', CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT);
 
-        // Default Group Description Display
+        // Default Group Description Display.
         $descriptionoptions = [
             CHOICEGROUP_GROUPDESCRIPTIONSTATE_VISIBLE => get_string('showdescription', 'choicegroup'),
-            CHOICEGROUP_GROUPDESCRIPTIONSTATE_HIDDEN => get_string('hidedescription', 'choicegroup')
+            CHOICEGROUP_GROUPDESCRIPTIONSTATE_HIDDEN => get_string('hidedescription', 'choicegroup'),
         ];
         $groupdescriptionstate = get_config('choicegroup', 'defaultgroupdescriptionstate');
-        $mform->addElement('select', 'defaultgroupdescriptionstate', get_string('defaultgroupdescriptionstate', 'choicegroup'), $descriptionoptions);
+        $mform->addElement(
+            'select',
+            'defaultgroupdescriptionstate',
+            get_string('defaultgroupdescriptionstate', 'choicegroup'),
+            $descriptionoptions
+        );
         $mform->setDefault('defaultgroupdescriptionstate', $groupdescriptionstate);
         // -------------------------
-        // Go on the with the remainder of the form
+        // Go on the with the remainder of the form.
         // -------------------------.
 
         // -------------------------------------------------------------------------------

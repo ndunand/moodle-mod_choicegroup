@@ -72,11 +72,11 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         if ($groupdescriptionstate == CHOICEGROUP_GROUPDESCRIPTIONSTATE_HIDDEN) {
             $group .= html_writer::tag('a', get_string('showdescription', 'choicegroup'),
                 ['role' => 'button', 'class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow btn btn-secondary ml-1',
-                    'href' => '#',]);
+                    'href' => '#']);
         } else {
             $group .= html_writer::tag('a', get_string('hidedescription', 'choicegroup'),
                 ['role' => 'button', 'class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow btn btn-secondary ml-1',
-                    'href' => '#',]);
+                    'href' => '#']);
         }
         $html .= html_writer::tag('th', $group, ['class' => 'width40']);
 

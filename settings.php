@@ -41,7 +41,7 @@ if ($ADMIN->fulltree) {
         CHOICEGROUP_GROUPDESCRIPTIONSTATE_HIDDEN,
         [
             CHOICEGROUP_GROUPDESCRIPTIONSTATE_VISIBLE => get_string('showdescription', 'choicegroup'),
-            CHOICEGROUP_GROUPDESCRIPTIONSTATE_HIDDEN => get_string('hidedescription', 'choicegroup')
+            CHOICEGROUP_GROUPDESCRIPTIONSTATE_HIDDEN => get_string('hidedescription', 'choicegroup'),
         ]
     ));
 }
