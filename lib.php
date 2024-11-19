@@ -851,14 +851,12 @@ function choicegroup_get_choicegroup($choicegroupid) {
             $grpfilter = "AND grp_o.groupid = :groupid";
         }
 
-        $castorderby = ($sortcolumn == 'name') ? $DB->sql_cast_char2int("REGEXP_SUBSTR($sortcolumn, '[0-9]+')") . "," : "";
-
         $sql = "SELECT grp_m.id grpmemberid, grp_m.userid, grp_o.id, grp_o.groupid, grp_o.maxanswers
                  FROM {groups} grp
                  INNER JOIN {choicegroup_options} grp_o on grp.id = grp_o.groupid
                  LEFT JOIN {groups_members} grp_m on grp_m.groupid = grp_o.groupid
                  WHERE grp_o.choicegroupid = :choicegroupid $grpfilter
-                 ORDER BY $castorderby $sortcolumn ASC";
+                 ORDER BY $sortcolumn ASC";
 
         $rs = $DB->get_recordset_sql($sql, $params);
 
