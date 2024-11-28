@@ -240,6 +240,7 @@
 .path-mod-choicegroup a.choicegroup-memberdisplay,
 .path-mod-choicegroup a.choicegroup-descriptiondisplay {
     display: inline-block;
+    vertical-align: initial;
 }
 
 .path-mod-choicegroup div.choicegroups-membersnames.hidden,
