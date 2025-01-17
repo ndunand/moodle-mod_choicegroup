@@ -266,6 +266,7 @@
 
 /* Styles to format the Choices table. */
 .path-mod-choicegroup .width10 {
+    text-align: center;
     width: 10%;
 }
 
