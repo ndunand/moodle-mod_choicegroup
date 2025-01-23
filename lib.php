@@ -323,6 +323,7 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
     $cdisplay = ['options' => []];
 
     $cdisplay['limitanswers'] = true;
+    $cdisplay['allowupdate'] = false;
     $context = context_module::instance($coursemodule->id);
     $answers = choicegroup_get_user_answer($choicegroup, $user, true, true);
 
