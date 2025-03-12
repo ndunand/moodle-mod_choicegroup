@@ -177,6 +177,8 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                     $grouping->name . '</option>');
                 foreach ($grouping->linkedGroupsIDs as $linkedgroupid) {
                     if (isset($groups[$linkedgroupid])) {
+                        // Only add unique groups as groups can be in multiple groupings.
+                        if ($groups[$linkedgroupid]->mentioned == true) { continue; }
                         $mform->addElement('html', '<option value="' . $linkedgroupid .
                             '" class="group nested">&nbsp;&nbsp;&nbsp;&nbsp;' . $groups[$linkedgroupid]->name . '</option>');
                         $groups[$linkedgroupid]->mentioned = true;
