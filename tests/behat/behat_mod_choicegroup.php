@@ -15,19 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * Steps definitions related to mod_choicegroup.
  *
- * @package    mod_choicegroup
- * @copyright  2013-2024 Université de Lausanne
- * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_choicegroup
+ * @category    test
+ * @copyright   2025 Université de Lausanne
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+// NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-$plugin->version  = 2024111301;
-$plugin->requires  = 2023100900; // Moodle 4.3.
-$plugin->supported = [403, 500];
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release = '1.48 for Moodle 4.3-4.5 (Build: 2024111301)';
-$plugin->component = 'mod_choicegroup';
+require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
+
+/**
+ * Steps definitions related to mod_feedback.
+ *
+ * @copyright 2025 Université de Lausanne
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class behat_mod_choicegroup extends behat_base {
+}
