@@ -23,6 +23,9 @@ Feature: View activity completion information in the choicegroup activity
       | Group A | C1     | C1G1     |
       | Group B | C1     | C1G2     |
       | Group C | C1     | C1G3     |
+    And the following "activities" exist:
+      | activity    | name           | intro                      | course | idnumber     |
+      | choicegroup | Choose your group | Group choice description | C1     | choicegroup1 |
     And I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I navigate to "Settings" in current page administration
@@ -36,14 +39,8 @@ Feature: View activity completion information in the choicegroup activity
   @javascript
   Scenario: View automatic completion items for view for Moodle ≥ 5.0
     Given the site is running Moodle version 5.0 or higher
-    When I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I click on "Add content" "button" in the "General" "section"
-    And I click on "Activity or resource" "button" in the ".dropdown-menu.show" "css_element"
-    And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
+    When I am on the "Choose your group" "choicegroup activity editing" page logged in as teacher1
     And I set the following fields to these values:
-      | Group choice name | Choose your group        |
-      | Description       | Group choice description |
       | Add requirements  | 1                        |
       | View the activity | 1                        |
     And I set the field "availablegroups" to "Group A"
@@ -78,13 +75,8 @@ Feature: View activity completion information in the choicegroup activity
   Scenario: View automatic completion items for view for Moodle ≥ 4.3 and Moodle ≤ 4.5
     Given the site is running Moodle version 4.3 or higher
     And the site is running Moodle version 4.5 or lower
-    When I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I press "Add an activity or resource"
-    And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
+    When I am on the "Choose your group" "choicegroup activity editing" page logged in as teacher1
     And I set the following fields to these values:
-      | Group choice name | Choose your group        |
-      | Description       | Group choice description |
       | Add requirements  | 1                        |
       | View the activity | 1                        |
     And I set the field "availablegroups" to "Group A"
@@ -118,13 +110,8 @@ Feature: View activity completion information in the choicegroup activity
   @javascript
   Scenario: View automatic completion items for view for Moodle ≤ 4.2
     Given the site is running Moodle version 4.2 or lower
-    When I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I press "Add an activity or resource"
-    And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
+    When I am on the "Choose your group" "choicegroup activity editing" page logged in as teacher1
     And I set the following fields to these values:
-      | Group choice name | Choose your group        |
-      | Description       | Group choice description |
       | completion        | 2                        |
       | completionview    | 1                        |
       | completionsubmit  | 0                        |
@@ -159,14 +146,8 @@ Feature: View activity completion information in the choicegroup activity
   @javascript
   Scenario: View automatic completion items for choose for Moodle ≥ 5.0
     Given the site is running Moodle version 5.0 or higher
-    When I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I click on "Add content" "button" in the "General" "section"
-    And I click on "Activity or resource" "button" in the ".dropdown-menu.show" "css_element"
-    And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
+    When I am on the "Choose your group" "choicegroup activity editing" page logged in as teacher1
     And I set the following fields to these values:
-      | Group choice name                         | Choose your group        |
-      | Description                               | Group choice description |
       | Add requirements                          | 1                        |
       | View the activity                         | 0                        |
       | Show as complete when user makes a choice | 1                        |
@@ -205,13 +186,8 @@ Feature: View activity completion information in the choicegroup activity
   Scenario: View automatic completion items for choose for Moodle ≥ 4.3 and Moodle ≤ 4.5
     Given the site is running Moodle version 4.3 or higher
     And the site is running Moodle version 4.5 or lower
-    When I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I press "Add an activity or resource"
-    And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
+    When I am on the "Choose your group" "choicegroup activity editing" page logged in as teacher1
     And I set the following fields to these values:
-      | Group choice name                         | Choose your group        |
-      | Description                               | Group choice description |
       | Add requirements                          | 1                        |
       | View the activity                         | 0                        |
       | Show as complete when user makes a choice | 1                        |
@@ -249,13 +225,8 @@ Feature: View activity completion information in the choicegroup activity
   @javascript
   Scenario: View automatic completion items for choose for Moodle ≤ 4.2
     Given the site is running Moodle version 4.2 or lower
-    When I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I press "Add an activity or resource"
-    And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
+    When I am on the "Choose your group" "choicegroup activity editing" page logged in as teacher1
     And I set the following fields to these values:
-      | Group choice name | Choose your group        |
-      | Description       | Group choice description |
       | completion        | 2                        |
       | completionview    | 0                        |
       | completionsubmit  | 1                        |
@@ -293,14 +264,8 @@ Feature: View activity completion information in the choicegroup activity
   @javascript
   Scenario: View automatic completion items for both choose and view for Moodle ≥ 5.0
     Given the site is running Moodle version 5.0 or higher
-    When I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I click on "Add content" "button" in the "General" "section"
-    And I click on "Activity or resource" "button" in the ".dropdown-menu.show" "css_element"
-    And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
+    When I am on the "Choose your group" "choicegroup activity editing" page logged in as teacher1
     And I set the following fields to these values:
-      | Group choice name                         | Choose your group        |
-      | Description                               | Group choice description |
       | Add requirements                          | 1                        |
       | View the activity                         | 1                        |
       | Show as complete when user makes a choice | 1                        |
@@ -347,14 +312,9 @@ Feature: View activity completion information in the choicegroup activity
   @javascript
   Scenario: View automatic completion items for both choose and view for Moodle ≥ 4.3 and Moodle ≤ 4.5
     Given the site is running Moodle version 4.3 or higher
-    When the site is running Moodle version 4.5 or lower
-    And I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I press "Add an activity or resource"
-    And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
+    And the site is running Moodle version 4.5 or lower
+    When I am on the "Choose your group" "choicegroup activity editing" page logged in as teacher1
     And I set the following fields to these values:
-      | Group choice name                         | Choose your group        |
-      | Description                               | Group choice description |
       | Add requirements                          | 1                        |
       | View the activity                         | 1                        |
       | Show as complete when user makes a choice | 1                        |
@@ -401,13 +361,8 @@ Feature: View activity completion information in the choicegroup activity
   @javascript
   Scenario: View automatic completion items for both choose and view for Moodle ≤ 4.2
     Given the site is running Moodle version 4.2 or lower
-    When I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I press "Add an activity or resource"
-    And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
+    When I am on the "Choose your group" "choicegroup activity editing" page logged in as teacher1
     And I set the following fields to these values:
-      | Group choice name | Choose your group        |
-      | Description       | Group choice description |
       | completion        | 2                        |
       | completionview    | 1                        |
       | completionsubmit  | 1                        |
