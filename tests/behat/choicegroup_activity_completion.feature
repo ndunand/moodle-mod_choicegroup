@@ -34,9 +34,51 @@ Feature: View activity completion information in the choicegroup activity
     And I log out
 
   @javascript
-  Scenario: View automatic completion items for view for Moodle ≥ 4.3
+  Scenario: View automatic completion items for view for Moodle ≥ 5.0
+    Given the site is running Moodle version 5.0 or higher
+    When I log in as "teacher1"
+    And I am on "Course 1" course homepage with editing mode on
+    And I click on "Add content" "button" in the "General" "section"
+    And I click on "Activity or resource" "button" in the ".dropdown-menu.show" "css_element"
+    And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
+    And I set the following fields to these values:
+      | Group choice name | Choose your group        |
+      | Description       | Group choice description |
+      | Add requirements  | 1                        |
+      | View the activity | 1                        |
+    And I set the field "availablegroups" to "Group A"
+    And I press "Add Group"
+    And I set the field "availablegroups" to "Group B"
+    And I press "Add Group"
+    And I press "Save and return to course"
+    # Teacher view.
+    And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
+    And "Choose your group" should have the "View" completion condition
+    And I am on "Course 1" course homepage
+    And I navigate to "Reports" in current page administration
+    And I click on "Activity completion" "link"
+    And "Vinnie Student1, Choose your group: Not completed" "icon" should exist in the "Vinnie Student1" "table_row"
+    And "Ann Student2, Choose your group: Not completed" "icon" should exist in the "Ann Student2" "table_row"
+    And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
+    And I log out
+    # Student 1 view.
+    And I log in as "student1"
+    And I am on the "Choose your group" "choicegroup activity" page logged in as student1
+    And the "View" completion condition of "Choose your group" is displayed as "done"
+    # Teacher view.
+    And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
+    And "Choose your group" should have the "View" completion condition
+    And I am on "Course 1" course homepage
+    And I navigate to "Reports" in current page administration
+    And I click on "Activity completion" "link"
+    Then "Vinnie Student1, Choose your group: Completed" "icon" should exist in the "Vinnie Student1" "table_row"
+    And "Ann Student2, Choose your group: Not completed" "icon" should exist in the "Ann Student2" "table_row"
+
+  @javascript
+  Scenario: View automatic completion items for view for Moodle ≥ 4.3 and Moodle ≤ 4.5
     Given the site is running Moodle version 4.3 or higher
-    And I log in as "teacher1"
+    And the site is running Moodle version 4.5 or lower
+    When I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
     And I press "Add an activity or resource"
     And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
@@ -76,7 +118,7 @@ Feature: View activity completion information in the choicegroup activity
   @javascript
   Scenario: View automatic completion items for view for Moodle ≤ 4.2
     Given the site is running Moodle version 4.2 or lower
-    And I log in as "teacher1"
+    When I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
     And I press "Add an activity or resource"
     And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
@@ -115,18 +157,19 @@ Feature: View activity completion information in the choicegroup activity
     And "Ann Student2, Choose your group: Not completed" "icon" should exist in the "Ann Student2" "table_row"
 
   @javascript
-  Scenario: View automatic completion items for choose for Moodle ≤ 4.2
-    Given the site is running Moodle version 4.2 or lower
-    And I log in as "teacher1"
+  Scenario: View automatic completion items for choose for Moodle ≥ 5.0
+    Given the site is running Moodle version 5.0 or higher
+    When I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    And I press "Add an activity or resource"
+    And I click on "Add content" "button" in the "General" "section"
+    And I click on "Activity or resource" "button" in the ".dropdown-menu.show" "css_element"
     And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
     And I set the following fields to these values:
-      | Group choice name | Choose your group        |
-      | Description       | Group choice description |
-      | completion        | 2                        |
-      | completionview    | 0                        |
-      | completionsubmit  | 1                        |
+      | Group choice name                         | Choose your group        |
+      | Description                               | Group choice description |
+      | Add requirements                          | 1                        |
+      | View the activity                         | 0                        |
+      | Show as complete when user makes a choice | 1                        |
     And I set the field "availablegroups" to "Group A"
     And I press "Add Group"
     And I set the field "availablegroups" to "Group B"
@@ -159,9 +202,10 @@ Feature: View activity completion information in the choicegroup activity
     And "Ann Student2, Choose your group: Not completed" "icon" should exist in the "Ann Student2" "table_row"
 
   @javascript
-  Scenario: View automatic completion items for choose for Moodle ≥ 4.3
+  Scenario: View automatic completion items for choose for Moodle ≥ 4.3 and Moodle ≤ 4.5
     Given the site is running Moodle version 4.3 or higher
-    And I log in as "teacher1"
+    And the site is running Moodle version 4.5 or lower
+    When I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
     And I press "Add an activity or resource"
     And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
@@ -203,9 +247,9 @@ Feature: View activity completion information in the choicegroup activity
     And "Ann Student2, Choose your group: Not completed" "icon" should exist in the "Ann Student2" "table_row"
 
   @javascript
-  Scenario: View automatic completion items for both choose and view for Moodle ≤ 4.2
+  Scenario: View automatic completion items for choose for Moodle ≤ 4.2
     Given the site is running Moodle version 4.2 or lower
-    And I log in as "teacher1"
+    When I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
     And I press "Add an activity or resource"
     And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
@@ -213,8 +257,53 @@ Feature: View activity completion information in the choicegroup activity
       | Group choice name | Choose your group        |
       | Description       | Group choice description |
       | completion        | 2                        |
-      | completionview    | 1                        |
+      | completionview    | 0                        |
       | completionsubmit  | 1                        |
+    And I set the field "availablegroups" to "Group A"
+    And I press "Add Group"
+    And I set the field "availablegroups" to "Group B"
+    And I press "Add Group"
+    And I press "Save and return to course"
+    # Teacher view.
+    And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
+    And "Choose your group" should have the "Choose a group" completion condition
+    And I am on "Course 1" course homepage
+    And I navigate to "Reports" in current page administration
+    And I click on "Activity completion" "link"
+    And "Vinnie Student1, Choose your group: Not completed" "icon" should exist in the "Vinnie Student1" "table_row"
+    And "Ann Student2, Choose your group: Not completed" "icon" should exist in the "Ann Student2" "table_row"
+    And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
+    And I log out
+    # Student 1 choose.
+    And I log in as "student1"
+    And I am on the "Choose your group" "choicegroup activity" page logged in as student1
+    And the "Choose a group" completion condition of "Choose your group" is displayed as "todo"
+    And I set the field "Group A" to "1"
+    And I press "Save my choice"
+    And the "Choose a group" completion condition of "Choose your group" is displayed as "done"
+    # Teacher view.
+    And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
+    And "Choose your group" should have the "Choose a group" completion condition
+    And I am on "Course 1" course homepage
+    And I navigate to "Reports" in current page administration
+    And I click on "Activity completion" "link"
+    Then "Vinnie Student1, Choose your group: Completed" "icon" should exist in the "Vinnie Student1" "table_row"
+    And "Ann Student2, Choose your group: Not completed" "icon" should exist in the "Ann Student2" "table_row"
+
+  @javascript
+  Scenario: View automatic completion items for both choose and view for Moodle ≥ 5.0
+    Given the site is running Moodle version 5.0 or higher
+    When I log in as "teacher1"
+    And I am on "Course 1" course homepage with editing mode on
+    And I click on "Add content" "button" in the "General" "section"
+    And I click on "Activity or resource" "button" in the ".dropdown-menu.show" "css_element"
+    And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
+    And I set the following fields to these values:
+      | Group choice name                         | Choose your group        |
+      | Description                               | Group choice description |
+      | Add requirements                          | 1                        |
+      | View the activity                         | 1                        |
+      | Show as complete when user makes a choice | 1                        |
     And I set the field "availablegroups" to "Group A"
     And I press "Add Group"
     And I set the field "availablegroups" to "Group B"
@@ -256,8 +345,9 @@ Feature: View activity completion information in the choicegroup activity
     And "Ann Student2, Choose your group: Not completed" "icon" should exist in the "Ann Student2" "table_row"
 
   @javascript
-  Scenario: View automatic completion items for both choose and view for Moodle ≥ 4.3
+  Scenario: View automatic completion items for both choose and view for Moodle ≥ 4.3 and Moodle ≤ 4.5
     Given the site is running Moodle version 4.3 or higher
+    When the site is running Moodle version 4.5 or lower
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
     And I press "Add an activity or resource"
@@ -268,6 +358,59 @@ Feature: View activity completion information in the choicegroup activity
       | Add requirements                          | 1                        |
       | View the activity                         | 1                        |
       | Show as complete when user makes a choice | 1                        |
+    And I set the field "availablegroups" to "Group A"
+    And I press "Add Group"
+    And I set the field "availablegroups" to "Group B"
+    And I press "Add Group"
+    And I press "Save and return to course"
+    # Teacher view.
+    And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
+    And "Choose your group" should have the "View" completion condition
+    And "Choose your group" should have the "Choose a group" completion condition
+    And I am on "Course 1" course homepage
+    And I navigate to "Reports" in current page administration
+    And I click on "Activity completion" "link"
+    And "Vinnie Student1, Choose your group: Not completed" "icon" should exist in the "Vinnie Student1" "table_row"
+    And "Ann Student2, Choose your group: Not completed" "icon" should exist in the "Ann Student2" "table_row"
+    And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
+    And I log out
+    # Student 1 choose.
+    And I log in as "student1"
+    And I am on the "Choose your group" "choicegroup activity" page logged in as student1
+    And the "View" completion condition of "Choose your group" is displayed as "done"
+    And the "Choose a group" completion condition of "Choose your group" is displayed as "todo"
+    And I set the field "Group A" to "1"
+    And I press "Save my choice"
+    And the "Choose a group" completion condition of "Choose your group" is displayed as "done"
+    And I log out
+    # Student 2 view.
+    And I log in as "student2"
+    And I am on the "Choose your group" "choicegroup activity" page logged in as student2
+    And the "View" completion condition of "Choose your group" is displayed as "done"
+    And the "Choose a group" completion condition of "Choose your group" is displayed as "todo"
+    And I log out
+    # Teacher view.
+    And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
+    And "Choose your group" should have the "Choose a group" completion condition
+    And I am on "Course 1" course homepage
+    And I navigate to "Reports" in current page administration
+    And I click on "Activity completion" "link"
+    Then "Vinnie Student1, Choose your group: Completed" "icon" should exist in the "Vinnie Student1" "table_row"
+    And "Ann Student2, Choose your group: Not completed" "icon" should exist in the "Ann Student2" "table_row"
+
+  @javascript
+  Scenario: View automatic completion items for both choose and view for Moodle ≤ 4.2
+    Given the site is running Moodle version 4.2 or lower
+    When I log in as "teacher1"
+    And I am on "Course 1" course homepage with editing mode on
+    And I press "Add an activity or resource"
+    And I click on "Add a new Group choice" "link" in the "Add an activity or resource" "dialogue"
+    And I set the following fields to these values:
+      | Group choice name | Choose your group        |
+      | Description       | Group choice description |
+      | completion        | 2                        |
+      | completionview    | 1                        |
+      | completionsubmit  | 1                        |
     And I set the field "availablegroups" to "Group A"
     And I press "Add Group"
     And I set the field "availablegroups" to "Group B"
