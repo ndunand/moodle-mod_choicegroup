@@ -166,7 +166,8 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                         <td style="vertical-align: top" class="col-5">');
         $mform->addHelpButton('groups', 'choicegroupoptions', 'choicegroup');
 
-        $mform->addElement('html', '<select class="col-12" id="availablegroups" name="availableGroups" multiple size=10>');
+        $mform->addElement('html', '<select class="col-12 form-control input-block-level" id="availablegroups" ' .
+        'name="availableGroups" multiple="" size="10">');
         foreach ($groupings as $groupingid => $grouping) {
             // Find all linked groups to this grouping.
             if (isset($grouping->linkedGroupsIDs) && count($grouping->linkedGroupsIDs) > 1) {
@@ -203,7 +204,8 @@ class mod_choicegroup_mod_form extends moodleform_mod {
             '</button><div><button name="remove" type="button" disabled id="removeGroupButton" class="btn btn-secondary">' .
             get_string('del', 'choicegroup') . '</button></div></td>');
         $mform->addElement('html', '<td style="vertical-align: top" class="col-5">
-    <select class="col-12" id="id_selectedGroups" name="selectedGroups" multiple size=10></select>
+    <select class="col-12 form-control input-block-level" id="id_selectedGroups" name="selectedGroups" multiple="" ' .
+            'size="10"></select>
     <div id="fitem_id_limit_0" class="fitem fitem_ftext" style="display:none">
         <div>
             <label for="id_limit_0" id="label_for_limit_ui">' . get_string('set_limit_for_group', 'choicegroup') . ' </label>
