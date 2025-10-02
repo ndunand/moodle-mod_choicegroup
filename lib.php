@@ -582,7 +582,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
                 echo '<input type="hidden" name="mode" value="overview" />';
             }
 
-            echo "<table cellpadding=\"5\" cellspacing=\"10\" class=\"results names\">";
+            echo "<table cellpadding=\"5\" cellspacing=\"10\" class=\"results names table-reboot\">";
             echo "<tr>";
 
             $columncount = []; // Number of votes in each column.

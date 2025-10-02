@@ -61,7 +61,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
         $html = html_writer::start_tag('form', $attributes);
         $html .= html_writer::start_tag('div', ['class' => 'tablecontainer']);
-        $html .= html_writer::start_tag('table', ['class' => 'choicegroups' ]);
+        $html .= html_writer::start_tag('table', ['class' => 'choicegroups table-reboot' ]);
 
         $html .= html_writer::start_tag('tr');
         $html .= html_writer::tag('th', get_string('choice', 'choicegroup'), ['class' => 'width10']);
@@ -277,7 +277,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $table = new html_table();
         $table->cellpadding = 0;
         $table->cellspacing = 0;
-        $table->attributes['class'] = 'results names ';
+        $table->attributes['class'] = 'results names table-reboot';
         $table->tablealign = 'center';
         $table->data = [];
 

@@ -157,7 +157,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                 <div id="fitem_id_option_0" name="fitem_id_option_0" class="fitem fitem_fselect ">
                 <div class="felement fselect">
                 <div class="tablecontainer">
-                <table>
+                <table class="table-reboot">
                     <tr class="row">
                         <th class="col-lg-6">' . get_string('available_groups', 'choicegroup') . '</th>
                         <th class="col-lg-6">' . get_string('selected_groups', 'choicegroup') . '</th>
@@ -192,15 +192,15 @@ class mod_choicegroup_mod_form extends moodleform_mod {
             }
         }
         $mform->addElement('html', '</select><br><button name="expandButton" type="button" disabled id="expandButton" ' .
-            'class="btn btn-secondary">' . get_string('expand_all_groupings', 'choicegroup') .
+            'class="btn btn-secondary mb-1">' . get_string('expand_all_groupings', 'choicegroup') .
             '</button><button name="collapseButton" type="button" disabled id="collapseButton" class="btn btn-secondary">' .
             get_string('collapse_all_groupings', 'choicegroup') .
             '</button><br>' . get_string('double_click_grouping_legend', 'choicegroup') . '<br>' .
             get_string('double_click_group_legend', 'choicegroup'));
 
         $mform->addElement('html', '
-                </td><td class="col-2"><button id="addGroupButton" name="add" type="button" disabled class="btn btn-secondary">' .
-            get_string('add', 'choicegroup') .
+                </td><td class="col-2"><button id="addGroupButton" name="add" type="button" disabled ' .
+            'class="btn btn-secondary mb-1">' . get_string('add', 'choicegroup') .
             '</button><div><button name="remove" type="button" disabled id="removeGroupButton" class="btn btn-secondary">' .
             get_string('del', 'choicegroup') . '</button></div></td>');
         $mform->addElement('html', '<td style="vertical-align: top" class="col-5">
