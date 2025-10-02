@@ -75,6 +75,11 @@ class mod_choicegroup_mod_form extends moodleform_mod {
             $groups[$group->id]->id = $group->id;
         }
 
+        // Order groups by name alphabetically.
+        uasort($groups, function($a, $b) {
+            return strcasecmp($a->name, $b->name);
+        });
+
         // Display warning if no groups are set.
         if ($PAGE->pagetype === 'mod-choicegroup-mod' && count($dbgroups) < 1) {
             $a = new stdClass();
