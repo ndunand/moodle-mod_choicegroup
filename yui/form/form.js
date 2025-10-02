@@ -82,6 +82,19 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 					});
 				}
 
+				function addUniqueValueNode(nodeList, groupNode) {
+					var uniqueValue = true;
+					var optionsNodes = nodeList.all("option");
+					optionsNodes.each(function(optNode) {
+						if ((optNode.get('value') === groupNode.get('value'))) {
+							uniqueValue = false;
+						}
+					});
+					if (uniqueValue) {
+						nodeList.append(groupNode);
+					}
+				}
+
 				function addOptionNodeToSelectedGroupsList(optNode) {
 					if (optNode.hasClass('grouping') == true) {
 						// check if option is collapsed
@@ -91,18 +104,18 @@ YUI.add('moodle-mod_choicegroup-form', function(Y) {
 							var sib = optNode.next(); // sib means sibling, as in, the next element in the DOM tree
 							while (sib && sib.hasClass('nested') && sib.hasClass('group')) {
 								// add sib
-								selectedGroupsNode.append(sib.cloneNode(true));
+								addUniqueValueNode(selectedGroupsNode, sib.cloneNode(true));
 								// go to next node
 								sib = sib.next();
 							}
 						} else {
 							// yes it IS collapsed, need to take the nodes from the container rather than from the UI
 							groupingsNodesContainer[optNode.get('value')].forEach(function (underlyingGroupNode) {
-								selectedGroupsNode.append(underlyingGroupNode.cloneNode(true));
+								addUniqueValueNode(selectedGroupsNode, underlyingGroupNode.cloneNode(true));
 							});
 						}
 					} else {
-						selectedGroupsNode.append(optNode.cloneNode(true));
+						addUniqueValueNode(selectedGroupsNode, optNode.cloneNode(true));
 					}
                     if (limitAnswersSelectNode.get('value') == '1') {
                         updateLimitUIOfAllSelectedGroups();
