@@ -277,7 +277,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
         $table = new html_table();
         $table->cellpadding = 0;
         $table->cellspacing = 0;
-        $table->attributes['class'] = 'results names table-reboot';
+        $table->attributes['class'] = 'results names table-reboot choicegroups ';
         $table->tablealign = 'center';
         $table->data = [];
 
