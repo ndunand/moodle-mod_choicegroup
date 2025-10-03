@@ -209,12 +209,15 @@
     width: 100%;
 }
 
-.path-mod-choicegroup td {
+#page-mod-choicegroup-report .path-mod-choicegroup td,
+#page-mod-choicegroup-view .path-mod-choicegroup td {
     border-top: 1px #ccc solid;
 }
 
-.path-mod-choicegroup th,
-.path-mod-choicegroup td {
+#page-mod-choicegroup-report .path-mod-choicegroup th,
+#page-mod-choicegroup-view .path-mod-choicegroup th,
+#page-mod-choicegroup-report .path-mod-choicegroup td,
+#page-mod-choicegroup-view .path-mod-choicegroup td {
     padding: 10px 15px;
 }
 
