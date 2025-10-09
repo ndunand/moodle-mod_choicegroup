@@ -266,10 +266,14 @@
 
 /* Styles to format the Choices table. */
 .path-mod-choicegroup .width10 {
-    text-align: center;
     width: 10%;
 }
 
 .path-mod-choicegroup .width40 {
     width: 40%;
 }
+
+.path-mod-choicegroup #availablegroups .nested {
+    padding-left: 30px;
+}
+
