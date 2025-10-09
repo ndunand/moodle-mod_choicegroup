@@ -53,7 +53,7 @@ Feature: Use the choicegroup activity with groups within groupings
     And I should see "A"
     And I should see "B"
     And I set the field "availablegroups" to "A"
-    And I press "Add Group"
+    And I press "Add"
     And I press "Save and return to course"
     # Student view.
     When I am on the "Choose your group" "choicegroup activity" page logged in as student1

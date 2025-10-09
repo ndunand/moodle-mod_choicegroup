@@ -44,9 +44,9 @@ Feature: View activity completion information in the choicegroup activity
       | Add requirements  | 1                        |
       | View the activity | 1                        |
     And I set the field "availablegroups" to "Group A"
-    And I press "Add Group"
+    And I press "Add"
     And I set the field "availablegroups" to "Group B"
-    And I press "Add Group"
+    And I press "Add"
     And I press "Save and return to course"
     # Teacher view.
     And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
@@ -80,9 +80,9 @@ Feature: View activity completion information in the choicegroup activity
       | Add requirements  | 1                        |
       | View the activity | 1                        |
     And I set the field "availablegroups" to "Group A"
-    And I press "Add Group"
+    And I press "Add"
     And I set the field "availablegroups" to "Group B"
-    And I press "Add Group"
+    And I press "Add"
     And I press "Save and return to course"
     # Teacher view.
     And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
@@ -116,9 +116,9 @@ Feature: View activity completion information in the choicegroup activity
       | completionview    | 1                        |
       | completionsubmit  | 0                        |
     And I set the field "availablegroups" to "Group A"
-    And I press "Add Group"
+    And I press "Add"
     And I set the field "availablegroups" to "Group B"
-    And I press "Add Group"
+    And I press "Add"
     And I press "Save and return to course"
     # Teacher view.
     And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
@@ -152,9 +152,9 @@ Feature: View activity completion information in the choicegroup activity
       | View the activity                         | 0                        |
       | Show as complete when user makes a choice | 1                        |
     And I set the field "availablegroups" to "Group A"
-    And I press "Add Group"
+    And I press "Add"
     And I set the field "availablegroups" to "Group B"
-    And I press "Add Group"
+    And I press "Add"
     And I press "Save and return to course"
     # Teacher view.
     And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
@@ -192,9 +192,9 @@ Feature: View activity completion information in the choicegroup activity
       | View the activity                         | 0                        |
       | Show as complete when user makes a choice | 1                        |
     And I set the field "availablegroups" to "Group A"
-    And I press "Add Group"
+    And I press "Add"
     And I set the field "availablegroups" to "Group B"
-    And I press "Add Group"
+    And I press "Add"
     And I press "Save and return to course"
     # Teacher view.
     And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
@@ -231,9 +231,9 @@ Feature: View activity completion information in the choicegroup activity
       | completionview    | 0                        |
       | completionsubmit  | 1                        |
     And I set the field "availablegroups" to "Group A"
-    And I press "Add Group"
+    And I press "Add"
     And I set the field "availablegroups" to "Group B"
-    And I press "Add Group"
+    And I press "Add"
     And I press "Save and return to course"
     # Teacher view.
     And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
@@ -270,9 +270,9 @@ Feature: View activity completion information in the choicegroup activity
       | View the activity                         | 1                        |
       | Show as complete when user makes a choice | 1                        |
     And I set the field "availablegroups" to "Group A"
-    And I press "Add Group"
+    And I press "Add"
     And I set the field "availablegroups" to "Group B"
-    And I press "Add Group"
+    And I press "Add"
     And I press "Save and return to course"
     # Teacher view.
     And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
@@ -319,9 +319,9 @@ Feature: View activity completion information in the choicegroup activity
       | View the activity                         | 1                        |
       | Show as complete when user makes a choice | 1                        |
     And I set the field "availablegroups" to "Group A"
-    And I press "Add Group"
+    And I press "Add"
     And I set the field "availablegroups" to "Group B"
-    And I press "Add Group"
+    And I press "Add"
     And I press "Save and return to course"
     # Teacher view.
     And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
@@ -367,9 +367,9 @@ Feature: View activity completion information in the choicegroup activity
       | completionview    | 1                        |
       | completionsubmit  | 1                        |
     And I set the field "availablegroups" to "Group A"
-    And I press "Add Group"
+    And I press "Add"
     And I set the field "availablegroups" to "Group B"
-    And I press "Add Group"
+    And I press "Add"
     And I press "Save and return to course"
     # Teacher view.
     And I am on the "Choose your group" "choicegroup activity" page logged in as teacher1
