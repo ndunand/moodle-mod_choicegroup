@@ -607,7 +607,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
                 // Added empty row so that when the next iteration is empty,
                 // we do not get <table></table> error from w3c validator
                 // MDL-7861.
-                echo "<table class=\"choicegroupresponse\"><tr><td></td></tr>";
+                echo "<table class=\"choicegroupresponse table-reboot\"><tr><td></td></tr>";
                 if (!empty($allresponses[0])) {
                     foreach ($allresponses[0] as $user) {
                         echo "<tr>";
@@ -629,7 +629,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
                     // Added empty row so that when the next iteration is empty,
                     // we do not get <table></table> error from w3c validator
                     // MDL-7861.
-                    echo '<table class="choicegroupresponse"><tr><td></td></tr>';
+                    echo '<table class="choicegroupresponse table-reboot"><tr><td></td></tr>';
                 if (isset($allresponses[$optionid])) {
                     foreach ($allresponses[$optionid] as $user) {
                         $columncount[$optionid] += 1;
