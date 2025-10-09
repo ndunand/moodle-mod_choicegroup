@@ -32,6 +32,9 @@ require_once($CFG->dirroot . '/course/moodleform_mod.php');
  */
 class mod_choicegroup_mod_form extends moodleform_mod {
 
+    /**
+     * @var string Column to sort groups by
+     */
     protected $sortgroupsby = 'timecreated';
 
     /**
@@ -192,12 +195,13 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                 // Grouping has more than 2 items, thus we should display it (otherwise it would be clearer to display only that
                 // single group alone).
                 $mform->addElement('html', '<option value="' . $groupingid .
-                    '" style="font-weight: bold" class="grouping" data-timecreated="'. $grouping->timecreated .'">' . get_string('char_bullet_expanded', 'choicegroup') .
-                    $grouping->name . '</option>');
+                    '" style="font-weight: bold" class="grouping" data-timecreated="'. $grouping->timecreated .'">' .
+                    get_string('char_bullet_expanded', 'choicegroup') . $grouping->name . '</option>');
                 foreach ($grouping->linkedGroupsIDs as $linkedgroupid) {
                     if (isset($groups[$linkedgroupid])) {
                         $mform->addElement('html', '<option value="' . $linkedgroupid .
-                            '" class="group nested" data-timecreated="'. $groups[$linkedgroupid]->timecreated .'">' . $groups[$linkedgroupid]->name . '</option>');
+                            '" class="group nested" data-timecreated="'. $groups[$linkedgroupid]->timecreated .'">' .
+                            $groups[$linkedgroupid]->name . '</option>');
                         $groups[$linkedgroupid]->mentioned = true;
                     }
                 }
@@ -206,7 +210,8 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         foreach ($groups as $group) {
             if ($group->mentioned === false) {
                 $mform->addElement('html', '<option title="' . $group->name . '" value="' . $group->id .
-                    '" class="group toplevel" data-timecreated="'. $group->timecreated .'">' . format_string($group->name) . '</option>');
+                    '" class="group toplevel" data-timecreated="'. $group->timecreated .'">' . format_string($group->name) .
+                    '</option>');
             }
         }
         $mform->addElement('html', '</select><br><button name="expandButton" type="button" id="expandButton" ' .
@@ -340,7 +345,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         global $PAGE;
         $params = [
             'formid' => $this->_form->getAttribute('id'),
-            'sortgroupsby' => $this->sortgroupsby
+            'sortgroupsby' => $this->sortgroupsby,
         ];
 
         $PAGE->requires->js_call_amd('mod_choicegroup/choicegroupsetting', 'init', [$params]);
