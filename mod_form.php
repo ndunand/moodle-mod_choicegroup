@@ -181,8 +181,8 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                 <div class="tablecontainer">
                 <table class="table-reboot">
                     <tr class="row">
-                        <th class="col-lg-6">' . get_string('available_groups', 'choicegroup') . '</th>
-                        <th class="col-lg-6">' . get_string('selected_groups', 'choicegroup') . '</th>
+                        <th class="col-lg-7">' . get_string('available_groups', 'choicegroup') . '</th>
+                        <th class="col-lg-5">' . get_string('selected_groups', 'choicegroup') . '</th>
                     </tr>
                     <tr class="row">
                         <td style="vertical-align: top" class="col-5">');
@@ -215,16 +215,16 @@ class mod_choicegroup_mod_form extends moodleform_mod {
             }
         }
         $mform->addElement('html', '</select><br><button name="expandButton" type="button" id="expandButton" ' .
-            'class="btn btn-secondary">' . get_string('expand_all_groupings', 'choicegroup') .
-            '</button><button name="collapseButton" type="button" id="collapseButton" class="btn btn-secondary">' .
+            'class="btn btn-secondary mt-1">' . get_string('expand_all_groupings', 'choicegroup') .
+            '</button><button name="collapseButton" type="button" id="collapseButton" class="btn btn-secondary mt-1">' .
             get_string('collapse_all_groupings', 'choicegroup') .
             '</button><br>' . get_string('double_click_grouping_legend', 'choicegroup') . '<br>' .
             get_string('double_click_group_legend', 'choicegroup'));
 
         $mform->addElement('html', '
-                </td><td class="col-2"><button id="addGroupButton" name="add" type="button" class="btn btn-secondary">' .
+                </td><td class="col-2"><button id="addGroupButton" name="add" type="button" class="btn btn-secondary mt-1">' .
             get_string('add', 'choicegroup') .
-            '</button><div><button name="remove" type="button" id="removeGroupButton" class="btn btn-secondary">' .
+            '</button><div><button name="remove" type="button" id="removeGroupButton" class="btn btn-secondary mt-1">' .
             get_string('del', 'choicegroup') . '</button></div></td>');
         $mform->addElement('html', '<td style="vertical-align: top" class="col-5">
     <select class="col-12" id="id_selectedGroups" name="selectedGroups" multiple size=10></select>
