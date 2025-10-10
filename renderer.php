@@ -51,7 +51,13 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
     public function display_options($options, $coursemoduleid, $vertical = true, $publish = false, $limitanswers = false,
         $showresults = false, $current = false, $choicegroupopen = false, $disabled = false,
         $multipleenrollmentspossible = false, $onlyactive = false, $groupdescriptionstate = false) {
-        global $choicegroupgroups;
+        global $choicegroupgroups, $CFG;
+
+        if ($CFG->version >= 2024041400) {
+            $marginstartclass = "ms-1";
+        } else {
+            $marginstartclass = "ml-1";
+        }
 
         if ($groupdescriptionstate === false) {
             $groupdescriptionstate = get_config('choicegroup', 'defaultgroupdescriptionstate');
@@ -68,13 +74,23 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
 
         $group = get_string('group').' ';
         if ($groupdescriptionstate == CHOICEGROUP_GROUPDESCRIPTIONSTATE_HIDDEN) {
-            $group .= html_writer::tag('a', get_string('showdescription', 'choicegroup'),
-                ['role' => 'button', 'class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow btn btn-secondary ml-1',
-                    'href' => '#']);
+            $group .= html_writer::tag(
+                'a',
+                get_string('showdescription', 'choicegroup'),
+                ['role' => 'button',
+                    'class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow btn btn-secondary ' . $marginstartclass,
+                    'href' => '#',
+                ]
+            );
         } else {
-            $group .= html_writer::tag('a', get_string('hidedescription', 'choicegroup'),
-                ['role' => 'button', 'class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow btn btn-secondary ml-1',
-                    'href' => '#']);
+            $group .= html_writer::tag(
+                'a',
+                get_string('hidedescription', 'choicegroup'),
+                ['role' => 'button', 'class' => 'choicegroup-descriptiondisplay choicegroup-descriptionshow btn btn-secondary ' .
+                    $marginstartclass,
+                    'href' => '#',
+                ]
+            );
         }
         $html .= html_writer::tag('th', $group, ['class' => 'width40']);
 
@@ -87,9 +103,14 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                 $html .= html_writer::tag('th', get_string('members/', 'choicegroup'), ['class' => 'width10']);
             }
             if ($publish == CHOICEGROUP_PUBLISH_NAMES) {
-                $membersdisplayhtml = html_writer::tag('a', get_string('showgroupmembers', 'mod_choicegroup'),
-                    ['role' => 'button', 'class' => 'choicegroup-memberdisplay choicegroup-membershow btn btn-secondary ml-1',
-                        'href' => '#', ]);
+                $membersdisplayhtml = html_writer::tag(
+                    'a',
+                    get_string('showgroupmembers', 'mod_choicegroup'),
+                    ['role' => 'button',
+                        'class' => 'choicegroup-memberdisplay choicegroup-membershow btn btn-secondary ' . $marginstartclass,
+                        'href' => '#',
+                    ]
+                );
                 $html .= html_writer::tag('th', get_string('groupmembers', 'choicegroup') .' '.
                     $membersdisplayhtml, ['class' => 'width40']);
             }
