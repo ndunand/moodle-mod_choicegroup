@@ -82,4 +82,3 @@ class choice_removed extends \core\event\base {
         return new \moodle_url('/mod/choicegroup/view.php', ['id' => $this->contextinstanceid]);
     }
 }
-

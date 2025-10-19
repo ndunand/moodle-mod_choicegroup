@@ -33,9 +33,7 @@ function xmldb_choicegroup_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
     if ($oldversion < 2013070900) {
-
         if ($oldversion < 2012042500) {
-
             // Remove the no longer needed choicegroup_answers DB table.
             $choicegroupanswers = new xmldb_table('choicegroup_answers');
             $dbman->drop_table($choicegroupanswers);
@@ -47,8 +45,8 @@ function xmldb_choicegroup_upgrade($oldversion) {
 
             $dbman->rename_field($choicegroupoptions, $fieldtext, 'groupid');
             $dbman->change_field_type($choicegroupoptions, $fieldgroupid);
-
         }
+
         // Define table choicegroup to be created.
         $table = new xmldb_table('choicegroup');
 
@@ -73,7 +71,6 @@ function xmldb_choicegroup_upgrade($oldversion) {
     }
 
     if ($oldversion < 2021071400) {
-
         // Define field maxenrollments to be added to choicegroup.
         $table = new xmldb_table('choicegroup');
         $field = new xmldb_field('maxenrollments', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'sortgroupsby');
@@ -88,7 +85,6 @@ function xmldb_choicegroup_upgrade($oldversion) {
     }
 
     if ($oldversion < 2021080500) {
-
         // Define field onlyactive to be added to choicegroup.
         $table = new xmldb_table('choicegroup');
         $field = new xmldb_field('onlyactive', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'sortgroupsby');
@@ -101,8 +97,8 @@ function xmldb_choicegroup_upgrade($oldversion) {
         // Group choice savepoint reached.
         upgrade_mod_savepoint(true, 2021080500, 'choicegroup');
     }
-    if ($oldversion < 2024092600) {
 
+    if ($oldversion < 2024092600) {
         // Define field defaultgroupdescriptionstate to be added to choicegroup.
         $table = new xmldb_table('choicegroup');
         $field = new xmldb_field('defaultgroupdescriptionstate', XMLDB_TYPE_INTEGER, '1', null, null, null, '0', 'onlyactive');

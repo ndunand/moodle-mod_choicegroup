@@ -90,15 +90,18 @@ foreach ($choicegroups as $choicegroup) {
     } else {
         $aa = "";
     }
+
     if ($usesections) {
         $printsection = "";
         if ($choicegroup->section !== $currentsection) {
             if ($choicegroup->section) {
                 $printsection = get_section_name($course, $sections[$choicegroup->section]);
             }
+
             if ($currentsection !== "") {
                 $table->data[] = 'hr';
             }
+
             $currentsection = $choicegroup->section;
         }
     }
@@ -112,14 +115,15 @@ foreach ($choicegroups as $choicegroup) {
         // Show normal if the mod is visible.
         $tthref = "<a href=\"view.php?id=$choicegroup->coursemodule\">" . format_string($choicegroup->name, true) . "</a>";
     }
+
     if ($usesections) {
         $table->data[] = [$printsection, $tthref, $aa];
     } else {
         $table->data[] = [$tthref, $aa];
     }
 }
+
 echo "<br />";
 echo html_writer::table($table);
 
 echo $OUTPUT->footer();
-
