@@ -199,9 +199,9 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                     get_string('char_bullet_expanded', 'choicegroup') . $grouping->name . '</option>');
                 foreach ($grouping->linkedGroupsIDs as $linkedgroupid) {
                     if (isset($groups[$linkedgroupid])) {
-                        $mform->addElement('html', '<option value="' . $linkedgroupid .
-                            '" class="group nested" data-timecreated="'. $groups[$linkedgroupid]->timecreated .'">' .
-                            $groups[$linkedgroupid]->name . '</option>');
+                        $mform->addElement('html', '<option title="' . $groups[$linkedgroupid]->name . '" value="' .
+                            $linkedgroupid . '" class="group nested" data-timecreated="'.
+                            $groups[$linkedgroupid]->timecreated .'">' . $groups[$linkedgroupid]->name . '</option>');
                         $groups[$linkedgroupid]->mentioned = true;
                     }
                 }
@@ -230,10 +230,10 @@ class mod_choicegroup_mod_form extends moodleform_mod {
     <select class="col-12" id="id_selectedGroups" name="selectedGroups" multiple size=10></select>
     <div id="fitem_id_limit_0" class="fitem fitem_ftext" style="display:none">
         <div>
-            <label for="id_limit_0" id="label_for_limit_ui">' . get_string('set_limit_for_group', 'choicegroup') . ' </label>
+            <label for="ui_limit_input" id="label_for_limit_ui">' . get_string('set_limit_for_group', 'choicegroup') . ' </label>
         </div>
         <div class="ftext">
-            <input class="mod-choicegroup-limit-input" type="text" value="0" id="ui_limit_input" disabled="disabled">
+            <input class="mod-choicegroup-limit-input form-control" type="text" value="0" id="ui_limit_input" disabled="disabled">
         </div>
     </div>
 </td>');
