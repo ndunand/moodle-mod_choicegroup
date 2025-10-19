@@ -343,13 +343,8 @@ class mod_choicegroup_mod_form extends moodleform_mod {
      */
     public function js_call() {
         global $PAGE;
-        $params = [
-            'formid' => $this->_form->getAttribute('id'),
-            'sortgroupsby' => $this->sortgroupsby,
-        ];
-
-        $PAGE->requires->js_call_amd('mod_choicegroup/choicegroupsetting', 'init', [$params]);
-
+        $params = [$this->_form->getAttribute('id')];
+        $PAGE->requires->yui_module('moodle-mod_choicegroup-form', 'Y.Moodle.mod_choicegroup.form.init', $params);
         foreach (array_keys(get_string_manager()->load_component_strings('choicegroup', current_language())) as $string) {
             $PAGE->requires->string_for_js($string, 'choicegroup');
         }
