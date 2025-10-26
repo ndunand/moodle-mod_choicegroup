@@ -58,3 +58,4 @@ Feature: Use the choicegroup activity with groups within groupings
     # Student view.
     When I am on the "Choose your group" "choicegroup activity" page logged in as student1
     Then I should see "A"
+

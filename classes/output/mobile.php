@@ -35,7 +35,6 @@ use completion_info;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mobile {
-
     /**
      * Returns the javascript needed to initialize choice group in the app.
      *
@@ -86,6 +85,7 @@ class mobile {
         } else {
             $choicegroup->open = true;
         }
+
         if (!empty($choicegroup->timeclose) && $timenow > $choicegroup->timeclose) {
             $choicegroup->expired = true;
             $choicegroup->message = get_string("expired", "choicegroup", userdate($choicegroup->timeclose));
@@ -111,7 +111,7 @@ class mobile {
             $responses = [];
             foreach ($options as $option) {
                 if ($choicegroup->multipleenrollmentspossible) {
-                    $responses['responses_'.$option['id']] = $option['checked'];
+                    $responses['responses_' . $option['id']] = $option['checked'];
                 } else if ($option['checked']) {
                     $responses['responses'] = $option['id'];
                 }
@@ -122,7 +122,7 @@ class mobile {
 
         // Format name and intro.
         $choicegroup->name = format_string($choicegroup->name);
-        list($choicegroup->intro, $choicegroup->introformat) = external_format_text(
+        [$choicegroup->intro, $choicegroup->introformat] = external_format_text(
             $choicegroup->intro,
             $choicegroup->introformat,
             $context->id,

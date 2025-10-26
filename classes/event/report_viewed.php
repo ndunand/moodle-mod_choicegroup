@@ -29,7 +29,6 @@ namespace mod_choicegroup\event;
  * Event for when a choicegroup report is viewed.
  */
 class report_viewed extends \core\event\course_module_viewed {
-
     /**
      * Init method.
      *
@@ -70,6 +69,4 @@ class report_viewed extends \core\event\course_module_viewed {
     public function get_url() {
         return new \moodle_url('/mod/choicegroup/view.php', ['id' => $this->contextinstanceid]);
     }
-
 }
-

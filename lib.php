@@ -29,21 +29,21 @@ define('CHOICEGROUP_COLUMN_HEIGHT', '300');
 define('CHOICEGROUP_COLUMN_WIDTH', '300');
 
 define('CHOICEGROUP_PUBLISH_ANONYMOUS', '0');
-define('CHOICEGROUP_PUBLISH_NAMES',     '1');
-define('CHOICEGROUP_PUBLISH_DEFAULT',   '1');
+define('CHOICEGROUP_PUBLISH_NAMES', '1');
+define('CHOICEGROUP_PUBLISH_DEFAULT', '1');
 
-define('CHOICEGROUP_SHOWRESULTS_NOT',          '0');
+define('CHOICEGROUP_SHOWRESULTS_NOT', '0');
 define('CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER', '1');
-define('CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE',  '2');
-define('CHOICEGROUP_SHOWRESULTS_ALWAYS',       '3');
-define('CHOICEGROUP_SHOWRESULTS_DEFAULT',      '3');
+define('CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE', '2');
+define('CHOICEGROUP_SHOWRESULTS_ALWAYS', '3');
+define('CHOICEGROUP_SHOWRESULTS_DEFAULT', '3');
 
-define('CHOICEGROUP_DISPLAY_HORIZONTAL',  '0');
-define('CHOICEGROUP_DISPLAY_VERTICAL',    '1');
+define('CHOICEGROUP_DISPLAY_HORIZONTAL', '0');
+define('CHOICEGROUP_DISPLAY_VERTICAL', '1');
 
-define('CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT',    '0');
-define('CHOICEGROUP_SORTGROUPS_CREATEDATE',    '1');
-define('CHOICEGROUP_SORTGROUPS_NAME',    '2');
+define('CHOICEGROUP_SORTGROUPS_SYSTEMDEFAULT', '0');
+define('CHOICEGROUP_SORTGROUPS_CREATEDATE', '1');
+define('CHOICEGROUP_SORTGROUPS_NAME', '2');
 
 define('CHOICEGROUP_GROUPDESCRIPTIONSTATE_HIDDEN', 0);
 define('CHOICEGROUP_GROUPDESCRIPTIONSTATE_VISIBLE', 1);
@@ -52,6 +52,7 @@ define('CHOICEGROUP_GROUPDESCRIPTIONSTATE_VISIBLE', 1);
 if (!defined('FEATURE_MOD_PURPOSE')) {
     define('FEATURE_MOD_PURPOSE', 'mod_purpose');
 }
+
 if (!defined('MOD_PURPOSE_COLLABORATION')) {
     define('MOD_PURPOSE_COLLABORATION', 'collaboration');
 }
@@ -70,7 +71,7 @@ global $choicegroupdisplay;
 $choicegroupdisplay = [CHOICEGROUP_DISPLAY_HORIZONTAL   => get_string('displayhorizontal', 'choicegroup'),
                          CHOICEGROUP_DISPLAY_VERTICAL     => get_string('displayvertical', 'choicegroup'), ];
 
-require_once($CFG->dirroot.'/group/lib.php');
+require_once($CFG->dirroot . '/group/lib.php');
 
 // Standard functions /////////////////////////////////////////////////////////.
 
@@ -88,10 +89,11 @@ require_once($CFG->dirroot.'/group/lib.php');
 function choicegroup_user_outline($course, $user, $mod, $choicegroup) {
     if ($groupmembership = choicegroup_get_user_answer($choicegroup, $user)) { // If user has answered.
         $result = new stdClass();
-        $result->info = "'".format_string($groupmembership->name)."'";
+        $result->info = "'" . format_string($groupmembership->name) . "'";
         $result->time = $groupmembership->timeuseradded;
         return $result;
     }
+
     return null;
 }
 
@@ -126,9 +128,9 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnarray = false, 
     } else {
         $useranswers = [];
     }
+
     if (!is_array($choicegroupgroups) || !count($choicegroupgroups)) {
             $choicegroupgroups = choicegroup_get_groups($choicegroup);
-
     }
 
     $groupids = [];
@@ -137,17 +139,19 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnarray = false, 
             $groupids[] = $group->id;
         }
     }
+
     if ($groupids) {
         $params1 = [$userid];
-        list($insql, $params2) = $DB->get_in_or_equal($groupids);
+        [$insql, $params2] = $DB->get_in_or_equal($groupids);
         $params = array_merge($params1, $params2);
-        $groupmemberships = $DB->get_records_sql('SELECT * FROM {groups_members} WHERE userid = ? AND groupid '.$insql, $params);
+        $groupmemberships = $DB->get_records_sql('SELECT * FROM {groups_members} WHERE userid = ? AND groupid ' . $insql, $params);
         $groups = [];
         foreach ($groupmemberships as $groupmembership) {
             $group = $choicegroupgroups[$groupmembership->groupid];
             $group->timeuseradded = $groupmembership->timeadded;
             $groups[] = $group;
         }
+
         if (count($groups) > 0) {
             $useranswers[$userid] = $groups;
             if ($returnarray === true) {
@@ -157,8 +161,8 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnarray = false, 
             }
         }
     }
-    return false;
 
+    return false;
 }
 
 /**
@@ -173,9 +177,9 @@ function choicegroup_get_user_answer($choicegroup, $user, $returnarray = false, 
 function choicegroup_user_complete($course, $user, $mod, $choicegroup) {
     if ($groupmembership = choicegroup_get_user_answer($choicegroup, $user)) { // If user has answered.
         $result = new stdClass();
-        $result->info = "'".format_string($groupmembership->name)."'";
+        $result->info = "'" . format_string($groupmembership->name) . "'";
         $result->time = $groupmembership->timeuseradded;
-        echo get_string("answered", "choicegroup").": $result->info. ".get_string("updated", '', userdate($result->time));
+        echo get_string("answered", "choicegroup") . ": $result->info. " . get_string("updated", '', userdate($result->time));
     } else {
         print_string("notanswered", "choicegroup");
     }
@@ -206,7 +210,7 @@ function choicegroup_add_instance($choicegroup) {
     // Deserialize the selected groups.
 
     $groupids = explode(';', $choicegroup->serializedselectedgroups);
-    $groupids = array_diff( $groupids, [ '' ] );
+    $groupids = array_diff($groupids, [ '' ]);
     // Only add unique groups as groups can be in multiple groupings.
     $groupids = array_unique($groupids);
 
@@ -220,6 +224,7 @@ function choicegroup_add_instance($choicegroup) {
             if (isset($choicegroup->$property)) {
                 $option->maxanswers = $choicegroup->$property;
             }
+
             $option->timemodified = time();
             $DB->insert_record("choicegroup_options", $option);
         }
@@ -227,8 +232,12 @@ function choicegroup_add_instance($choicegroup) {
 
     if (class_exists('\core_completion\api')) {
         $completiontimeexpected = !empty($choicegroup->completionexpected) ? $choicegroup->completionexpected : null;
-        \core_completion\api::update_completion_date_event($choicegroup->coursemodule, 'choicegroup', $choicegroup->id,
-            $completiontimeexpected);
+        \core_completion\api::update_completion_date_event(
+            $choicegroup->coursemodule,
+            'choicegroup',
+            $choicegroup->id,
+            $completiontimeexpected
+        );
     }
 
     return $choicegroup->id;
@@ -260,7 +269,7 @@ function choicegroup_update_instance($choicegroup) {
     // Deserialize the selected groups.
 
     $groupids = explode(';', $choicegroup->serializedselectedgroups);
-    $groupids = array_diff( $groupids, [ '' ] );
+    $groupids = array_diff($groupids, [ '' ]);
     // Only add unique groups as groups can be in multiple groupings.
     $groupids = array_unique($groupids);
 
@@ -278,6 +287,7 @@ function choicegroup_update_instance($choicegroup) {
             if (isset($choicegroup->$property)) {
                 $option->maxanswers = $choicegroup->$property;
             }
+
             $option->timemodified = time();
             // Find out if this selection already exists.
             foreach ($preexistinggroups as $key => $preexistinggroup) {
@@ -290,10 +300,11 @@ function choicegroup_update_instance($choicegroup) {
                     continue 2; // Continue the big loop.
                 }
             }
+
             $DB->insert_record("choicegroup_options", $option);
         }
-
     }
+
     // Remove all remaining pre-existing groups which did not appear in the form (and are thus assumed to have been deleted).
     foreach ($preexistinggroups as $preexistinggroup) {
         $DB->delete_records("choicegroup_options", ["id" => $preexistinggroup->id]);
@@ -301,12 +312,15 @@ function choicegroup_update_instance($choicegroup) {
 
     if (class_exists('\core_completion\api')) {
         $completiontimeexpected = !empty($choicegroup->completionexpected) ? $choicegroup->completionexpected : null;
-        \core_completion\api::update_completion_date_event($choicegroup->coursemodule, 'choicegroup', $choicegroup->id,
-            $completiontimeexpected);
+        \core_completion\api::update_completion_date_event(
+            $choicegroup->coursemodule,
+            'choicegroup',
+            $choicegroup->id,
+            $completiontimeexpected
+        );
     }
 
     return $DB->update_record('choicegroup', $choicegroup);
-
 }
 
 /**
@@ -329,10 +343,11 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
     if (!isset($choicegroup->option)) {
         $choicegroup->option = [];
     }
+
     foreach ($choicegroup->option as $optionid => $text) {
         if (isset($text)) { // Make sure there are no dud entries in the db with blank text values.
-            $option = new stdClass;
-            $option->attributes = new stdClass;
+            $option = new stdClass();
+            $option->attributes = new stdClass();
             $option->attributes->value = $optionid;
             $option->groupid = $text;
             $option->maxanswers = $choicegroup->maxanswers[$optionid];
@@ -343,6 +358,7 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
             } else {
                 $option->countanswers = 0;
             }
+
             if (is_array($answers)) {
                 foreach ($answers as $answer) {
                     if ($answer && $text == $answer->id) {
@@ -350,10 +366,14 @@ function choicegroup_prepare_options($choicegroup, $user, $coursemodule, $allres
                     }
                 }
             }
-            if ( $choicegroup->limitanswers && ($option->countanswers >= $option->maxanswers) &&
-                empty($option->attributes->checked)) {
+
+            if (
+                $choicegroup->limitanswers && ($option->countanswers >= $option->maxanswers) &&
+                empty($option->attributes->checked)
+            ) {
                 $option->attributes->disabled = true;
             }
+
             $cdisplay['options'][] = $option;
         }
     }
@@ -411,7 +431,7 @@ function check_date_restrictions($choicegroup) {
  */
 function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $course, $cm) {
     global $DB, $CFG;
-    require_once($CFG->libdir.'/completionlib.php');
+    require_once($CFG->libdir . '/completionlib.php');
 
     $context = context_module::instance($cm->id);
     $eventparams = [
@@ -427,6 +447,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
     if ($current) {
         $currentgroup = $DB->get_record('groups', ['id' => $current->id], 'id,name', MUST_EXIST);
     }
+
     $selectedgroup = $DB->get_record('groups', ['id' => $selectedoption->groupid], 'id,name', MUST_EXIST);
 
     $countanswers = 0;
@@ -434,7 +455,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
     $groupmemberadded = true;
     if ($choicegroup->limitanswers) {
         $groupmember = $DB->get_record('groups_members', ['groupid' => $selectedoption->groupid, 'userid' => $userid]);
-        $selectcount = 'groupid='.$selectedoption->groupid.' and id<='.$groupmember->id;
+        $selectcount = 'groupid=' . $selectedoption->groupid . ' and id<=' . $groupmember->id;
         $countanswers = $DB->count_records_select('groups_members', $selectcount);
         $maxans = $choicegroup->maxanswers[$formanswer];
         if ($countanswers > $maxans) {
@@ -442,6 +463,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
             $groupmemberadded = false;
         }
     }
+
     if ($groupmemberadded) {
         if ($current) {
             if (!($choicegroup->multipleenrollmentspossible == 1)) {
@@ -462,6 +484,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
             if ($completion->is_enabled($cm) && $choicegroup->completionsubmit) {
                 $completion->update_state($cm, COMPLETION_COMPLETE);
             }
+
             $event = \mod_choicegroup\event\choice_updated::create($eventparams);
             $event->add_record_snapshot('course_modules', $cm);
             $event->add_record_snapshot('course', $course);
@@ -471,7 +494,7 @@ function choicegroup_user_submit_response($formanswer, $choicegroup, $userid, $c
     } else {
         if (!$current || !($current->id == $selectedoption->groupid)) { // Check to see if current choicegroup already selected -
             // if not display error.
-            throw new moodle_exception('choicegroupfull', 'choicegroup', $CFG->wwwroot.'/mod/choicegroup/view.php?id='.$cm->id);
+            throw new moodle_exception('choicegroupfull', 'choicegroup', $CFG->wwwroot . '/mod/choicegroup/view.php?id=' . $cm->id);
         }
     }
 }
@@ -499,11 +522,13 @@ function choicegroup_show_reportlink($choicegroup, $allresponses, $cm) {
             }
         }
     }
-    echo '<div class="reportlink"><a href="report.php?id='.$cm->id.'">'.
+
+    echo '<div class="reportlink"><a href="report.php?id=' . $cm->id . '">' .
         get_string("viewallresponses", "choicegroup", $responsecount);
     if ($choicegroup->multipleenrollmentspossible == 1) {
         echo ' ' . get_string("byparticipants", "choicegroup", count($respondents));
     }
+
     echo '</a></div>';
 }
 
@@ -517,7 +542,7 @@ function choicegroup_show_reportlink($choicegroup, $allresponses, $cm) {
  * @param bool $forcepublish
  * @return object
  */
-function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allresponses, $forcepublish=false) {
+function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allresponses, $forcepublish = false) {
     global $CFG, $fullscript, $PAGE, $OUTPUT;
 
     $display = clone($choicegroup);
@@ -528,7 +553,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
     $display->options = [];
     $totaluser = 0;
     foreach ($choicegroup->option as $optionid => $groupid) {
-        $display->options[$optionid] = new stdClass;
+        $display->options[$optionid] = new stdClass();
         $display->options[$optionid]->groupid = $groupid;
         $display->options[$optionid]->maxanswer = $choicegroup->maxanswers[$optionid];
 
@@ -537,12 +562,15 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
             foreach ($display->options[$optionid]->user as $user) {
                 $user->grpsmemberid = array_search([$groupid, $user->id], $choicegroup->grpmemberid);
             }
+
             $totaluser += count($allresponses[$groupid]);
         }
     }
+
     if ($choicegroup->showunanswered) {
         $display->options[0]->user = $allresponses[0];
     }
+
     unset($display->option);
     unset($display->maxanswers);
 
@@ -573,12 +601,13 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
         case CHOICEGROUP_PUBLISH_NAMES:
             echo '<div id="tablecontainer">';
             if ($viewresponses) {
-                echo '<form id="attemptsform" method="post" action="'.$fullscript.'" '.
-                    'onsubmit="var menu = document.getElementById(\'menuaction\'); return (menu.options[menu.selectedIndex].value '.
-                    '== \'delete\' ? \''.addslashes_js(get_string('deleteattemptcheck', 'quiz')).'\' : true);">';
+                echo '<form id="attemptsform" method="post" action="' . $fullscript . '" ' .
+                    'onsubmit="var menu = document.getElementById(\'menuaction\'); ' .
+                    'return (menu.options[menu.selectedIndex].value ' .
+                    '== \'delete\' ? \'' . addslashes_js(get_string('deleteattemptcheck', 'quiz')) . '\' : true);">';
                 echo '<div>';
-                echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
-                echo '<input type="hidden" name="sesskey" value="'.sesskey().'" />';
+                echo '<input type="hidden" name="id" value="' . $cm->id . '" />';
+                echo '<input type="hidden" name="sesskey" value="' . sesskey() . '" />';
                 echo '<input type="hidden" name="mode" value="overview" />';
             }
 
@@ -592,6 +621,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
                 print_string('notanswered', 'choicegroup');
                 echo "</th>";
             }
+
             $count = 1;
             foreach ($choicegroup->option as $optionid => $optiontext) {
                 $columncount[$optionid] = 0; // Init counters.
@@ -600,6 +630,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
                 echo "</th>";
                 $count++;
             }
+
             echo "</tr><tr>";
 
             if ($choicegroup->showunanswered) {
@@ -620,11 +651,13 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
                         echo "</td></tr>";
                     }
                 }
+
                 echo "</table></td>";
             }
+
             $count = 1;
             foreach ($choicegroup->option as $optionid => $optiontext) {
-                    echo '<td class="col'.$count.' data" >';
+                    echo '<td class="col' . $count . ' data" >';
 
                     // Added empty row so that when the next iteration is empty,
                     // we do not get <table></table> error from w3c validator
@@ -635,8 +668,9 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
                         $columncount[$optionid] += 1;
                         echo '<tr><td class="attemptcell">';
                         if ($viewresponses && has_capability('mod/choicegroup:deleteresponses', $context)) {
-                            echo '<input type="checkbox" name="userid[]" value="'. $user->id. '" />';
+                            echo '<input type="checkbox" name="userid[]" value="' . $user->id . '" />';
                         }
+
                         echo '</td><td class="picture">';
                         echo $OUTPUT->user_picture($user, ['courseid' => $course->id]);
                         echo '</td><td class="fullname">';
@@ -646,9 +680,11 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
                         echo '</td></tr>';
                     }
                 }
+
                     $count++;
                     echo '</table></td>';
             }
+
             echo "</tr><tr>";
             $count = 1;
 
@@ -659,34 +695,42 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
             foreach ($choicegroup->option as $optionid => $optiontext) {
                 echo "<td align=\"center\" class=\"col$count count\">";
                 if ($choicegroup->limitanswers) {
-                    echo get_string("taken", "choicegroup").":";
+                    echo get_string("taken", "choicegroup") . ":";
                     echo $columncount[$optionid];
                     echo "<br/>";
-                    echo get_string("limit", "choicegroup").":";
+                    echo get_string("limit", "choicegroup") . ":";
                     echo $choicegroup->maxanswers[$optionid];
                 } else {
                     if (isset($columncount[$optionid])) {
                         echo $columncount[$optionid];
                     }
                 }
+
                 echo "</td>";
                 $count++;
             }
+
             echo "</tr>";
 
             // Print "Select all" etc.
             if ($viewresponses && has_capability('mod/choicegroup:deleteresponses', $context)) {
                 echo '<tr><td></td><td>';
-                echo '<a href="javascript:select_all_in(\'DIV\',null,\'tablecontainer\');">'.get_string('selectall').'</a> / ';
-                echo '<a href="javascript:deselect_all_in(\'DIV\',null,\'tablecontainer\');">'.get_string('deselectall').'</a> ';
+                echo '<a href="javascript:select_all_in(\'DIV\',null,\'tablecontainer\');">' . get_string('selectall') . '</a> / ';
+                echo '<a href="javascript:deselect_all_in(\'DIV\',null,\'tablecontainer\');">' . get_string('deselectall') .
+                    '</a> ';
                 echo '&nbsp;&nbsp;';
                 echo html_writer::label(get_string('withselected', 'choicegroup'), 'menuaction');
-                echo html_writer::select(['delete' => get_string('delete')], 'action', '',
-                    ['' => get_string('withselectedusers')], ['id' => 'menuaction']);
+                echo html_writer::select(
+                    ['delete' => get_string('delete')],
+                    'action',
+                    '',
+                    ['' => get_string('withselectedusers')],
+                    ['id' => 'menuaction']
+                );
                 $PAGE->requires->js_init_call('M.util.init_select_autosubmit', ['attemptsform', 'menuaction', '']);
                 echo '<noscript id="noscriptmenuaction" style="display:inline">';
                 echo '<div>';
-                echo '<input type="submit" value="'.get_string('go').'" /></div></noscript>';
+                echo '<input type="submit" value="' . get_string('go') . '" /></div></noscript>';
                 echo '</td><td></td></tr>';
             }
 
@@ -696,6 +740,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
             }
             break;
     }
+
     return $display;
 }
 
@@ -710,7 +755,7 @@ function prepare_choicegroup_show_results($choicegroup, $course, $cm, $allrespon
  */
 function choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/completionlib.php');
+    require_once($CFG->libdir . '/completionlib.php');
 
     if (!is_array($grpsmemberids) || empty($grpsmemberids)) {
         return false;
@@ -742,12 +787,14 @@ function choicegroup_delete_responses($grpsmemberids, $choicegroup, $cm, $course
             $event->add_record_snapshot('choicegroup', $choicegroup);
             $event->trigger();
         }
+
         // Update completion state.
         $current = choicegroup_get_user_answer($choicegroup, $userid, false, true);
         if ($current === false && $completion->is_enabled($cm) && $choicegroup->completionsubmit) {
             $completion->update_state($cm, COMPLETION_INCOMPLETE, $userid);
         }
     }
+
     return true;
 }
 
@@ -826,6 +873,7 @@ function choicegroup_get_groups($choicegroup) {
             $groups[$group->id] = $group;
         }
     }
+
     return $groups;
 }
 
@@ -872,6 +920,7 @@ function choicegroup_get_choicegroup($choicegroupid) {
 
         return $choicegroup;
     }
+
     return false;
 }
 
@@ -986,6 +1035,7 @@ function choicegroup_get_response_data($choicegroup, $cm, $groupmode, $onlyactiv
             unset($allresponses[0][$response->userid]);
         }
     }
+
     return $allresponses;
 }
 
@@ -1010,10 +1060,10 @@ function choicegroup_get_responses($choicegroup, $ctx, $currentgroup, $onlyactiv
     }
 
     $params1 = ['choicegroupid' => $choicegroupid];
-    list($esql, $params2) = get_enrolled_sql($ctx, 'mod/choicegroup:choose', $currentgroup, $onlyactive);
+    [$esql, $params2] = get_enrolled_sql($ctx, 'mod/choicegroup:choose', $currentgroup, $onlyactive);
     $params = array_merge($params1, $params2);
 
-    $sql = 'SELECT gm.* FROM {user} u JOIN ('.$esql.') je ON je.id = u.id
+    $sql = 'SELECT gm.* FROM {user} u JOIN (' . $esql . ') je ON je.id = u.id
         JOIN {groups_members} gm ON gm.userid = u.id AND groupid IN (
         SELECT groupid FROM {choicegroup_options} WHERE choicegroupid=:choicegroupid)
         WHERE u.deleted = 0 ORDER BY u.lastname ASC,u.firstname ASC';
@@ -1044,7 +1094,7 @@ function choicegroup_get_extra_capabilities() {
  * @return mixed True if module supports feature, null if doesn't know
  */
 function choicegroup_supports($feature) {
-    switch($feature) {
+    switch ($feature) {
         case FEATURE_GROUPS:
             return true;
         case FEATURE_GROUPINGS:
@@ -1082,11 +1132,11 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
     $cm = $settings->get_page()->cm;
 
     if (has_capability('mod/choicegroup:readresponses', $cm->context)) {
-
         $groupmode = groups_get_activity_groupmode($cm);
         if ($groupmode) {
             groups_get_activity_group($cm, true);
         }
+
         if (!$choicegroup = choicegroup_get_choicegroup($cm->instance)) {
             throw new moodle_exception('invalidcoursemodule');
             return false;
@@ -1109,10 +1159,12 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
                 }
             }
         }
+
         $viewallresponsestext = get_string("viewallresponses", "choicegroup", $responsecount);
         if ($choicegroup->multipleenrollmentspossible == 1) {
             $viewallresponsestext .= ' ' . get_string("byparticipants", "choicegroup", count($respondents));
         }
+
         $choicegroupnode->add($viewallresponsestext, new moodle_url('/mod/choicegroup/report.php', ['id' => $cm->id]));
     }
 }
@@ -1152,8 +1204,10 @@ function choicegroup_get_sort_options() {
  * @param \core_calendar\action_factory $factory
  * @return \core_calendar\local\event\entities\action_interface|null
  */
-function mod_choicegroup_core_calendar_provide_event_action(calendar_event $event,
-                                                      \core_calendar\action_factory $factory) {
+function mod_choicegroup_core_calendar_provide_event_action(
+    calendar_event $event,
+    \core_calendar\action_factory $factory
+) {
     $cm = get_fast_modinfo($event->courseid)->instances['choicegroup'][$event->instance];
 
     $completion = new \completion_info($cm->get_course());
@@ -1226,10 +1280,12 @@ function choicegroup_get_coursemodule_info($coursemodule) {
     if ($coursemodule->completion == COMPLETION_TRACKING_AUTOMATIC) {
         $result->customdata['customcompletionrules']['completionsubmit'] = $choicegroup->completionsubmit;
     }
+
     // Populate some other values that can be used in calendar or on dashboard.
     if ($choicegroup->timeopen) {
         $result->customdata['timeopen'] = $choicegroup->timeopen;
     }
+
     if ($choicegroup->timeclose) {
         $result->customdata['timeclose'] = $choicegroup->timeclose;
     }
@@ -1245,8 +1301,10 @@ function choicegroup_get_coursemodule_info($coursemodule) {
  */
 function mod_choicegroup_get_completion_active_rule_descriptions($cm) {
     // Values will be present in cm_info, and we assume these are up to date.
-    if (empty($cm->customdata['customcompletionrules'])
-        || $cm->completion != COMPLETION_TRACKING_AUTOMATIC) {
+    if (
+        empty($cm->customdata['customcompletionrules'])
+        || $cm->completion != COMPLETION_TRACKING_AUTOMATIC
+    ) {
         return [];
     }
 
@@ -1262,5 +1320,6 @@ function mod_choicegroup_get_completion_active_rule_descriptions($cm) {
                 break;
         }
     }
+
     return $descriptions;
 }

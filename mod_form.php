@@ -31,7 +31,6 @@ require_once($CFG->dirroot . '/course/moodleform_mod.php');
  * Activity instance editing form.
  */
 class mod_choicegroup_mod_form extends moodleform_mod {
-
     /**
      * @var string Column to sort groups by
      */
@@ -58,6 +57,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         } else {
             $mform->setType('name', PARAM_CLEANHTML);
         }
+
         $mform->addRule('name', null, 'required', null, 'client');
 
         if (method_exists($this, 'standard_intro_elements')) {
@@ -107,7 +107,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                 $groupings[$grouping->id]->timecreated = $grouping->timecreated;
             }
 
-            list($sqlin, $inparams) = $DB->get_in_or_equal(array_keys($groupings));
+            [$sqlin, $inparams] = $DB->get_in_or_equal(array_keys($groupings));
 
             $sql = "SELECT gg.*
                     FROM {groupings_groups} gg
@@ -121,6 +121,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                 $groupings[$groupinggrouplink->groupingid]->linkedGroupsIDs[] = $groupinggrouplink->groupid;
             }
         }
+
         // -------------------------
         // -------------------------
 
@@ -141,8 +142,13 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $mform->addElement('select', 'showresults', get_string("publish", "choicegroup"), $choicegroupshowresults);
         $mform->setDefault('showresults', CHOICEGROUP_SHOWRESULTS_DEFAULT);
 
-        $mform->addElement('select', 'publish', get_string("privacy", "choicegroup"), $choicegrouppublish,
-            CHOICEGROUP_PUBLISH_DEFAULT);
+        $mform->addElement(
+            'select',
+            'publish',
+            get_string("privacy", "choicegroup"),
+            $choicegrouppublish,
+            CHOICEGROUP_PUBLISH_DEFAULT
+        );
         $mform->setDefault('publish', CHOICEGROUP_PUBLISH_DEFAULT);
         $mform->disabledIf('publish', 'showresults', 'eq', 0);
 
@@ -195,25 +201,27 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                 // Grouping has more than 2 items, thus we should display it (otherwise it would be clearer to display only that
                 // single group alone).
                 $mform->addElement('html', '<option value="' . $groupingid .
-                    '" style="font-weight: bold" class="grouping" data-timecreated="'. $grouping->timecreated .'">' .
+                    '" style="font-weight: bold" class="grouping" data-timecreated="' . $grouping->timecreated . '">' .
                     get_string('char_bullet_expanded', 'choicegroup') . $grouping->name . '</option>');
                 foreach ($grouping->linkedGroupsIDs as $linkedgroupid) {
                     if (isset($groups[$linkedgroupid])) {
-                        $mform->addElement('html', '<option value="' . $linkedgroupid .
-                            '" class="group nested" data-timecreated="'. $groups[$linkedgroupid]->timecreated .'">' .
-                            $groups[$linkedgroupid]->name . '</option>');
+                        $mform->addElement('html', '<option title="' . $groups[$linkedgroupid]->name . '" value="' .
+                            $linkedgroupid . '" class="group nested" data-timecreated="' .
+                            $groups[$linkedgroupid]->timecreated . '">' . $groups[$linkedgroupid]->name . '</option>');
                         $groups[$linkedgroupid]->mentioned = true;
                     }
                 }
             }
         }
+
         foreach ($groups as $group) {
             if ($group->mentioned === false) {
                 $mform->addElement('html', '<option title="' . $group->name . '" value="' . $group->id .
-                    '" class="group toplevel" data-timecreated="'. $group->timecreated .'">' . format_string($group->name) .
+                    '" class="group toplevel" data-timecreated="' . $group->timecreated . '">' . format_string($group->name) .
                     '</option>');
             }
         }
+
         $mform->addElement('html', '</select><br><button name="expandButton" type="button" id="expandButton" ' .
             'class="btn btn-secondary mt-1">' . get_string('expand_all_groupings', 'choicegroup') .
             '</button><button name="collapseButton" type="button" id="collapseButton" class="btn btn-secondary mt-1">' .
@@ -230,10 +238,10 @@ class mod_choicegroup_mod_form extends moodleform_mod {
     <select class="col-12" id="id_selectedGroups" name="selectedGroups" multiple size=10></select>
     <div id="fitem_id_limit_0" class="fitem fitem_ftext" style="display:none">
         <div>
-            <label for="id_limit_0" id="label_for_limit_ui">' . get_string('set_limit_for_group', 'choicegroup') . ' </label>
+            <label for="ui_limit_input" id="label_for_limit_ui">' . get_string('set_limit_for_group', 'choicegroup') . ' </label>
         </div>
         <div class="ftext">
-            <input class="mod-choicegroup-limit-input" type="text" value="0" id="ui_limit_input" disabled="disabled">
+            <input class="mod-choicegroup-limit-input form-control" type="text" value="0" id="ui_limit_input" disabled="disabled">
         </div>
     </div>
 </td>');
@@ -261,11 +269,14 @@ class mod_choicegroup_mod_form extends moodleform_mod {
                 $serializedselectedgroupsvalue .= ';' . $groupid;
                 $mform->setDefault('group_' . $groupid . '_limit', $cg->maxanswers[$optionid]);
             }
-
         }
 
-        $mform->addElement('hidden', 'serializedselectedgroups', $serializedselectedgroupsvalue,
-            ['id' => 'serializedselectedgroups']);
+        $mform->addElement(
+            'hidden',
+            'serializedselectedgroups',
+            $serializedselectedgroupsvalue,
+            ['id' => 'serializedselectedgroups']
+        );
         $mform->setType('serializedselectedgroups', PARAM_RAW);
 
         switch (get_config('choicegroup', 'sortgroupsby')) {
@@ -332,7 +343,6 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         } else {
             $defaultvalues['timerestrict'] = 1;
         }
-
     }
 
     /**
@@ -404,10 +414,12 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         if (!$data) {
             return false;
         }
+
         // Set up completion section even if checkbox is not ticked.
         if (empty($data->completionsection)) {
             $data->completionsection = 0;
         }
+
         return $data;
     }
 
@@ -442,5 +454,4 @@ class mod_choicegroup_mod_form extends moodleform_mod {
     public function completion_rule_enabled($data) {
         return !empty($data['completionsubmit']);
     }
-
 }
