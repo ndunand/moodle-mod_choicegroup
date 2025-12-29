@@ -26,8 +26,13 @@
 
 require_once("../../config.php");
 require_once("lib.php");
+global $CFG;
 
 $id = required_param('id', PARAM_INT); // Course.
+
+if ($CFG->version > 2025041400) {
+    \core_courseformat\activityoverviewbase::redirect_to_overview_page($id, 'choicegroup');
+}
 
 $PAGE->set_url('/mod/choicegroup/index.php', ['id' => $id]);
 
