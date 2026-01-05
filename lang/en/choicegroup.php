@@ -47,6 +47,8 @@ $string['char_bullet_expanded'] = '▼';
 $string['char_limitui_parenthesis_end'] = '⦘';
 $string['char_limitui_parenthesis_start'] = '⦗';
 $string['choice'] = 'Choice';
+$string['choicebegins'] = 'Choice begins at';
+$string['choiceends'] = 'Choice ends at';
 $string['choicegroup:addinstance'] = 'Add a new group choice activity';
 $string['choicegroup:choose'] = 'Record a choice';
 $string['choicegroup:deleteresponses'] = 'Delete responses';
@@ -66,6 +68,7 @@ The selected groups appear on the list on the right.
 
 To remove any groups from the selection, select them from the list on the right and click "Remove".';
 $string['choicegroupsaved'] = 'Your choice has been saved';
+$string['choices'] = 'Choices';
 $string['choicetext'] = 'Choice text';
 $string['chooseaction'] = 'Choose an action ...';
 $string['choosegroup'] = 'Choose a group';
@@ -165,6 +168,7 @@ $string['skipresultgraph'] = 'Skip result graph';
 $string['sortgroupsby'] = 'Sort groups by';
 $string['spaceleft'] = 'space available';
 $string['spacesleft'] = 'spaces available';
+$string['studentswhochose'] = 'Students who chose';
 $string['systemdefault_date'] = 'System Default (currently Group creation date)';
 $string['systemdefault_name'] = 'System Default (currently Name)';
 $string['taken'] = 'Taken';
