@@ -57,6 +57,11 @@ if (!defined('MOD_PURPOSE_COLLABORATION')) {
     define('MOD_PURPOSE_COLLABORATION', 'collaboration');
 }
 
+// For versions of Moodle prior to 5.1, we need to define that constant here.
+if (!defined('FEATURE_MOD_OTHERPURPOSE')) {
+    define('FEATURE_MOD_OTHERPURPOSE', 'mod_otherpurpose');
+}
+
 global $choicegrouppublish;
 $choicegrouppublish = [CHOICEGROUP_PUBLISH_ANONYMOUS  => get_string('publishanonymous', 'choicegroup'),
                          CHOICEGROUP_PUBLISH_NAMES      => get_string('publishnames', 'choicegroup'), ];
@@ -1117,6 +1122,8 @@ function choicegroup_supports($feature) {
             return true;
         case FEATURE_MOD_PURPOSE:
             return MOD_PURPOSE_COLLABORATION;
+        case FEATURE_MOD_OTHERPURPOSE:
+            return MOD_PURPOSE_ADMINISTRATION;
         default:
             return null;
     }
