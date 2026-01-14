@@ -115,8 +115,22 @@ $string['maxenrollments_help'] = 'This option allows to limit the number of grou
 $string['members/'] = 'Members';
 $string['members/max'] = 'Members / Capacity';
 $string['modulename'] = 'Group choice';
-$string['modulename_help'] = 'The Group Choice module allows students to enrol themselves in a group within a course. The teacher can select which groups students can choose from and the maximum number of students allowed in each group.';
+$string['modulename_help'] = '
+###### Key features
+- Allows students to self-enrol into groups within a course
+- Teachers can set maximum group sizes and control availability
+- Students can view group members before joining
+- Option to allow students to change groups until a deadline
+- Supports multiple group selections and sorting by name or creation date
+
+###### Ways to use it
+- Organize students into project or assignment groups
+- Facilitate group work for discussions, labs, or workshops
+- Enable students to choose partners for collaborative tasks
+- Manage group sizes for balanced participation
+- Allow flexible group changes before activities start';
 $string['modulename_link'] = 'mod/choicegroup/view';
+$string['modulename_summary'] = 'Allows students to self-select and join course groups with options for size limits, membership visibility, and flexible deadlines.';
 $string['modulenameplural'] = 'Group choices';
 $string['moveselectedusersto'] = 'Move selected users to...';
 $string['multipleenrollmentspossible'] = 'Allow enrollment to multiple groups';
