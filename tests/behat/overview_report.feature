@@ -52,12 +52,8 @@ Feature: Testing overview integration in choicegroup activity
     And I expand all fieldsets
     And I click on "Restrict answering to this time period" "checkbox"
     And I press "Save and return to course"
-    When I log in as "admin"
-    And I am on "Course 1" course homepage with editing mode on
-    And I add the "Activities" block
-    And I click on "Group choices" "link" in the "Activities" "block"
-    Then I should see "An overview of all activities in the course"
-    And I should see "Name" in the "choicegroup_overview_collapsible" "region"
+    When I am on the "C1" "course > activities > choicegroup" page logged in as "admin"
+    Then I should see "Name" in the "choicegroup_overview_collapsible" "region"
     And I should see "Choice begins at" in the "choicegroup_overview_collapsible" "region"
     And I should see "Choice ends at" in the "choicegroup_overview_collapsible" "region"
     And I should see "Choices" in the "choicegroup_overview_collapsible" "region"
