@@ -1183,7 +1183,7 @@ function choicegroup_extend_settings_navigation(settings_navigation $settings, n
  * @param stdClass $currentcontext Current context of block
  */
 function choicegroup_page_type_list($pagetype, $parentcontext, $currentcontext) {
-    $modulepagetype = ['mod-choicegroup-*' => get_string('page-mod-choicegroup-x', 'choice')];
+    $modulepagetype = ['mod-choicegroup-*' => get_string('page-mod-choicegroup-x', 'choicegroup')];
     return $modulepagetype;
 }
 

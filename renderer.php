@@ -317,7 +317,13 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
      * @throws moodle_exception
      */
     public function display_publish_name_vertical($choicegroups) {
-        global $context;
+        global $context, $CFG;
+
+        if ($CFG->version >= 2024041400) {
+            $marginendclass = "me-1";
+        } else {
+            $marginendclass = "mr-1";
+        }
 
         if (!has_capability('mod/choicegroup:downloadresponses', $context)) {
             return; // Only the (editing)teacher can see the diagram.
@@ -438,7 +444,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $actiondata .= html_writer::link($selecturl, get_string('deselectall'), ['data-select-info' => false]);
             $actiondata .= html_writer::end_div();
             $actiondata .= html_writer::tag('label', ' ' . get_string('withselected', 'choice') .
-                ' ', ['for' => 'menuaction', 'class' => 'mr-1']);
+                ' ', ['for' => 'menuaction', 'class' => $marginendclass]);
 
             $actionurl = new moodle_url($this->page->url, ['sesskey' => sesskey(), 'action' => 'delete_confirmation()']);
             $select = new single_select(
