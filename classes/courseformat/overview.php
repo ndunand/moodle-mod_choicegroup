@@ -193,6 +193,23 @@ class overview extends \core_courseformat\activityoverviewbase {
         $submissions = $this->manager->count_all_users_answered($groupids);
         $total = $this->manager->count_all_users($groupids);
 
+        if (
+            class_exists(button::class) &&
+            (new \ReflectionClass(button::class))->hasConstant('SECONDARY_OUTLINE')
+        ) {
+            if (
+                class_exists(button::class) &&
+                (new \ReflectionClass(button::class))->hasConstant('BODY_OUTLINE')
+            ) {
+                $buttonoutline = button::BODY_OUTLINE;
+            } else {
+                $buttonoutline = button::SECONDARY_OUTLINE;
+            }
+            $buttonclass = $buttonoutline->classes();
+        } else {
+            $buttonclass = "btn btn-outline-secondary";
+        }
+
         $content = new action_link(
             url: new url('/mod/choicegroup/report.php', ['id' => $this->cm->id]),
             text: get_string(
@@ -200,7 +217,7 @@ class overview extends \core_courseformat\activityoverviewbase {
                 'core',
                 ['count' => $submissions, 'total' => $total]
             ),
-            attributes: ['class' => button::SECONDARY_OUTLINE->classes()],
+            attributes: ['class' => $buttonclass],
         );
 
         return new overviewitem(
