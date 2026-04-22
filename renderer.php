@@ -217,7 +217,9 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             if ($disabled) {
                 $option->attributes->disabled = true;
             }
-
+            if ((!$multipleenrollmentspossible) && ($options['allowupdate'])) {
+                $option->attributes->disabled = true;
+            }
             $attributes = (array) $option->attributes;
             $attributes['id'] = 'choiceid_' . $option->attributes->value;
             $html .= html_writer::empty_tag('input', $attributes);
@@ -269,7 +271,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             }
 
             if (
-                !empty($options['allowupdate']) && ($options['allowupdate']) &&
+                ($options['allowupdate']) &&
                 !($multipleenrollmentspossible == 1) && !$disabled
             ) {
                 $url = new moodle_url('view.php', ['id' => $coursemoduleid, 'action' => 'delchoicegroup', 'sesskey' => sesskey()]);
