@@ -54,6 +54,22 @@ if (!$choicegroup = choicegroup_get_choicegroup($cm->instance)) {
     throw new moodle_exception('invalidcoursemodule');
 }
 
+// Load real-time enrollment limit validator when min or max is configured.
+if ($choicegroup->multipleenrollmentspossible == 1) {
+    $jsmin = (int)($choicegroup->minenrollments ?? 0);
+    $jsmax = (int)($choicegroup->maxenrollments ?? 0);
+    if ($jsmin > 0 || $jsmax > 0) {
+        $PAGE->requires->strings_for_js(
+            ['enrollmentlimit_exact', 'enrollmentlimit_min', 'enrollmentlimit_toomany', 'enrollmentlimit_toomany_exact'],
+            'choicegroup'
+        );
+        $PAGE->requires->js_call_amd('mod_choicegroup/enrollment_limit_validator', 'init', [[
+            'minenrollments' => $jsmin,
+            'maxenrollments' => $jsmax,
+        ]]);
+    }
+}
+
 $choicegroupgroups = choicegroup_get_groups($choicegroup);
 $choicegroupusers = [];
 
