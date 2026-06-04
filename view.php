@@ -124,20 +124,18 @@ if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
         $numberofgroups = optional_param('number_of_groups', '', PARAM_INT);
         $enrollmentscount = 0;
 
-        if ($choicegroup->maxenrollments > 0) {
-            for ($i = 0; $i < $numberofgroups; $i++) {
-                $answervalue = optional_param('answer_' . $i, '', PARAM_INT);
-                if ($answervalue != '') {
-                    $enrollmentscount++;
-                }
+        for ($i = 0; $i < $numberofgroups; $i++) {
+            $answervalue = optional_param('answer_' . $i, '', PARAM_INT);
+            if ($answervalue != '') {
+                $enrollmentscount++;
             }
+        }
 
-            if ($enrollmentscount > $choicegroup->maxenrollments) {
-                redirect(new moodle_url(
-                    '/mod/choicegroup/view.php',
-                    ['id' => $cm->id, 'notify' => 'mustchoosemax', 'sesskey' => sesskey()]
-                ));
-            }
+        if ($choicegroup->maxenrollments > 0 && $enrollmentscount > $choicegroup->maxenrollments) {
+            redirect(new moodle_url(
+                '/mod/choicegroup/view.php',
+                ['id' => $cm->id, 'notify' => 'mustchoosemax', 'sesskey' => sesskey()]
+            ));
         }
 
         if (!empty($choicegroup->minenrollments) && $choicegroup->minenrollments > 0) {
