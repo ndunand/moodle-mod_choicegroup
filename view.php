@@ -291,6 +291,28 @@ $renderer = $PAGE->get_renderer('mod_choicegroup');
 if ((!$current || $choicegroup->allowupdate) && $choicegroupopen && is_enrolled($context, null, 'mod/choicegroup:choose')) {
     // They haven't made their choicegroup yet or updates allowed and choicegroup is open.
 
+    // Show enrollment limit info message when multiple enrollments are enabled.
+    if ($choicegroup->multipleenrollmentspossible == 1) {
+        $min = (int)($choicegroup->minenrollments ?? 0);
+        $max = (int)($choicegroup->maxenrollments ?? 0);
+        $infomsg = '';
+        if ($min > 0 && $max > 0 && $min === $max) {
+            $infomsg = get_string('enrollmentlimit_exact', 'choicegroup', $min);
+        } else if ($min > 0 && $max > 0) {
+            $a = new stdClass();
+            $a->min = $min;
+            $a->max = $max;
+            $infomsg = get_string('enrollmentlimit_range', 'choicegroup', $a);
+        } else if ($min > 0) {
+            $infomsg = get_string('enrollmentlimit_min', 'choicegroup', $min);
+        } else if ($max > 0) {
+            $infomsg = get_string('enrollmentlimit_max', 'choicegroup', $max);
+        }
+        if ($infomsg) {
+            echo $OUTPUT->notification($infomsg, 'info');
+        }
+    }
+
     echo $renderer->display_options(
         $options,
         $cm->id,
