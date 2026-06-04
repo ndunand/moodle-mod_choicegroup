@@ -112,6 +112,9 @@ $string['limitanswers_help'] = 'This option allows you to limit the number of pa
 If limits are disabled then any number of participants can select each of the options.';
 $string['maxenrollments'] = 'Max. enrollments';
 $string['maxenrollments_help'] = 'This option allows to limit the number of group enrollments for a participant. Use default value **0** if there is no limit.';
+$string['minenrollments'] = 'Min. enrollments';
+$string['minenrollments_help'] = 'This option sets the minimum number of group enrollments required for a participant. Use default value **0** if there is no minimum.';
+$string['minenrollments_exceeds_max'] = 'Minimum enrollments cannot be greater than maximum enrollments.';
 $string['members/'] = 'Members';
 $string['members/max'] = 'Members / Capacity';
 $string['modulename'] = 'Group choice';
@@ -135,6 +138,7 @@ $string['modulenameplural'] = 'Group choices';
 $string['moveselectedusersto'] = 'Move selected users to...';
 $string['multipleenrollmentspossible'] = 'Allow enrollment to multiple groups';
 $string['mustchoosemax'] = 'You must choose a maximum of {$a} groups. Nothing was saved.';
+$string['mustchoosemin'] = 'You must choose at least {$a} groups. Nothing was saved.';
 $string['mustchooseone'] = 'You must choose an answer before saving.  Nothing was saved.';
 $string['name'] = 'Name';
 $string['neverresultsviewable'] = 'The results are not viewable.';

@@ -124,6 +124,15 @@ if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
             }
         }
 
+        if (!empty($choicegroup->minenrollments) && $choicegroup->minenrollments > 0) {
+            if ($enrollmentscount < $choicegroup->minenrollments) {
+                redirect(new moodle_url(
+                    '/mod/choicegroup/view.php',
+                    ['id' => $cm->id, 'notify' => 'mustchoosemin', 'sesskey' => sesskey()]
+                ));
+            }
+        }
+
         for ($i = 0; $i < $numberofgroups; $i++) {
             $answervalue = optional_param('answer_' . $i, '', PARAM_INT);
             if ($answervalue != '') {
@@ -189,6 +198,8 @@ if ($notify && confirm_sesskey()) {
         echo $OUTPUT->notification(get_string('mustchooseone', 'choicegroup'), 'notifyproblem');
     } else if ($notify === 'mustchoosemax') {
         echo $OUTPUT->notification(get_string('mustchoosemax', 'choicegroup', $choicegroup->maxenrollments), 'notifyproblem');
+    } else if ($notify === 'mustchoosemin') {
+        echo $OUTPUT->notification(get_string('mustchoosemin', 'choicegroup', $choicegroup->minenrollments), 'notifyproblem');
     }
 }
 

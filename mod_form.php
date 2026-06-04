@@ -139,6 +139,13 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $mform->addRule('maxenrollments', get_string('error'), 'numeric', 'extraruledata', 'client', false, false);
         $mform->setDefault('maxenrollments', 0);
 
+        $mform->addElement('text', 'minenrollments', get_string('minenrollments', 'choicegroup'), ['size' => '6']);
+        $mform->addHelpButton('minenrollments', 'minenrollments', 'choicegroup');
+        $mform->setType('minenrollments', PARAM_INT);
+        $mform->hideIf('minenrollments', 'multipleenrollmentspossible');
+        $mform->addRule('minenrollments', get_string('error'), 'numeric', 'extraruledata', 'client', false, false);
+        $mform->setDefault('minenrollments', 0);
+
         $mform->addElement('select', 'showresults', get_string("publish", "choicegroup"), $choicegroupshowresults);
         $mform->setDefault('showresults', CHOICEGROUP_SHOWRESULTS_DEFAULT);
 
@@ -399,6 +406,14 @@ class mod_choicegroup_mod_form extends moodleform_mod {
 
         if (count($groupids) < 1) {
             $errors['groups'] = get_string('fillinatleastoneoption', 'choicegroup');
+        }
+
+        if (!empty($data['multipleenrollmentspossible'])) {
+            $min = (int)($data['minenrollments'] ?? 0);
+            $max = (int)($data['maxenrollments'] ?? 0);
+            if ($min > 0 && $max > 0 && $min > $max) {
+                $errors['minenrollments'] = get_string('minenrollments_exceeds_max', 'choicegroup');
+            }
         }
 
         return $errors;
