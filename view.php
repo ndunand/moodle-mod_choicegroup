@@ -54,6 +54,22 @@ if (!$choicegroup = choicegroup_get_choicegroup($cm->instance)) {
     throw new moodle_exception('invalidcoursemodule');
 }
 
+// Load real-time enrollment limit validator when min or max is configured.
+if ($choicegroup->multipleenrollmentspossible == 1) {
+    $jsmin = (int)($choicegroup->minenrollments ?? 0);
+    $jsmax = (int)($choicegroup->maxenrollments ?? 0);
+    if ($jsmin > 0 || $jsmax > 0) {
+        $PAGE->requires->strings_for_js(
+            ['enrollmentlimit_exact', 'enrollmentlimit_min', 'enrollmentlimit_toomany', 'enrollmentlimit_toomany_exact'],
+            'choicegroup'
+        );
+        $PAGE->requires->js_call_amd('mod_choicegroup/enrollment_limit_validator', 'init', [[
+            'minenrollments' => $jsmin,
+            'maxenrollments' => $jsmax,
+        ]]);
+    }
+}
+
 $choicegroupgroups = choicegroup_get_groups($choicegroup);
 $choicegroupusers = [];
 
@@ -108,18 +124,25 @@ if (data_submitted() && is_enrolled($context, null, 'mod/choicegroup:choose') &&
         $numberofgroups = optional_param('number_of_groups', '', PARAM_INT);
         $enrollmentscount = 0;
 
-        if ($choicegroup->maxenrollments > 0) {
-            for ($i = 0; $i < $numberofgroups; $i++) {
-                $answervalue = optional_param('answer_' . $i, '', PARAM_INT);
-                if ($answervalue != '') {
-                    $enrollmentscount++;
-                }
+        for ($i = 0; $i < $numberofgroups; $i++) {
+            $answervalue = optional_param('answer_' . $i, '', PARAM_INT);
+            if ($answervalue != '') {
+                $enrollmentscount++;
             }
+        }
 
-            if ($enrollmentscount > $choicegroup->maxenrollments) {
+        if ($choicegroup->maxenrollments > 0 && $enrollmentscount > $choicegroup->maxenrollments) {
+            redirect(new moodle_url(
+                '/mod/choicegroup/view.php',
+                ['id' => $cm->id, 'notify' => 'mustchoosemax', 'sesskey' => sesskey()]
+            ));
+        }
+
+        if (!empty($choicegroup->minenrollments) && $choicegroup->minenrollments > 0) {
+            if ($enrollmentscount < $choicegroup->minenrollments) {
                 redirect(new moodle_url(
                     '/mod/choicegroup/view.php',
-                    ['id' => $cm->id, 'notify' => 'mustchoosemax', 'sesskey' => sesskey()]
+                    ['id' => $cm->id, 'notify' => 'mustchoosemin', 'sesskey' => sesskey()]
                 ));
             }
         }
@@ -189,6 +212,8 @@ if ($notify && confirm_sesskey()) {
         echo $OUTPUT->notification(get_string('mustchooseone', 'choicegroup'), 'notifyproblem');
     } else if ($notify === 'mustchoosemax') {
         echo $OUTPUT->notification(get_string('mustchoosemax', 'choicegroup', $choicegroup->maxenrollments), 'notifyproblem');
+    } else if ($notify === 'mustchoosemin') {
+        echo $OUTPUT->notification(get_string('mustchoosemin', 'choicegroup', $choicegroup->minenrollments), 'notifyproblem');
     }
 }
 
@@ -224,6 +249,32 @@ echo '<div class="clearer"></div>';
 if ($choicegroup->intro) {
     if ($CFG->branch < 400) {
         echo $OUTPUT->box(format_module_intro('choicegroup', $choicegroup, $cm->id), 'generalbox', 'intro');
+    }
+}
+
+// Show enrollment conditions box above "Your selection" when multiple enrollments have min/max configured.
+if ($choicegroup->multipleenrollmentspossible == 1) {
+    $ecmin = (int)($choicegroup->minenrollments ?? 0);
+    $ecmax = (int)($choicegroup->maxenrollments ?? 0);
+    $enrollmentinfomsg = '';
+    if ($ecmin > 0 && $ecmax > 0 && $ecmin === $ecmax) {
+        $enrollmentinfomsg = get_string('enrollmentlimit_exact', 'choicegroup', $ecmin);
+    } else if ($ecmin > 0 && $ecmax > 0) {
+        $eca = new stdClass();
+        $eca->min = $ecmin;
+        $eca->max = $ecmax;
+        $enrollmentinfomsg = get_string('enrollmentlimit_range', 'choicegroup', $eca);
+    } else if ($ecmin > 0) {
+        $enrollmentinfomsg = get_string('enrollmentlimit_min', 'choicegroup', $ecmin);
+    } else if ($ecmax > 0) {
+        $enrollmentinfomsg = get_string('enrollmentlimit_max', 'choicegroup', $ecmax);
+    }
+    if ($enrollmentinfomsg) {
+        echo $OUTPUT->box(
+            html_writer::tag('strong', get_string('enrollmentconditions', 'choicegroup') . ': ') . $enrollmentinfomsg,
+            'generalbox',
+            'choicegroup-enrollment-conditions'
+        );
     }
 }
 

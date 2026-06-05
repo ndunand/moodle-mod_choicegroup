@@ -112,5 +112,19 @@ function xmldb_choicegroup_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024092600, 'choicegroup');
     }
 
+    if ($oldversion < 2026060401) {
+        // Define field minenrollments to be added to choicegroup.
+        $table = new xmldb_table('choicegroup');
+        $field = new xmldb_field('minenrollments', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'maxenrollments');
+
+        // Conditionally launch add field minenrollments.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Choicegroup savepoint reached.
+        upgrade_mod_savepoint(true, 2026060401, 'choicegroup');
+    }
+
     return true;
 }
