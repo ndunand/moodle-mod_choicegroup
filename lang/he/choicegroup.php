@@ -18,11 +18,13 @@
  * Hebrew strings for mod_choicegroup (new minenrollments feature).
  *
  * @package    mod_choicegroup
+ * @copyright  2026 Contributors
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['enrollmentconditions'] = 'תנאי רישום';
 $string['enrollmentlimit_exact'] = 'עליך להירשם ל-{$a} קבוצות.';
 $string['enrollmentlimit_max'] = 'ניתן להירשם לעד {$a} קבוצות.';
 $string['enrollmentlimit_min'] = 'עליך להירשם לפחות ל-{$a} קבוצות.';
