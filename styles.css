@@ -207,6 +207,7 @@
 
 .path-mod-choicegroup div.tablecontainer table {
     width: 100%;
+    border-collapse: unset !important;
 }
 
 .path-mod-choicegroup table.choicegroups td {

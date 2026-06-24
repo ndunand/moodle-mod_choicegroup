@@ -39,6 +39,20 @@ define(function() {
             const removedOptionsMap = new Map(); // Used to store options states when toggle grouping
             let sortBy = param.sortgroupsby;
 
+            const enableDisableLimit = document.getElementById('id_limitanswers');
+            const globalLimitInput = document.getElementById('id_generallimitation');
+            const applyLimitToAllGroups = document.getElementById('id_setlimit');
+
+            const limitDiv = document.getElementById('fitem_id_limit_0');
+            const limitLabel = document.getElementById('label_for_limit_ui');
+            const limitInput = document.getElementById('ui_limit_input');
+            const limitHiddenInputs = document.getElementsByClassName('limit_input_node');
+            let limitGroup = null;
+
+            if (!availableSelect || !selectedSelect || !serializedselectedgroups || !applyLimitToAllGroups) {
+                return;
+            }
+
             // Store original indexes states
             Array.from(availableSelect.options).forEach((opt, index) => {
                 opt.dataset.originalIndex = index;
@@ -96,6 +110,8 @@ define(function() {
 
                 selectedSelect.addEventListener('dblclick', function(e) {
                     const clickedIndex = e.currentTarget.selectedIndex;
+                    limitDiv.style.display = 'none';
+                    limitInput.disabled = true;
                     if (clickedIndex >= 0) {
                         e.preventDefault();
                         moveToAvailable();
@@ -134,6 +150,63 @@ define(function() {
                     serializedselectedgroups.value = serializedSelection;
                 });
 
+                applyLimitToAllGroups.addEventListener('click', applyLimit);
+
+                ['click', 'change'].forEach(event => {
+                    selectedSelect.addEventListener(event, function (e) {
+                        let selectedOptions = Array.from(selectedSelect.selectedOptions);
+                        if (selectedOptions.length === 1 && enableDisableLimit.value === '1') {
+                            e.preventDefault();
+                            let option = selectedSelect.options[selectedSelect.selectedIndex];
+                            limitGroup = option;
+                            limitDiv.style.display = 'block';
+                            limitLabel.textContent = M.util.get_string('set_limit_for_group', 'choicegroup')
+                                + ' ' + getGroupNameWithoutLimitText(option) + ":";
+                            limitInput.disabled = false;
+                            limitInput.value = getLimitOfSelectedGroup(option).value;
+                        } else {
+                            limitGroup = null;
+                            limitDiv.style.display = 'none';
+                        }
+                    });
+                });
+
+                ['input', 'blur', 'change'].forEach(event =>
+                    limitInput.addEventListener(event, function(e) {
+                        e.preventDefault();
+                        if (!limitGroup) {
+                            return;
+                        }
+                        if (isNaN(limitInput.value)) {
+                            limitInput.value = 0;
+                            alert(M.util.get_string('the_value_you_entered_is_not_a_number', 'choicegroup'));
+                            return;
+                        }
+
+                        getLimitOfSelectedGroup(limitGroup).value = limitInput.value;
+                        updateLimitOfSelectedGroup(limitGroup);
+
+                        if (event !== 'input') {
+                            limitDiv.style.display = 'none';
+                        }
+                    })
+                );
+
+                enableDisableLimit.addEventListener('change', function(e) {
+                    e.preventDefault();
+                    if (enableDisableLimit.value === '1') {
+                        let option = selectedSelect.options[selectedSelect.selectedIndex];
+                        if (option) {
+                            limitGroup = option;
+                            limitDiv.style.display = 'block';
+                        }
+                        updateLimitOfAllSelectedGroups();
+                    } else {
+                        limitGroup = null;
+                        limitDiv.style.display = 'none';
+                        clearLimitOfAllGroups(selectedSelect);
+                    }
+                });
             }
 
             /**
@@ -256,7 +329,90 @@ define(function() {
                     return 0;
                 });
 
-                sortedOptions.forEach(opt => selectedSelect.appendChild(opt));
+                sortedOptions.forEach(opt => {
+                    selectedSelect.appendChild(opt);
+                });
+
+                if (enableDisableLimit.value === '1') {
+                    updateLimitOfAllSelectedGroups();
+                }
+            }
+
+            /**
+             * Update limit for all selected groups
+             */
+            function updateLimitOfAllSelectedGroups() {
+                selectedSelect.forEach(opt => {
+                    updateLimitOfSelectedGroup(opt);
+                });
+            }
+
+            /**
+             * Update limit for one selected group
+             * @param {HTMLOptionElement} group
+             */
+            function updateLimitOfSelectedGroup(group) {
+                const limitEl = getLimitOfSelectedGroup(group);
+                if (limitEl) {
+                    group.text = getGroupNameWithoutLimitText(group) + '(' + (getLimitOfSelectedGroup(group).value || 0) + ')';
+                }
+            }
+
+            /**
+             * @param {HTMLOptionElement} group
+             * @returns {string}
+             */
+            function getGroupNameWithoutLimitText(group) {
+                var indexOfLimitText = group.text.indexOf('(');
+                if (indexOfLimitText !== -1) {
+                    return group.text.substring(0, indexOfLimitText);
+                } else {
+                    return group.text;
+                }
+            }
+
+            /**
+             * @param {HTMLOptionElement} group
+             * @returns {HTMLInputElement}
+             */
+            function getLimitOfSelectedGroup(group) {
+                return document.getElementById('group_' + group.value + '_limit');
+            }
+
+            /**
+             * Apply global group limit
+             */
+            function applyLimit() {
+                let generalLimitValue = parseInt(globalLimitInput.value);
+
+                if (!isNaN(generalLimitValue)) {
+                    limitHiddenInputs.forEach(limit => {
+                        limit.value = generalLimitValue;
+                    });
+                } else {
+                    alert(M.util.get_string('the_value_you_entered_is_not_a_number', 'choicegroup'));
+                }
+
+                updateLimitOfAllSelectedGroups();
+            }
+
+            /**
+             * Clear limit for all selected groups
+             * @param {HTMLSelectElement} select
+             */
+            function clearLimitOfAllGroups(select) {
+                select.forEach(opt => {
+                    clearLimitOfGroup(opt);
+                });
+            }
+
+            /**
+             * Clear limit for one selected group
+             * @param {HTMLOptionElement} group
+             */
+            function clearLimitOfGroup(group) {
+                limitDiv.style.display = 'none';
+                group.text = getGroupNameWithoutLimitText(group);
             }
 
             /**
@@ -290,6 +446,8 @@ define(function() {
                     }
                     option.selected = false;
                 });
+
+                clearLimitOfAllGroups(availableSelect);
             }
 
             /**

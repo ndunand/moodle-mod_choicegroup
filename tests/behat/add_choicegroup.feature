@@ -8,6 +8,7 @@ Feature: Add choicegroup activity
   Scenario: Add a choicegroup activity for Moodle ≥ 4.4 for Moodle ≤ 5.0
     Given the site is running Moodle version 4.4 or higher
     And the site is running Moodle version 5.0 or lower
+    And the default editor is set to "textarea"
     And the following "users" exist:
       | username | firstname | lastname | email |
       | teacher1 | Teacher | 1 | teacher1@example.com |
@@ -32,6 +33,7 @@ Feature: Add choicegroup activity
   @javascript
   Scenario: Add a choicegroup activity for Moodle ≥ 5.1
     Given the site is running Moodle version 5.1 or higher
+    And the default editor is set to "textarea"
     And the following "users" exist:
       | username | firstname | lastname | email |
       | teacher1 | Teacher | 1 | teacher1@example.com |

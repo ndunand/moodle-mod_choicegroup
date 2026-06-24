@@ -197,7 +197,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         $mform->addElement('html', '<select class="col-12" id="availablegroups" name="availableGroups" multiple size=10>');
         foreach ($groupings as $groupingid => $grouping) {
             // Find all linked groups to this grouping.
-            if (isset($grouping->linkedGroupsIDs) && count($grouping->linkedGroupsIDs) > 1) {
+            if (isset($grouping->linkedGroupsIDs)) {
                 // Grouping has more than 2 items, thus we should display it (otherwise it would be clearer to display only that
                 // single group alone).
                 $mform->addElement('html', '<option value="' . $groupingid .
@@ -241,7 +241,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
             <label for="ui_limit_input" id="label_for_limit_ui">' . get_string('set_limit_for_group', 'choicegroup') . ' </label>
         </div>
         <div class="ftext">
-            <input class="mod-choicegroup-limit-input form-control" type="text" value="0" id="ui_limit_input" disabled="disabled">
+            <input class="mod-choicegroup-limit-input form-control" type="text" value="0" id="ui_limit_input">
         </div>
     </div>
 </td>');
@@ -353,8 +353,12 @@ class mod_choicegroup_mod_form extends moodleform_mod {
      */
     public function js_call() {
         global $PAGE;
-        $params = [$this->_form->getAttribute('id')];
-        $PAGE->requires->yui_module('moodle-mod_choicegroup-form', 'Y.Moodle.mod_choicegroup.form.init', $params);
+        $params = [
+            'formid' => $this->_form->getAttribute('id'),
+            'sortgroupsby' => $this->sortgroupsby
+        ];
+
+        $PAGE->requires->js_call_amd('mod_choicegroup/choicegroupsetting', 'init', [$params]);
         foreach (array_keys(get_string_manager()->load_component_strings('choicegroup', current_language())) as $string) {
             $PAGE->requires->string_for_js($string, 'choicegroup');
         }

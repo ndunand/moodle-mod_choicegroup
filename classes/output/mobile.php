@@ -93,6 +93,10 @@ class mobile {
             $choicegroup->expired = false;
         }
 
+        $choicegroup->showresultscolumn = $choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_ALWAYS ||
+            ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_ANSWER && !empty($current)) ||
+            ($choicegroup->showresults == CHOICEGROUP_SHOWRESULTS_AFTER_CLOSE && $choicegroup->expired);
+
         // The user has made her choice and updates are not allowed or choicegroup is not open.
         $choicegroup->answergiven = choicegroup_get_user_answer($choicegroup, $USER->id);
         $choicegroup->alloptionsdisabled = (!$choicegroup->open || $choicegroup->expired

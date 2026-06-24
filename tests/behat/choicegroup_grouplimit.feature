@@ -41,7 +41,7 @@ Feature: Use the choicegroup activity with groups limits
     And I press "Apply to all groups"
     And I press "Save and return to course"
     And I am on the "Group choice 1" "choicegroup activity editing" page logged in as teacher1
-    Then I should see "A ⦗2⦘"
+    Then I should see "A(2)"
     # Student view.
     When I am on the "Group choice 1" "choicegroup activity" page logged in as student1
     Then I should see "A"
@@ -59,12 +59,10 @@ Feature: Use the choicegroup activity with groups limits
     And I press "Apply to all groups"
     And I press "Save and return to course"
     And I am on the "Group choice 1" "choicegroup activity editing" page logged in as teacher1
-    And I should see "A ⦗2⦘"
-    And I set the field "selectedGroups" to "A ⦗2⦘"
+    And I should see "A(2)"
+    And I set the field "selectedGroups" to "A(2)"
     And I should see "Limit For  A:"
-    And I press the tab key
-    And I type "3"
-    And I press the tab key
+    And I set the selected choicegroup limit to "3"
     And I press "Save and return to course"
     When I am on the "Group choice 1" "choicegroup activity editing" page logged in as teacher1
-    Then I should see "A ⦗3⦘"
+    Then I should see "A(3)"

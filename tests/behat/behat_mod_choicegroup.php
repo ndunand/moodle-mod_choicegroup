@@ -35,6 +35,22 @@ require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
  */
 class behat_mod_choicegroup extends behat_base {
     /**
+     * Set the visible per-group limit input.
+     *
+     * @Given I set the selected choicegroup limit to :limit
+     * @param string $limit Limit value.
+     */
+    public function i_set_the_selected_choicegroup_limit_to(string $limit): void {
+        $limit = json_encode($limit);
+        $this->execute_script("
+            const input = document.getElementById('ui_limit_input');
+            input.value = {$limit};
+            input.dispatchEvent(new Event('input', {bubbles: true}));
+            input.dispatchEvent(new Event('change', {bubbles: true}));
+        ");
+    }
+
+    /**
      * Convert page names to URLs for steps like 'When I am on the "[page name]" page'.
      *
      * Recognised page names are:
