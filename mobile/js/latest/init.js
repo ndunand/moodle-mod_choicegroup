@@ -106,7 +106,7 @@ class AddonModChoiceGroupOfflineProvider {
             return site.getDb().getRecords(CHOICEGROUP_TABLE).then((records) => {
                 // Parse the data of each record.
                 records.forEach((record) => {
-                    record.data = context.CoreTextUtilsProvider.parseJSON(record.data, []);
+                    record.data = context.CoreText.parseJSON(record.data, []);
                 });
 
                 return records;
@@ -142,7 +142,7 @@ class AddonModChoiceGroupOfflineProvider {
 
             return site.getDb().getRecord(CHOICEGROUP_TABLE, {choicegroupid: id}).then((record) => {
                 // Parse the data.
-                record.data = context.CoreTextUtilsProvider.parseJSON(record.data, []);
+                record.data = context.CoreText.parseJSON(record.data, []);
 
                 return record;
             });
@@ -479,7 +479,7 @@ class AddonModChoiceGroupSyncProvider extends this.CoreSyncBaseProvider {
                             result.warnings.push(context.TranslateService.instant('core.warningofflinedatadeleted', {
                                 component: context.TranslateService.instant('plugin.mod_choicegroup.modulename'),
                                 name: data.name,
-                                error: context.CoreTextUtilsProvider.getErrorMessageFromError(error)
+                                error: context.CoreErrorHelper.getErrorMessageFromError(error)
                             }));
                         });
                     }

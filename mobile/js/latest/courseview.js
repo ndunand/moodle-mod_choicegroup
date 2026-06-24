@@ -47,7 +47,7 @@ this.submitResponses = () => {
 
     promise.then(() => {
         // Submit the responses now.
-        return this.CoreDomUtilsProvider.showModalLoading('core.sending', true);
+        return this.CoreLoadings.show('core.sending', true);
     }).then((modal) => {
         var data = this.CoreUtilsProvider.objectToArrayOfObjects(this.CONTENT_OTHERDATA.data, 'name', 'value');
 
@@ -62,7 +62,10 @@ this.submitResponses = () => {
                 allowOffline).then((online) => {
 
             // Responses have been sent to server or stored to be sent later.
-            this.CoreDomUtilsProvider.showToast(this.TranslateService.instant('plugin.mod_choicegroup.choicegroupsaved'));
+            this.CoreToasts.show({
+                message: 'plugin.mod_choicegroup.choicegroupsaved',
+                translateMessage: true,
+            });
 
             if (online) {
                 // Check completion since it could be configured to complete once the user answers the choice.
@@ -89,12 +92,15 @@ this.submitResponses = () => {
  * Delete the responses. Only if multiple enrol is not allowed.
  */
 this.deleteResponses = () => {
-    return this.CoreDomUtilsProvider.showModalLoading('core.sending', true).then((modal) => {
+    return this.CoreLoadings.show('core.sending', true).then((modal) => {
         return this.choiceGroupProvider.deleteResponses(this.module.instance, this.module.name, this.courseId, this.module.id,
                 allowOffline).then((online) => {
 
             // Responses have been sent to server or stored to be sent later.
-            this.CoreDomUtilsProvider.showToast(this.TranslateService.instant('plugin.mod_choicegroup.choicegroupsaved'));
+            this.CoreToasts.show({
+                message: 'plugin.mod_choicegroup.choicegroupsaved',
+                translateMessage: true,
+            });
 
             if (online) {
                 // Data has been sent, refresh the content.
