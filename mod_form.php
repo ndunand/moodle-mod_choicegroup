@@ -355,7 +355,7 @@ class mod_choicegroup_mod_form extends moodleform_mod {
         global $PAGE;
         $params = [
             'formid' => $this->_form->getAttribute('id'),
-            'sortgroupsby' => $this->sortgroupsby
+            'sortgroupsby' => $this->sortgroupsby,
         ];
 
         $PAGE->requires->js_call_amd('mod_choicegroup/choicegroupsetting', 'init', [$params]);
