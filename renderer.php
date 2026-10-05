@@ -189,7 +189,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
             $groupmembers = get_enrolled_users($context, '', $group->id, 'u.*', 'u.lastname, u.firstname', 0, 0, $onlyactive);
             $groupmembersnames = [];
             foreach ($groupmembers as $groupmember) {
-                $groupmembersnames[] = fullname($groupmember);
+                $groupmembersnames[] = s(fullname($groupmember));
             }
 
             if (
@@ -412,7 +412,7 @@ class mod_choicegroup_renderer extends plugin_renderer_base {
                         $userlink = new moodle_url('/user/view.php', ['id' => $user->id, 'course' => $choicegroups->courseid]);
                         $name = html_writer::tag(
                             'a',
-                            fullname($user, $choicegroups->fullnamecapability),
+                            s(fullname($user, $choicegroups->fullnamecapability)),
                             ['href' => $userlink, 'class' => 'username']
                         );
                         $data .= html_writer::tag('div', $name, ['class' => 'fullname']);
