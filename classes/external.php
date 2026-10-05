@@ -50,6 +50,12 @@ class mod_choicegroup_external extends external_api {
         );
     }
 
+    #[\Override]
+    public static function validate_context($context) {
+        parent::validate_context($context);
+        require_capability('mod/choicegroup:choose', $context);
+    }
+
     /**
      * Returns the options list for the provided choice group instance.
      *
@@ -60,7 +66,7 @@ class mod_choicegroup_external extends external_api {
      * @return array The choice group options.
      */
     public static function get_choicegroup_options($choicegroupid, $userid, $alloptionsdisabled = false) {
-        global $CFG, $choicegroupgroups;
+        global $USER, $choicegroupgroups;
 
         $result = [];
         $returnedoptions = [];
@@ -75,8 +81,11 @@ class mod_choicegroup_external extends external_api {
         $cm = get_coursemodule_from_instance('choicegroup', $choicegroupid);
         $context = context_module::instance($cm->id);
 
+        if ($userid != $USER->id) {
+            require_capability('mod/choicegroup:readresponses', $context);
+        }
+
         self::validate_context($context);
-        require_capability('mod/choicegroup:choose', $context);
 
         $groupmode = groups_get_activity_groupmode($cm);
         $allresponses = choicegroup_get_response_data($choicegroup, $cm, $groupmode, $choicegroup->onlyactive);
@@ -189,7 +198,6 @@ class mod_choicegroup_external extends external_api {
 
         $context = context_module::instance($cm->id);
         self::validate_context($context);
-        require_capability('mod/choicegroup:choose', $context);
 
         $event = \mod_choicegroup\event\course_module_viewed::create([
             'objectid' => $choicegroup->id,
@@ -272,7 +280,6 @@ class mod_choicegroup_external extends external_api {
         [$course, $cm] = get_course_and_cm_from_instance($choicegroup, 'choicegroup');
         $context = context_module::instance($cm->id);
         self::validate_context($context);
-        require_capability('mod/choicegroup:choose', $context);
 
         $timenow = time();
         if (!empty($choicegroup->timeopen) && ($choicegroup->timeopen > $timenow)) {
@@ -409,7 +416,6 @@ class mod_choicegroup_external extends external_api {
         [$course, $cm] = get_course_and_cm_from_instance($choicegroup, 'choicegroup');
         $context = context_module::instance($cm->id);
         self::validate_context($context);
-        require_capability('mod/choicegroup:choose', $context);
 
         $timenow = time();
         if (!empty($choicegroup->timeopen) && ($choicegroup->timeopen > $timenow)) {
